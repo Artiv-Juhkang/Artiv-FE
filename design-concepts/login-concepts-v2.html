@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>AppToon · 로그인 컨셉 8종 · 라이트/다크</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Black+Han+Sans&family=Do+Hyeon&family=Gaegu:wght@700&family=Gothic+A1:wght@400;500;700;800;900&family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=Jua&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#0a0b0e;color:#e9e9ec;font-family:'IBM Plex Sans KR',sans-serif;padding:34px 38px 56px;-webkit-font-smoothing:antialiased}
+  .head h1{font-family:'Gothic A1';font-weight:900;font-size:24px;letter-spacing:-.4px}
+  .head h1 b{color:#FF6B57}
+  .head p{color:#8a8c97;font-size:13px;margin-top:8px;max-width:1080px;line-height:1.65}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:26px;margin-top:28px;max-width:1180px}
+  .cc{background:#121318;border:1px solid #23252d;border-radius:18px;padding:17px 17px 20px}
+  .nm{font-family:'Gothic A1';font-weight:900;font-size:16.5px;display:flex;gap:8px;align-items:baseline}
+  .nm span{font-size:12px;color:#7d7f8a;font-weight:600}
+  .tagl{color:#9a9ca6;font-size:12.5px;margin:6px 0 9px;line-height:1.5}
+  .meta{font-size:11px;color:#74767f;line-height:1.6;margin-bottom:13px}
+  .meta b{color:#b6b8c1;font-weight:600}
+  .sw{display:flex;gap:5px;margin-bottom:9px}.sw i{width:18px;height:18px;border-radius:5px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
+  .pair{display:flex;gap:14px;justify-content:center}
+  .ph{flex:0 0 auto;text-align:center}
+  .frame{position:relative;width:222px;height:466px;border-radius:33px;background:#16171c;box-shadow:0 16px 38px -18px rgba(0,0,0,.8),0 0 0 2px #2c2e37,inset 0 0 0 5px #0a0b0e;padding:6px}
+  .scr{position:relative;width:100%;height:100%;border-radius:27px;overflow:hidden;display:flex;flex-direction:column;background:var(--bg);color:var(--ink)}
+  .notch{position:absolute;top:6px;left:50%;transform:translateX(-50%);width:76px;height:16px;background:#0a0b0e;border-radius:0 0 11px 11px;z-index:40}
+  .ml{display:inline-block;margin-top:8px;font-size:11px;color:#8a8c97;font-weight:600}
+  .pad{flex:1;display:flex;flex-direction:column;z-index:5}
+  .ph-t{color:inherit;opacity:.45}
+
+  /* fonts per concept */
+  .panel,.vivid,.tone,.impact,.sketch{font-family:'Gothic A1'}
+  .night{font-family:'Noto Sans KR'} .glass,.mono{font-family:'IBM Plex Sans KR'}
+
+  /* 1 PANEL */
+  .panel .pad{justify-content:center;gap:8px;padding:32px 14px 16px}
+  .panel .hero{border:2.5px solid var(--ink);background:var(--card);padding:10px;box-shadow:5px 5px 0 var(--ink);text-align:center}
+  .panel .wm{font-family:'Black Han Sans';font-size:29px;color:var(--ink);position:relative;display:inline-block;line-height:.95}
+  .panel .wm::before{content:'AppToon';position:absolute;left:-2px;top:-1px;color:var(--acc2);z-index:-1}
+  .panel .wm::after{content:'AppToon';position:absolute;left:2px;top:1px;color:var(--acc);z-index:-2}
+  .panel .bub{display:inline-block;margin-top:7px;border:2px solid var(--ink);border-radius:9px;background:var(--bub);padding:3px 8px;font-weight:800;font-size:10px;color:var(--ink)}
+  .panel .f{border:2.5px solid var(--ink);background:var(--card);padding:5px 8px}
+  .panel label{font-weight:800;font-size:7.5px;letter-spacing:.5px;text-transform:uppercase;color:var(--label);display:block}
+  .panel .i{font-weight:600;font-size:10.5px;color:var(--ink)}
+  .panel .cta{border:2.5px solid var(--ink);background:var(--acc);color:#fff;font-family:'Black Han Sans';font-size:15px;text-align:center;padding:7px;box-shadow:5px 5px 0 var(--ink)}
+  .panel .nx{font-weight:800;font-size:9px;text-align:right;color:var(--ink)}
+  .panel.light{--bg:#ECE7DB;--ink:#15120E;--card:#fff;--acc:#ED2E6A;--acc2:#16A8C4;--bub:#FFEFB0;--label:#9a6b5a}
+  .panel.dark{--bg:#131219;--ink:#F2EEE6;--card:#211F2A;--acc:#FF4D86;--acc2:#2BD0E6;--bub:#2A2740;--label:#B49B6E}
+
+  /* 2 NIGHT */
+  .night .pad{justify-content:center;gap:12px;padding:0 19px}
+  .night .glow{position:absolute;top:30%;left:50%;transform:translate(-50%,-50%);width:220px;height:220px;background:radial-gradient(circle,var(--glow) 0%,transparent 68%);z-index:1}
+  .night .pad>*{position:relative;z-index:2}
+  .night .moon{font-size:10px;color:var(--acc);font-weight:500}
+  .night .wm{font-family:'Gowun Batang';font-weight:700;font-size:27px;color:var(--wm)}
+  .night .tagx{font-family:'Gowun Batang';font-size:12px;color:var(--sub);margin-top:-7px}
+  .night .f{border-bottom:1px solid var(--line);padding:5px 1px}
+  .night label{font-size:8px;color:var(--sub);display:block;margin-bottom:2px}
+  .night .i{font-size:10.5px;color:var(--ink)}
+  .night .cta{background:var(--cta);color:var(--ctaText);font-weight:700;font-size:12px;text-align:center;padding:10px;border-radius:11px;box-shadow:0 9px 24px -8px var(--ctaGlow)}
+  .night .subr{display:flex;justify-content:center;gap:9px;font-size:9.5px;color:var(--sub)}
+  .night.dark{--bg:radial-gradient(125% 78% at 50% 36%,#271D38,#17131F 46%,#0C0A13);--ink:#EDE8F5;--wm:#F3EEF8;--sub:#8a83a0;--line:rgba(203,196,220,.28);--acc:#FFB877;--glow:rgba(255,184,119,.40);--cta:linear-gradient(180deg,#FF9E6B,#FF7C4D);--ctaText:#231526;--ctaGlow:rgba(255,138,91,.5)}
+  .night.light{--bg:linear-gradient(165deg,#EFF1F9,#E3E7F4 60%,#DCE0F0);--ink:#2A2540;--wm:#241F3A;--sub:#6E6A86;--line:rgba(60,55,90,.18);--acc:#D9802F;--glow:rgba(255,201,140,.6);--cta:linear-gradient(180deg,#FF9E6B,#FF7C4D);--ctaText:#2A1A12;--ctaGlow:rgba(255,150,90,.4)}
+
+  /* 3 VIVID */
+  .vivid .pad{justify-content:center;gap:9px;padding:0 17px}
+  .vivid .spark{position:absolute;font-size:11px;opacity:.85;z-index:2;color:var(--spk)}
+  .vivid .wm{font-family:'Jua';font-size:29px;color:var(--acc);text-shadow:1.5px 1.5px 0 var(--wmsh);text-align:center}
+  .vivid .bub{align-self:center;background:var(--card);border-radius:14px;padding:5px 11px;font-family:'Jua';font-size:10.5px;color:var(--bubtx);position:relative}
+  .vivid .bub::after{content:"";position:absolute;left:50%;bottom:-5px;transform:translateX(-50%) rotate(45deg);width:10px;height:10px;background:var(--card)}
+  .vivid .card{background:var(--field);border:1px solid var(--fieldbd);border-radius:12px;padding:6px 10px}
+  .vivid label{font-size:8px;color:var(--label);font-weight:700;display:block}
+  .vivid .i{font-size:10.5px;color:var(--ink);font-weight:500}
+  .vivid .cta{background:var(--acc);color:#fff;border-radius:22px;font-family:'Jua';font-size:14px;text-align:center;padding:9px;box-shadow:0 9px 20px -8px var(--ctaGlow)}
+  .vivid .subr{text-align:center;font-size:9.5px;color:var(--sub)}.vivid .subr b{color:var(--acc)}
+  .vivid.light{--bg:linear-gradient(155deg,#FFD7E4,#F0D8FB 46%,#BDC6FF);--ink:#3A2E4D;--acc:#FF5C8A;--wmsh:#fff;--card:#fff;--bubtx:#6A4F7E;--field:rgba(255,255,255,.72);--fieldbd:#fff;--label:#9A7FB0;--sub:#7C6A90;--spk:#fff;--ctaGlow:rgba(255,92,138,.55)}
+  .vivid.dark{--bg:linear-gradient(155deg,#2C1430,#3A1E4A 50%,#241038);--ink:#F3E2EE;--acc:#FF6E9C;--wmsh:rgba(255,110,156,.45);--card:#3A2348;--bubtx:#E7CFE0;--field:rgba(255,255,255,.10);--fieldbd:rgba(255,255,255,.18);--label:#C49AD0;--sub:#B79BC4;--spk:#FFD7E4;--ctaGlow:rgba(255,110,156,.5)}
+
+  /* 4 GLASS */
+  .glass .covers{position:absolute;inset:-28px;display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:82px;gap:8px;filter:blur(19px) saturate(1.25);transform:scale(1.12);z-index:0}
+  .glass .covers i{border-radius:9px}
+  .glass .scrim{position:absolute;inset:0;background:var(--scrim);z-index:1}
+  .glass .pad{position:relative;z-index:3;justify-content:flex-end;padding:0 15px 20px;gap:11px}
+  .glass .kick{font-size:7.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--kick)}
+  .glass .wm{font-weight:700;font-size:22px;letter-spacing:-.4px;color:var(--ink)}
+  .glass .wm small{display:block;font-weight:400;font-size:10px;color:var(--sub);margin-top:3px}
+  .glass .gcard{background:var(--gbg);border:1px solid var(--gbd);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-radius:16px;padding:11px;display:flex;flex-direction:column;gap:7px}
+  .glass .i{background:var(--field);border:1px solid var(--fieldbd);border-radius:9px;padding:8px 10px;font-size:10px;color:var(--ink)}
+  .glass .cta{background:var(--cta);color:var(--ctaText);border-radius:9px;font-weight:700;font-size:11px;text-align:center;padding:9px}
+  .glass .subr{display:flex;justify-content:space-between;font-size:9px;color:var(--sub)}.glass .subr b{color:var(--accent)}
+  .glass.dark{--bg:#0E1014;--ink:#fff;--sub:#C7CCDC;--kick:#A7AEC6;--scrim:linear-gradient(180deg,rgba(14,16,20,.30),rgba(14,16,20,.62) 55%,rgba(14,16,20,.82));--gbg:rgba(255,255,255,.10);--gbd:rgba(255,255,255,.26);--field:rgba(255,255,255,.13);--fieldbd:rgba(255,255,255,.22);--cta:#fff;--ctaText:#10121a;--accent:#9AA6FF}
+  .glass.light{--bg:#EAEBF0;--ink:#14151A;--sub:#3C3E48;--kick:#6A6E80;--scrim:linear-gradient(180deg,rgba(245,246,250,.20),rgba(245,246,250,.55) 55%,rgba(245,246,250,.80));--gbg:rgba(255,255,255,.55);--gbd:rgba(255,255,255,.9);--field:rgba(255,255,255,.78);--fieldbd:rgba(0,0,0,.08);--cta:#16171d;--ctaText:#fff;--accent:#3D5BFF}
+
+  /* 5 TONE */
+  .tone .dots{position:absolute;inset:0;background-image:radial-gradient(var(--dot) 1.2px,transparent 1.3px);background-size:7px 7px;z-index:0;-webkit-mask-image:linear-gradient(140deg,rgba(0,0,0,.9),transparent 62%);mask-image:linear-gradient(140deg,rgba(0,0,0,.9),transparent 62%);opacity:var(--dotop)}
+  .tone .pad{position:relative;z-index:2;justify-content:center;gap:9px;padding:0 16px}
+  .tone .wmwrap{text-align:center;position:relative}
+  .tone .wm{font-family:'Bagel Fat One';font-size:27px;color:var(--ink);text-shadow:2px 2px 0 var(--red);line-height:1}
+  .tone .sfx{position:absolute;top:-9px;right:2px;font-family:'Bagel Fat One';font-size:14px;color:var(--red);transform:rotate(-9deg);text-shadow:-1px -1px 0 var(--shc),1px -1px 0 var(--shc),-1px 1px 0 var(--shc),1px 1px 0 var(--shc)}
+  .tone .tagx{text-align:center;font-weight:700;font-size:9.5px;color:var(--sub);margin-top:-2px}
+  .tone label{font-weight:800;font-size:7.5px;color:var(--label);display:block}
+  .tone .f{border:2px solid var(--ink);background:var(--card);padding:5px 8px}
+  .tone .i{font-weight:600;font-size:10.5px;color:var(--ink)}
+  .tone .cta{background:var(--ink);color:var(--bg);border:2px solid var(--ink);box-shadow:3px 3px 0 var(--red);font-family:'Bagel Fat One';font-size:14px;text-align:center;padding:7px}
+  .tone .subr{font-weight:700;font-size:9px;text-align:center;color:var(--sub)}.tone .subr b{color:var(--red)}
+  .tone.light{--bg:#F4ECDA;--ink:#3B2C63;--card:#FBF6EC;--red:#E8453A;--dot:#3B2C63;--dotop:.22;--sub:#6A5A86;--label:#9a6b5a;--shc:#F4ECDA}
+  .tone.dark{--bg:#191327;--ink:#EFE7D8;--card:#241B36;--red:#FF5347;--dot:#7A68A8;--dotop:.30;--sub:#B7A9C9;--label:#A98EC0;--shc:#191327}
+
+  /* 6 IMPACT */
+  .impact .rays{position:absolute;inset:0;background:repeating-conic-gradient(from 0deg at 50% 40%,var(--ray) 0deg .8deg,transparent .8deg 7deg);z-index:0;-webkit-mask-image:radial-gradient(circle at 50% 40%,#000 10%,transparent 58%);mask-image:radial-gradient(circle at 50% 40%,#000 10%,transparent 58%);opacity:var(--rayop)}
+  .impact .pad{position:relative;z-index:2;justify-content:center;gap:10px;padding:0 17px}
+  .impact .wmwrap{text-align:center}
+  .impact .wm{font-family:'Do Hyeon';font-size:32px;color:var(--ink);line-height:.95;letter-spacing:-.5px}
+  .impact .wm b{color:var(--acc)}
+  .impact .tagx{text-align:center;font-weight:700;font-size:9.5px;color:var(--sub);letter-spacing:.4px}
+  .impact .f{background:var(--field);border:2px solid var(--ink);border-radius:3px;padding:5px 8px}
+  .impact label{font-weight:800;font-size:7.5px;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;display:block}
+  .impact .i{font-size:10.5px;color:var(--ink);font-weight:600}
+  .impact .cta{background:var(--acc);color:#fff;font-family:'Do Hyeon';font-size:15px;text-align:center;padding:8px;border-radius:3px;transform:skewX(-7deg);box-shadow:4px 4px 0 var(--ink)}
+  .impact .cta span{display:inline-block;transform:skewX(7deg)}
+  .impact .subr{text-align:center;font-weight:700;font-size:9px;color:var(--sub)}.impact .subr b{color:var(--acc)}
+  .impact.light{--bg:#F1EFE9;--ink:#121116;--acc:#FF3B30;--ray:#15131a;--rayop:.10;--field:#fff;--sub:#5b5963}
+  .impact.dark{--bg:#0C0C11;--ink:#F4F4F7;--acc:#FF4438;--ray:#ffffff;--rayop:.13;--field:#17171f;--sub:#9a9aa6}
+
+  /* 7 SKETCH */
+  .sketch .pad{justify-content:center;gap:10px;padding:0 18px}
+  .sketch .wmwrap{text-align:center;position:relative}
+  .sketch .wm{font-family:'Gaegu';font-weight:700;font-size:32px;color:var(--ink);line-height:1}
+  .sketch .uline{display:block;margin:1px auto 0;width:115px;height:8px;background:var(--mark);border-radius:4px;opacity:.7;transform:rotate(-1deg)}
+  .sketch .tagx{text-align:center;font-family:'Gaegu';font-size:12.5px;color:var(--sub)}
+  .sketch .f{border:2px dashed var(--line);border-radius:9px;background:var(--field);padding:5px 9px}
+  .sketch label{font-family:'Gaegu';font-weight:700;font-size:9.5px;color:var(--sub);display:block}
+  .sketch .i{font-size:10.5px;color:var(--ink)}
+  .sketch .cta{background:var(--ink);color:var(--bg);font-family:'Gaegu';font-weight:700;font-size:15px;text-align:center;padding:8px;border-radius:11px;border:2px solid var(--ink)}
+  .sketch .subr{text-align:center;font-family:'Gaegu';font-size:11px;color:var(--sub)}.sketch .subr b{color:var(--markText)}
+  .sketch.light{--bg:#F7F2E7;--ink:#3A352C;--line:#B7AF9C;--field:#FFFDF6;--mark:#FFE14D;--sub:#7d7460;--markText:#B58A00}
+  .sketch.dark{--bg:#1B1D19;--ink:#EDE7D6;--line:#5a5d52;--field:#23261F;--mark:#C8FF5A;--sub:#9a9c8c;--markText:#C8FF5A}
+
+  /* 8 MONO */
+  .mono .pad{justify-content:center;gap:13px;padding:0 21px}
+  .mono .mark{align-self:center;width:32px;height:32px;border:2px solid var(--acc);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--acc);font-size:14px}
+  .mono .wm{text-align:center;font-weight:600;font-size:24px;letter-spacing:-.4px;color:var(--ink)}
+  .mono .tagx{text-align:center;font-size:10px;color:var(--sub);margin-top:-8px}
+  .mono .f{border-bottom:1.5px solid var(--line);padding:5px 1px}
+  .mono label{font-size:8px;color:var(--sub);letter-spacing:.3px;display:block;margin-bottom:2px}
+  .mono .i{font-size:10.5px;color:var(--ink)}
+  .mono .cta{background:var(--acc);color:#fff;font-weight:600;font-size:11.5px;text-align:center;padding:10px;border-radius:10px}
+  .mono .subr{display:flex;justify-content:center;gap:11px;font-size:9.5px;color:var(--sub)}.mono .subr b{color:var(--acc)}
+  .mono.light{--bg:#FBFBFD;--ink:#15161A;--line:#DEDFE6;--acc:#2D5BFF;--sub:#73757F}
+  .mono.dark{--bg:#0E0F13;--ink:#F3F4F7;--line:#262830;--acc:#5C7CFF;--sub:#8A8C97}
+</style>
+</head>
+<body>
+<div class="head">
+  <h1>AppToon · 로그인 컨셉 <b>8종</b> · 라이트 / 다크</h1>
+  <p>기존 5종 + 신규 3종(Impact 효과선 · Sketchbook 작가의 책상 · Monoline 미니멀). 각 컨셉은 같은 정체성(팔레트 의도·타입·시그니처)을 유지한 채 라이트/다크 두 모드로 themed. 컨셉의 색은 모드별로 바뀌지만 강조색(accent)은 두 모드에서 일관됩니다 — 토큰이 그대로 라이트/다크 테마 두 벌로 매핑됩니다.</p>
+</div>
+<div class="grid">
+
+  <!-- 1 PANEL -->
+  <div class="cc">
+    <div class="nm">1 · Panel Break <span>만화 칸</span></div>
+    <div class="tagl">로그인 화면이 곧 한 페이지의 만화. 칸·거터·인쇄 오차.</div>
+    <div class="sw"><i style="background:#ECE7DB"></i><i style="background:#15120E"></i><i style="background:#ED2E6A"></i><i style="background:#16A8C4"></i></div>
+    <div class="meta"><b>Type</b> Black Han Sans + Gothic A1 · <b>Sig</b> CMYK 미스레지스트레이션 워드마크 · 다크=흰 잉크 라인</div>
+    <div class="pair">
+      <div class="ph"><div class="frame"><div class="scr panel light"><div class="notch"></div><div class="pad"><div class="hero"><div class="wm">AppToon</div><div class="bub">이어서, 다음 화로.</div></div><div class="f"><label>이메일</label><div class="i ph-t">you@example.com</div></div><div class="f"><label>비밀번호</label><div class="i ph-t">••••••••</div></div><div class="cta">로그인</div><div class="nx">회원가입 →</div></div></div></div><span class="ml">☀ Light</span></div>
+      <div class="ph"><div class="frame"><div class="scr panel dark"><div class="notch"></div><div class="pad"><div class="hero"><div class="wm">AppToon</div><div class="bub">이어서, 다음 화로.</div></div><div class="f"><label>이메일</label><div class="i ph-t">you@example.com</div></div><div class="f"><label>비밀번호</label><div class="i ph-t">••••••••</div></div><div class="cta">로그인</div><div class="nx">회원가입 →</div></div></div></div><span class="ml">🌙 Dark</span></div>
+    </div>
+  </div>
+
+  <!-- 2 NIGHT -->
+  <div class="cc">
+    <div class="nm">2 · Night Reader <span>심야 정주행</span></div>
+    <div class="tagl">불 끄고 보는 새벽. 독서등 글로우 + 부드러운 명조. 라이트=새벽 동틀 녘.</div>
+    <div class="sw"><i style="background:#0C0A13"></i><i style="background:#E3E7F4"></i><i style="background:#FFB877"></i><i style="background:#FF7C4D"></i></div>
+    <div class="meta"><b>Type</b> Gowun Batang + Noto Sans KR · <b>Sig</b> 폼 뒤 앰버 radial 글로우(밤=달빛/낮=동틀)</div>
+    <div class="pair">
+      <div class="ph"><div class="frame"><div class="scr night light"><div class="notch"></div><div class="glow"></div><div class="pad"><div class="moon">☀ 오늘도, 정주행</div><div class="wm">AppToon</div><div class="tagx">이어서 감상해요.</div><div class="f"><label>이메일</label><div class="i ph-t">you@example.com</div></div><div class="f"><label>비밀번호</label><div class="i ph-t">••••••••</div></div><div class="cta">로그인</div><div class="subr"><span>회원가입</span><span>·</span><span>비밀번호 찾기</span></div></div></div></div><span class="ml">☀ Light</span></div>
+      <div class="ph"><div class="frame"><div class="scr night dark"><div class="notch"></div><div class="glow"></div><div class="pad"><div class="moon">🌙 오늘 밤도, 정주행</div><div class="wm">AppToon</div><div class="tagx">오늘 밤도, 정주행.</div><div class="f"><label>이메일</label><div class="i ph-t">you@example.com</div></div><div class="f"><label>비밀번호</label><div class="i ph-t">••••••••</div></div><div class="cta">로그인</div><div class="subr"><span>회원가입</span><span>·</span><span>비밀번호 찾기</span></div></div></div></div><span class="ml">🌙 Dark</span></div>
+    </div>
+  </div>
+
+  <!-- 3 VIVID -->
+  <div class="cc">
+    <div class="nm">3 · 두근 / Vivid <span>로맨스</span></div>
+    <div class="tagl">가장 큰 장르의 두근거림. 말풍선·스파클. 다크=베리 나이트 로맨스.</div>
+    <div class="sw"><i style="background:#FFD7E4"></i><i style="background:#241038"></i><i style="background:#BDC6FF"></i><i style="background:#FF5C8A"></i></div>
+    <div class="meta"><b>Type</b> Jua + Gothic A1 · <b>Sig</b> 인사말 말풍선 + 하트/스파클</div>
+    <div class="pair">
+      <div class="ph"><div class="frame"><div class="scr vivid light"><div class="notch"></div><div class="spark" style="top:44px;left:22px">✦</div><div class="spark" style="top:88px;right:24px;font-size:9px">✦</div><div class="pad"><div class="wm">AppToon</div><div class="bub">두근, 다시 만났어요 💗</div><div class="card"><label>이메일</label><div class="i ph-t">you@example.com</div></div><div class="card"><label>비밀번호</label><div class="i ph-t">••••••••</div></div><div class="cta">로그인 ♥</div><div class="subr">처음이세요? <b>회원가입</b></div></div></div></div><span class="ml">☀ Light</span></div>
+      <div class="ph"><div class="frame"><div class="scr vivid dark"><div class="notch"></div><div class="spark" style="top:44px;left:22px">✦</div><div class="spark" style="top:88px;right:24px;font-size:9px">✦</div><div class="pad"><div class="wm">AppToon</div><div class="bub">두근, 다시 만났어요 💗</div><div class="card"><label>이메일</label><div class="i ph-t">you@example.com</div></div><div class="card"><label>비밀번호</label><div class="i ph-t">••••••••</div></div><div class="cta">로그인 ♥</div><div class="subr">처음이세요? <b>회원가입</b></div></div></div></div><span class="ml">🌙 Dark</span></div>
+    </div>
+  </div>
+
+  <!-- 4 GLASS -->
+  <div class="cc">
+    <div class="nm">4 · Glass Stack <span>세로 몰입</span></div>
+    <div class="tagl">흐르는 표지 위 프로스티드 글래스 폼. ★ 보유 expo-glass-effect로 네이티브 직결.</div>
+    <div class="sw"><i style="background:#0E1014"></i><i style="background:#EAEBF0"></i><i style="background:#6C7CFF"></i><i style="background:#22D3C5"></i></div>
+    <div class="meta"><b>Type</b> IBM Plex Sans KR(=Pretendard 계열) · <b>Sig</b> 글래스 + 살아 움직이는 표지 필름스트립</div>
+    <div class="pair">
+      <div class="ph"><div class="frame"><div class="scr glass light"><div class="notch"></div><div class="covers"><i style="background:linear-gradient(135deg,#FF8A5B,#C53D7E)"></i><i style="background:linear-gradient(135deg,#4F6BFF,#22D3C5)"></i><i style="background:linear-gradient(135deg,#7A6BFF,#C7CCFF)"></i><i style="background:linear-gradient(135deg,#F7C948,#F2542D)"></i><i style="background:linear-gradient(135deg,#3FC8E4,#2E6FA8)"></i><i style="background:linear-gradient(135deg,#C77BFF,#FF9EC0)"></i><i style="background:linear-gradient(135deg,#34D399,#3E9C7E)"></i><i style="background:linear-gradient(135deg,#FF9A7B,#E07A52)"></i><i style="background:linear-gradient(135deg,#8FA0FF,#C9D2FF)"></i></div><div class="scrim"></div><div class="pad"><div><div class="kick">Webtoon</div><div class="wm">AppToon<small>보던 작품이, 기다리고 있어요.</small></div></div><div class="gcard"><div class="i ph-t">you@example.com</div><div class="i ph-t">••••••••</div><div class="cta">로그인</div><div class="subr"><span>처음이라면 <b>회원가입</b></span><span>비밀번호 찾기</span></div></div></div></div></div><span class="ml">☀ Light</span></div>
+      <div class="ph"><div class="frame"><div class="scr glass dark"><div class="notch"></div><div class="covers"><i style="background:linear-gradient(135deg,#FF8A5B,#C53D7E)"></i><i style="background:linear-gradient(135deg,#4F6BFF,#22D3C5)"></i><i style="background:linear-gradient(135deg,#2A2350,#6C7CFF)"></i><i style="background:linear-gradient(135deg,#F7C948,#F2542D)"></i><i style="background:linear-gradient(135deg,#16A8C4,#0B3B66)"></i><i style="background:linear-gradient(135deg,#A24BFF,#FF5C8A)"></i><i style="background:linear-gradient(135deg,#1FA971,#0E5C4A)"></i><i style="background:linear-gradient(135deg,#FF6B57,#7C2D12)"></i><i style="background:linear-gradient(135deg,#3B2C63,#9AA6FF)"></i></div><div class="scrim"></div><div class="pad"><div><div class="kick">Webtoon</div><div class="wm">AppToon<small>보던 작품이, 기다리고 있어요.</small></div></div><div class="gcard"><div class="i ph-t">you@example.com</div><div class="i ph-t">••••••••</div><div class="cta">로그인</div><div class="subr"><span>처음이라면 <b>회원가입</b></span><span>비밀번호 찾기</span></div></div></div></div></div><span class="ml">🌙 Dark</span></div>
+    </div>
+  </div>
+
+  <!-- 5 TONE -->
+  <div class="cc">
+    <div class="nm">5 · Screentone <span>망점 듀오톤</span></div>
+    <div class="tagl">옛 출판 만화의 망점·듀오톤·의성어 스티커. 다크=잉크 네거티브.</div>
+    <div class="sw"><i style="background:#F4ECDA"></i><i style="background:#191327"></i><i style="background:#3B2C63"></i><i style="background:#E8453A"></i></div>
+    <div class="meta"><b>Type</b> Bagel Fat One + Gothic A1 · <b>Sig</b> CSS 하프톤 도트 + 빨강 SFX</div>
+    <div class="pair">
+      <div class="ph"><div class="frame"><div class="scr tone light"><div class="notch"></div><div class="dots"></div><div class="pad"><div class="wmwrap"><div class="sfx">두근!</div><div class="wm">AppToon</div></div><div class="tagx">오늘의 한 화, 펼치다.</div><div><label>이메일</label><div class="f i ph-t">you@example.com</div></div><div><label>비밀번호</label><div class="f i ph-t">••••••••</div></div><div class="cta">로그인</div><div class="subr">계정이 없으신가요? <b>회원가입</b></div></div></div></div><span class="ml">☀ Light</span></div>
+      <div class="ph"><div class="frame"><div class="scr tone dark"><div class="notch"></div><div class="dots"></div><div class="pad"><div class="wmwrap"><div class="sfx">두근!</div><div class="wm">AppToon</div></div><div class="tagx">오늘의 한 화, 펼치다.</div><div><label>이메일</label><div class="f i ph-t">you@example.com</div></div><div><label>비밀번호</label><div class="f i ph-t">••••••••</div></div><div class="cta">로그인</div><div class="subr">계정이 없으신가요? <b>회원가입</b></div></div></div></div><span class="ml">🌙 Dark</span></div>
+    </div>
+  </div>
+
+  <!-- 6 IMPACT -->
+  <div class="cc">
+    <div class="nm">6 · Impact <span>효과선 · NEW</span></div>
+    <div class="tagl">액션 장르의 에너지 — 집중선(효과선)이 워드마크 뒤로 터진다. 굵은 각진 타입.</div>
+    <div class="sw"><i style="background:#F1EFE9"></i><i style="background:#0C0C11"></i><i style="background:#FF3B30"></i><i style="background:#F4F4F7"></i></div>
+    <div class="meta"><b>Type</b> Do Hyeon + Gothic A1 · <b>Sig</b> 방사형 집중선 + 기울인(skew) CTA · 다크=흰 스피드 라인</div>
+    <div class="pair">
+      <div class="ph"><div class="frame"><div class="scr impact light"><div class="notch"></div><div class="rays"></div><div class="pad"><div class="wmwrap"><div class="wm">App<b>Toon</b></div></div><div class="tagx">다음 화까지, 한 번에.</div><div class="f"><label>이메일</label><div class="i ph-t">you@example.com</div></div><div class="f"><label>비밀번호</label><div class="i ph-t">••••••••</div></div><div class="cta"><span>로그인</span></div><div class="subr">계정이 없다면 <b>회원가입</b></div></div></div></div><span class="ml">☀ Light</span></div>
+      <div class="ph"><div class="frame"><div class="scr impact dark"><div class="notch"></div><div class="rays"></div><div class="pad"><div class="wmwrap"><div class="wm">App<b>Toon</b></div></div><div class="tagx">다음 화까지, 한 번에.</div><div class="f"><label>이메일</label><div class="i ph-t">you@example.com</div></div><div class="f"><label>비밀번호</label><div class="i ph-t">••••••••</div></div><div class="cta"><span>로그인</span></div><div class="subr">계정이 없다면 <b>회원가입</b></div></div></div></div><span class="ml">🌙 Dark</span></div>
+    </div>
+  </div>
+
+  <!-- 7 SKETCH -->
+  <div class="cc">
+    <div class="nm">7 · Sketchbook <span>작가의 책상 · NEW</span></div>
+    <div class="tagl">만드는 사람의 손맛 — 연필 스케치·점선·마커 하이라이트. 다크=칠판/야간 작업.</div>
+    <div class="sw"><i style="background:#F7F2E7"></i><i style="background:#1B1D19"></i><i style="background:#FFE14D"></i><i style="background:#C8FF5A"></i></div>
+    <div class="meta"><b>Type</b> Gaegu(손글씨) + Gothic A1 · <b>Sig</b> 워드마크 마커 밑줄 + 점선 필드</div>
+    <div class="pair">
+      <div class="ph"><div class="frame"><div class="scr sketch light"><div class="notch"></div><div class="pad"><div class="wmwrap"><div class="wm">AppToon</div><span class="uline"></span></div><div class="tagx">오늘은 무슨 이야기로 시작할까요?</div><div class="f"><label>이메일</label><div class="i ph-t">you@example.com</div></div><div class="f"><label>비밀번호</label><div class="i ph-t">••••••••</div></div><div class="cta">로그인</div><div class="subr">처음이라면 <b>회원가입</b></div></div></div></div><span class="ml">☀ Light</span></div>
+      <div class="ph"><div class="frame"><div class="scr sketch dark"><div class="notch"></div><div class="pad"><div class="wmwrap"><div class="wm">AppToon</div><span class="uline"></span></div><div class="tagx">오늘은 무슨 이야기로 시작할까요?</div><div class="f"><label>이메일</label><div class="i ph-t">you@example.com</div></div><div class="f"><label>비밀번호</label><div class="i ph-t">••••••••</div></div><div class="cta">로그인</div><div class="subr">처음이라면 <b>회원가입</b></div></div></div></div><span class="ml">🌙 Dark</span></div>
+    </div>
+  </div>
+
+  <!-- 8 MONO -->
+  <div class="cc">
+    <div class="nm">8 · Monoline <span>미니멀 · NEW</span></div>
+    <div class="tagl">절제된 프리미엄 — 넉넉한 여백, 모노라인 마크, 단일 코발트 강조. 콘텐츠가 주인공.</div>
+    <div class="sw"><i style="background:#FBFBFD"></i><i style="background:#0E0F13"></i><i style="background:#2D5BFF"></i><i style="background:#5C7CFF"></i></div>
+    <div class="meta"><b>Type</b> IBM Plex Sans KR · <b>Sig</b> ▽(다음/스크롤) 모노라인 마크 + 정밀한 간격</div>
+    <div class="pair">
+      <div class="ph"><div class="frame"><div class="scr mono light"><div class="notch"></div><div class="pad"><div class="mark">▽</div><div class="wm">AppToon</div><div class="tagx">이어서 감상하기</div><div class="f"><label>이메일</label><div class="i ph-t">you@example.com</div></div><div class="f"><label>비밀번호</label><div class="i ph-t">••••••••</div></div><div class="cta">로그인</div><div class="subr"><span>회원가입</span><span>비밀번호 찾기</span></div></div></div></div><span class="ml">☀ Light</span></div>
+      <div class="ph"><div class="frame"><div class="scr mono dark"><div class="notch"></div><div class="pad"><div class="mark">▽</div><div class="wm">AppToon</div><div class="tagx">이어서 감상하기</div><div class="f"><label>이메일</label><div class="i ph-t">you@example.com</div></div><div class="f"><label>비밀번호</label><div class="i ph-t">••••••••</div></div><div class="cta">로그인</div><div class="subr"><span>회원가입</span><span>비밀번호 찾기</span></div></div></div></div><span class="ml">🌙 Dark</span></div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

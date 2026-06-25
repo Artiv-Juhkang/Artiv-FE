@@ -1,14 +1,15 @@
 {
   "expo": {
-    "name": "AppToon",
-    "slug": "AppToon",
+    "name": "Artiv",
+    "slug": "Artiv",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "apptoon",
+    "scheme": "artiv",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/expo.icon",
+      "bundleIdentifier": "com.kangjuhyun.artiv"
     },
     "android": {
       "adaptiveIcon": {
@@ -17,7 +18,8 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.kangjuhyun.artiv"
     },
     "web": {
       "output": "static",
@@ -34,11 +36,19 @@
             "imageWidth": 76
           }
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "e6a00352-8810-4537-9ad8-92f82cfeef7e"
+      }
+    },
+    "owner": "kangjuhyun"
   }
 }

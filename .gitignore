@@ -41,3 +41,12 @@ example
 # generated native folders
 /ios
 /android
+
+# local env (machine-specific) — keep secrets/local config out of git
+.env
+
+# graphify knowledge-graph cache (generated, regenerable)
+/graphify-out
+
+# local Claude assets/config
+/.claude

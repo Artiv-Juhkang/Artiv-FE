@@ -1,0 +1,67 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>
+  *{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,'Noto Sans KR',sans-serif}
+  body{background:#1a1b1f;display:flex;gap:40px;padding:46px;justify-content:center}
+  .phone{width:300px;height:640px;border-radius:42px;overflow:hidden;position:relative;box-shadow:0 30px 60px -20px #000}
+  .aurora{position:absolute;inset:0}
+  .scrim{position:absolute;inset:0}
+  /* LIGHT */
+  .light .aurora{background-color:#EAEBF0;background-image:
+    radial-gradient(circle at 12% 10%, rgba(255,150,110,0.55) 0%, transparent 46%),
+    radial-gradient(circle at 90% 14%, rgba(140,125,255,0.50) 0%, transparent 46%),
+    radial-gradient(circle at 82% 78%, rgba(90,140,255,0.46) 0%, transparent 50%),
+    radial-gradient(circle at 10% 86%, rgba(255,110,160,0.42) 0%, transparent 48%),
+    radial-gradient(circle at 50% 48%, rgba(60,220,205,0.30) 0%, transparent 42%)}
+  .light .scrim{background-image:linear-gradient(to bottom, rgba(236,237,242,0.08) 0%, rgba(236,237,242,0.10) 55%, rgba(236,237,242,0.34) 100%)}
+  .light .kick{color:#6A6E80}.light .wm{color:#14151A}.light .sub{color:#3C3E48}
+  .light .card{background:rgba(255,255,255,0.55);border:1px solid rgba(255,255,255,0.9)}
+  .light .field{background:rgba(255,255,255,0.78);border:1px solid rgba(0,0,0,0.08);color:#9aa}
+  .light .cta{background:#16171D;color:#fff}
+  /* DARK */
+  .dark .aurora{background-color:#0E1014;background-image:
+    radial-gradient(circle at 14% 10%, rgba(255,138,91,0.42) 0%, transparent 48%),
+    radial-gradient(circle at 88% 13%, rgba(124,108,255,0.50) 0%, transparent 48%),
+    radial-gradient(circle at 84% 78%, rgba(40,200,210,0.42) 0%, transparent 50%),
+    radial-gradient(circle at 10% 86%, rgba(162,75,255,0.46) 0%, transparent 48%),
+    radial-gradient(circle at 50% 50%, rgba(77,124,255,0.30) 0%, transparent 44%)}
+  .dark .scrim{background-image:linear-gradient(to bottom, rgba(14,16,20,0.10) 0%, rgba(14,16,20,0.16) 55%, rgba(14,16,20,0.44) 100%)}
+  .dark .kick{color:#A7AEC6}.dark .wm{color:#fff}.dark .sub{color:#C7CCDC}
+  .dark .card{background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.26)}
+  .dark .field{background:rgba(255,255,255,0.13);border:1px solid rgba(255,255,255,0.22);color:#9aa}
+  .dark .cta{background:#fff;color:#10121A}
+  /* shared */
+  .content{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 22px;gap:22px;z-index:3}
+  .kick{font-size:10px;letter-spacing:2px;font-weight:700}
+  .wm{font-size:34px;font-weight:800;letter-spacing:-1px;margin-top:3px}
+  .sub{font-size:13px;margin-top:4px}
+  .card{border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:12px;backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px)}
+  .field{border-radius:10px;padding:11px 13px;font-size:13px}
+  .cta{border-radius:10px;padding:12px;text-align:center;font-weight:700;font-size:14px}
+  .lbl{font-size:9px}.light .lbl{color:#3C3E48}.dark .lbl{color:#C7CCDC}
+  .cap{position:absolute;bottom:-30px;width:100%;text-align:center;color:#9a9ca6;font-size:13px;font-weight:600}
+</style></head><body>
+  <div class="phone light">
+    <div class="aurora"></div><div class="scrim"></div>
+    <div class="content">
+      <div><div class="kick">WEBTOON</div><div class="wm">AppToon</div><div class="sub">보던 작품이, 기다리고 있어요.</div></div>
+      <div class="card">
+        <div class="lbl">이메일</div><div class="field">you@example.com</div>
+        <div class="lbl">비밀번호</div><div class="field">••••••••</div>
+        <div class="cta">로그인</div>
+      </div>
+    </div>
+    <div class="cap">☀ Light</div>
+  </div>
+  <div class="phone dark">
+    <div class="aurora"></div><div class="scrim"></div>
+    <div class="content">
+      <div><div class="kick">WEBTOON</div><div class="wm">AppToon</div><div class="sub">보던 작품이, 기다리고 있어요.</div></div>
+      <div class="card">
+        <div class="lbl">이메일</div><div class="field">you@example.com</div>
+        <div class="lbl">비밀번호</div><div class="field">••••••••</div>
+        <div class="cta">로그인</div>
+      </div>
+    </div>
+    <div class="cap">🌙 Dark</div>
+  </div>
+</body></html>
