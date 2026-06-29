@@ -88,7 +88,42 @@ export const palette = {
   badgeUp: '#1FA971', // new/unread episode "UP"
   badgeBest: '#7C5CFF', // editorial "BEST" — the only cool/violet pop, used sparingly
   badgeLockBg: '#00000099', // scrim over thumbnail for the lock chip
+
+  // Media-type colors (Ambient 진화, design-system §12.1). Drive the ambient
+  // glow / placard chip bg / media hairline per ContentType. Mode-agnostic
+  // bright tones (like badges); dark text rides on them. New ContentType →
+  // add one color here + a case in mediaColor() below.
+  mediaWebtoon: '#F2A65A', // amber
+  mediaIllustration: '#F2789F', // rose
+  mediaDesign: '#FF8A66', // coral
+  mediaPhoto: '#6FB3F2', // sky
+  mediaNovel: '#9B8CFF', // violet
+  mediaAudio: '#4FD1C0', // teal
 } as const;
+
+/**
+ * Resolve a content type to its signature media color (ambient / placard /
+ * hairline). Keys are the lowercase ContentType from the API; an unknown or
+ * absent type falls back to the indigo brand accent.
+ */
+export function mediaColor(contentType: string | null | undefined): string {
+  switch (contentType) {
+    case 'webtoon':
+      return palette.mediaWebtoon;
+    case 'illustration':
+      return palette.mediaIllustration;
+    case 'design':
+      return palette.mediaDesign;
+    case 'photo':
+      return palette.mediaPhoto;
+    case 'novel':
+      return palette.mediaNovel;
+    case 'audio':
+      return palette.mediaAudio;
+    default:
+      return palette.indigo400;
+  }
+}
 
 // ── Opacity tokens (for scrims, overlays, disabled) ───────────────
 export const opacity = {
