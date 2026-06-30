@@ -27,6 +27,8 @@ export interface SeriesListParams {
   genre?: Genre;
   keyword?: string;
   day?: DayOfWeek;
+  /** 매체 타입 필터(ContentType 키). 미지정 시 전체. */
+  contentType?: string;
 }
 
 /**
@@ -41,11 +43,11 @@ export interface SeriesListParams {
  * 페이지 취소(언마운트·필터 변경)를 지원한다.
  */
 export function useSeriesList(params: SeriesListParams = {}) {
-  const { sort, genre, keyword, day } = params;
+  const { sort, genre, keyword, day, contentType } = params;
   return createPageInfiniteQuery({
-    queryKey: keys.series.list({ sort, genre, keyword, day }),
+    queryKey: keys.series.list({ sort, genre, keyword, day, contentType }),
     fetchPage: (page, signal) =>
-      listSeries({ page, sort, genre, keyword, day }, signal),
+      listSeries({ page, sort, genre, keyword, day, contentType }, signal),
   });
 }
 

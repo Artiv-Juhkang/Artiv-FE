@@ -32,6 +32,7 @@ import type { DayOfWeek, SeriesSummary } from '@/api/types';
 import { FeatureErrorBoundary } from '@/components/feedback';
 import { useSeriesList } from '@/features/series/hooks';
 import { WeekdayTabs, todayDay } from '@/features/series/components/WeekdayTabs';
+import { TypeChips } from '@/features/creativity/TypeChips';
 import {
   SeriesGridCard,
   SeriesGridCardSkeleton,
@@ -95,6 +96,11 @@ function HomeContent() {
   const r = useResponsive();
   const nav = useGuardedNavigation();
 
+  // 창작 타입(레지스트리 동적, 타입=데이터). 기본 = 웹툰(요일 그리드 유지).
+  // 비웹툰 타입은 요일축이 없으므로 WeekdayTabs를 숨기고 최신 그리드만 보인다.
+  const [contentType, setContentType] = useState('WEBTOON');
+  const isWebtoon = contentType === 'WEBTOON';
+
   // 유일한 day 출처(use-weekday-axis 금지). 시드 = 오늘(Mon-first).
   const [day, setDay] = useState<DayOfWeek>(() => todayDay());
 
@@ -107,7 +113,9 @@ function HomeContent() {
 
   // useSeriesList는 무한쿼리 OPTIONS만 빌드(훅 자체 호출 X — react-compiler 안전);
   // 소비부에서 useInfiniteQuery 실행해 호출부가 무조건적으로 유지된다.
-  const query = useInfiniteQuery(useSeriesList({ sort: 'LATEST', day }));
+  const query = useInfiniteQuery(
+    useSeriesList({ sort: 'LATEST', day: isWebtoon ? day : undefined, contentType }),
+  );
   const {
     data,
     isLoading,
@@ -147,8 +155,11 @@ function HomeContent() {
 
   return (
     <View style={{ flex: 1 }}>
-      {/* WeekdayTabs 밴드 — FlatList 바깥(스티키). day 상태 컨트롤드. */}
-      <WeekdayTabs value={day} onChange={setDay} />
+      {/* 타입 칩 — 레지스트리 동적(타입=데이터). 활성 칩은 매체색. */}
+      <TypeChips value={contentType} onChange={setContentType} />
+
+      {/* WeekdayTabs 밴드 — 웹툰일 때만(연재 요일축). FlatList 바깥(스티키). */}
+      {isWebtoon ? <WeekdayTabs value={day} onChange={setDay} /> : null}
 
       <HomeGridBody
         cols={cols}
@@ -218,8 +229,8 @@ function HomeGridBody({
   if (series.length === 0) {
     return (
       <EmptyState
-        title="이 요일 작품이 아직 없어요"
-        description="다른 요일을 둘러보거나, 새로운 작품이 올라오면 여기에서 만나보세요."
+        title="아직 작품이 없어요"
+        description="새로운 작품이 올라오면 여기에서 만나보세요."
       />
     );
   }

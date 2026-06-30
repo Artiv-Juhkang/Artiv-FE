@@ -29,6 +29,7 @@ export async function listSeries(
     genre?: Genre;
     keyword?: string;
     day?: DayOfWeek;
+    contentType?: string;
   },
   signal?: AbortSignal,
 ): Promise<PageResponse<SeriesSummary>> {
@@ -38,6 +39,7 @@ export async function listSeries(
       genre: params.genre,
       keyword: params.keyword,
       day: params.day,
+      contentType: params.contentType,
     },
     signal,
   });
