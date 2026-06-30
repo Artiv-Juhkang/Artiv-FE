@@ -36,6 +36,10 @@ export const keys = {
     detail: (id: number) => ['series', 'detail', id] as const,
     mine: () => ['series', 'mine'] as const,
   },
+  creativity: {
+    all: ['creativity'] as const,
+    types: () => ['creativity', 'types'] as const,
+  },
   episodes: {
     all: ['episodes'] as const,
     list: (seriesId: number) => ['episodes', 'list', seriesId] as const,
