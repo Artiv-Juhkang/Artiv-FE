@@ -4,23 +4,295 @@
  */
 
 export interface paths {
-    "/api/admin/creator-requests": {
+    "/api/users/{targetId}/follow": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["list_8"];
+        get?: never;
         put?: never;
-        post?: never;
+        post: operations["follow"];
+        delete: operations["unfollow"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/users/me/creator-request": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["mine"];
+        put?: never;
+        post: operations["submit"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/admin/creator-requests/{requestId}/approve": {
+    "/api/users/me/avatar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["uploadAvatar"];
+        delete: operations["deleteAvatar"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/series": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["list"];
+        put?: never;
+        post: operations["create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/series/{seriesId}/subscription": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["subscribe"];
+        delete: operations["unsubscribe"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/series/{seriesId}/episodes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["list_1"];
+        put?: never;
+        post: operations["upload"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/series/{seriesId}/episodes/{episodeNo}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["read"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/series/{seriesId}/episodes/{episodeNo}/like": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["like"];
+        delete: operations["unlike"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/series/{seriesId}/episodes/{episodeNo}/comments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["list_2"];
+        put?: never;
+        post: operations["write"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/series/{seriesId}/episodes/{episodeNo}/bookmark": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["bookmark"];
+        delete: operations["unbookmark"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/reports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["report"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/posts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["list_3"];
+        put?: never;
+        post: operations["create_1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/posts/{postId}/comments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["list_4"];
+        put?: never;
+        post: operations["write_1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/posts/{id}/like": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["like_1"];
+        delete: operations["unlike_1"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/inquiries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["mine_1"];
+        put?: never;
+        post: operations["create_2"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/signup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["signup"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["refresh"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["login"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/users/me/password": {
         parameters: {
             query?: never;
             header?: never;
@@ -33,10 +305,10 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch: operations["approve"];
+        patch: operations["changePassword"];
         trace?: never;
     };
-    "/api/admin/creator-requests/{requestId}/reject": {
+    "/api/users/me/nickname": {
         parameters: {
             query?: never;
             header?: never;
@@ -49,42 +321,26 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch: operations["reject"];
+        patch: operations["changeNickname"];
         trace?: never;
     };
-    "/api/admin/inquiries": {
+    "/api/users/me/consents": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["list_7"];
+        get: operations["myConsents"];
         put?: never;
         post?: never;
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        patch: operations["update"];
         trace?: never;
     };
-    "/api/admin/inquiries/{inquiryId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["detail_6"];
-        put?: never;
-        post?: never;
-        delete: operations["delete_2"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/admin/inquiries/{inquiryId}/answer": {
+    "/api/users/me/bio": {
         parameters: {
             query?: never;
             header?: never;
@@ -97,10 +353,10 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch: operations["answer"];
+        patch: operations["changeBio"];
         trace?: never;
     };
-    "/api/admin/inquiries/{inquiryId}/status": {
+    "/api/series/{id}/release-policy": {
         parameters: {
             query?: never;
             header?: never;
@@ -113,39 +369,167 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch: operations["changeStatus"];
+        patch: operations["updateReleasePolicy"];
         trace?: never;
     };
-    "/api/admin/posts": {
+    "/api/series/{id}/genre-tags": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["list_6"];
+        get?: never;
         put?: never;
         post?: never;
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        patch: operations["updateGenreTags"];
         trace?: never;
     };
-    "/api/admin/posts/{id}": {
+    "/api/me/notifications/{notificationId}/read": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["detail_5"];
+        get?: never;
         put?: never;
         post?: never;
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        patch: operations["read_1"];
+        trace?: never;
+    };
+    "/api/me/notifications/read-all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["readAll"];
+        trace?: never;
+    };
+    "/api/admin/users/{userId}/role": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["changeRole"];
+        trace?: never;
+    };
+    "/api/admin/series/{seriesId}/visibility": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["changeVisibility"];
+        trace?: never;
+    };
+    "/api/admin/series/{seriesId}/age-rating": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["changeAgeRating"];
+        trace?: never;
+    };
+    "/api/admin/series/{seriesId}/adult-only": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["changeAdultOnly"];
+        trace?: never;
+    };
+    "/api/admin/reports/{reportId}/resolve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["resolve"];
+        trace?: never;
+    };
+    "/api/admin/reports/{reportId}/dismiss": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["dismiss"];
+        trace?: never;
+    };
+    "/api/admin/posts/{id}/unblind": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["unblind"];
         trace?: never;
     };
     "/api/admin/posts/{id}/blind": {
@@ -164,7 +548,7 @@ export interface paths {
         patch: operations["blind"];
         trace?: never;
     };
-    "/api/admin/posts/{id}/unblind": {
+    "/api/admin/inquiries/{inquiryId}/status": {
         parameters: {
             query?: never;
             header?: never;
@@ -177,7 +561,439 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch: operations["unblind"];
+        patch: operations["changeStatus"];
+        trace?: never;
+    };
+    "/api/admin/inquiries/{inquiryId}/answer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["answer"];
+        trace?: never;
+    };
+    "/api/admin/creator-requests/{requestId}/reject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["reject"];
+        trace?: never;
+    };
+    "/api/admin/creator-requests/{requestId}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["approve"];
+        trace?: never;
+    };
+    "/api/users/{targetId}/follow-stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["stats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/users/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["me"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/users/me/following": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["following"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/users/me/followers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["followers"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/series/{seriesId}/episodes/{episodeNo}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["detail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/series/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["detail_1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/series/mine": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["mySeries"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/posts/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["detail_2"];
+        put?: never;
+        post?: never;
+        delete: operations["delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/subscriptions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["mySubscriptions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/read-history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["myReadHistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/posts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["myPosts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/post-comments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["myComments"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/notifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["mine_2"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/notifications/unread-summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["unreadSummary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/notifications/unread-count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["unreadCount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/liked-posts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["myLikedPosts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/inquiries/{inquiryId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["detail_3"];
+        put?: never;
+        post?: never;
+        delete: operations["delete_1"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/bookmarks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["myBookmarks"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/author-news-feed": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["authorNewsFeed"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/health": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["health"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/creativity/types": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["types"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/authors/{authorId}/posts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["authorPosts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["users"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/series": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["series"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/admin/reports": {
@@ -212,46 +1028,14 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/admin/reports/{reportId}/dismiss": {
+    "/api/admin/posts": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch: operations["dismiss"];
-        trace?: never;
-    };
-    "/api/admin/reports/{reportId}/resolve": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch: operations["resolve"];
-        trace?: never;
-    };
-    "/api/admin/series": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["series"];
+        get: operations["list_6"];
         put?: never;
         post?: never;
         delete?: never;
@@ -260,62 +1044,14 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/admin/series/{seriesId}/adult-only": {
+    "/api/admin/posts/{id}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch: operations["changeAdultOnly"];
-        trace?: never;
-    };
-    "/api/admin/series/{seriesId}/age-rating": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch: operations["changeAgeRating"];
-        trace?: never;
-    };
-    "/api/admin/series/{seriesId}/visibility": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch: operations["changeVisibility"];
-        trace?: never;
-    };
-    "/api/admin/users": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["users"];
+        get: operations["detail_5"];
         put?: never;
         post?: never;
         delete?: never;
@@ -324,78 +1060,14 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/admin/users/{userId}/role": {
+    "/api/admin/inquiries": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch: operations["changeRole"];
-        trace?: never;
-    };
-    "/api/auth/login": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["login"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/auth/refresh": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["refresh"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/auth/signup": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["signup"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/authors/{authorId}/posts": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["authorPosts"];
+        get: operations["list_7"];
         put?: never;
         post?: never;
         delete?: never;
@@ -404,480 +1076,32 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/health": {
+    "/api/admin/inquiries/{inquiryId}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["health"];
+        get: operations["detail_6"];
         put?: never;
         post?: never;
-        delete?: never;
+        delete: operations["delete_2"];
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/me/author-news-feed": {
+    "/api/admin/creator-requests": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["authorNewsFeed"];
+        get: operations["list_8"];
         put?: never;
         post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/me/bookmarks": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["myBookmarks"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/me/inquiries": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["mine_1"];
-        put?: never;
-        post: operations["create_2"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/me/inquiries/{inquiryId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["detail_3"];
-        put?: never;
-        post?: never;
-        delete: operations["delete_1"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/me/liked-posts": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["myLikedPosts"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/me/notifications": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["mine_2"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/me/notifications/read-all": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch: operations["readAll"];
-        trace?: never;
-    };
-    "/api/me/notifications/unread-count": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["unreadCount"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/me/notifications/unread-summary": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["unreadSummary"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/me/notifications/{notificationId}/read": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch: operations["read_1"];
-        trace?: never;
-    };
-    "/api/me/post-comments": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["myComments"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/me/posts": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["myPosts"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/me/read-history": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["myReadHistory"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/me/subscriptions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["mySubscriptions"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/posts": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["list_3"];
-        put?: never;
-        post: operations["create_1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/posts/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["detail_2"];
-        put?: never;
-        post?: never;
-        delete: operations["delete"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/posts/{id}/like": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["like_1"];
-        delete: operations["unlike_1"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/posts/{postId}/comments": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["list_4"];
-        put?: never;
-        post: operations["write_1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/posts/{postId}/comments/{commentId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete: operations["delete_4"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/reports": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["report"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/series": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["list"];
-        put?: never;
-        post: operations["create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/series/mine": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["mySeries"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/series/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["detail_1"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/series/{id}/genre-tags": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch: operations["updateGenreTags"];
-        trace?: never;
-    };
-    "/api/series/{id}/release-policy": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch: operations["updateReleasePolicy"];
-        trace?: never;
-    };
-    "/api/series/{seriesId}/episodes": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["list_1"];
-        put?: never;
-        post: operations["upload"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/series/{seriesId}/episodes/{episodeNo}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["detail"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/series/{seriesId}/episodes/{episodeNo}/bookmark": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["bookmark"];
-        delete: operations["unbookmark"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/series/{seriesId}/episodes/{episodeNo}/comments": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["list_2"];
-        put?: never;
-        post: operations["write"];
         delete?: never;
         options?: never;
         head?: never;
@@ -900,87 +1124,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/series/{seriesId}/episodes/{episodeNo}/like": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["like"];
-        delete: operations["unlike"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/series/{seriesId}/episodes/{episodeNo}/read": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["read"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/series/{seriesId}/subscription": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["subscribe"];
-        delete: operations["unsubscribe"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/users/me": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["me"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/users/me/avatar": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["uploadAvatar"];
-        delete: operations["deleteAvatar"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/users/me/bio": {
+    "/api/posts/{postId}/comments/{commentId}": {
         parameters: {
             query?: never;
             header?: never;
@@ -990,135 +1134,7 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch: operations["changeBio"];
-        trace?: never;
-    };
-    "/api/users/me/consents": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["myConsents"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch: operations["update"];
-        trace?: never;
-    };
-    "/api/users/me/creator-request": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["mine"];
-        put?: never;
-        post: operations["submit"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/users/me/followers": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["followers"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/users/me/following": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["following"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/users/me/nickname": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch: operations["changeNickname"];
-        trace?: never;
-    };
-    "/api/users/me/password": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch: operations["changePassword"];
-        trace?: never;
-    };
-    "/api/users/{targetId}/follow": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["follow"];
-        delete: operations["unfollow"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/users/{targetId}/follow-stats": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["stats"];
-        put?: never;
-        post?: never;
-        delete?: never;
+        delete: operations["delete_4"];
         options?: never;
         head?: never;
         patch?: never;
@@ -1128,642 +1144,125 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        AdultOnlyUpdateRequest: {
-            adultOnly: boolean;
+        CreatorRequestSubmitRequest: {
+            reason: string;
         };
-        AgeRatingUpdateRequest: {
+        CreatorRequestResponse: {
+            /** Format: int64 */
+            id?: number;
             /** @enum {string} */
-            ageRating: "ALL" | "AGE_12" | "AGE_15" | "AGE_19";
-        };
-        BioUpdateRequest: {
-            bio?: string;
-        };
-        BookmarkResponse: {
+            status?: "PENDING" | "APPROVED" | "REJECTED";
+            requestReason?: string;
+            adminNote?: string;
             /** Format: date-time */
             createdAt?: string;
+            /** Format: date-time */
+            reviewedAt?: string;
+        };
+        MyProfileResponse: {
+            /** Format: int64 */
+            id?: number;
+            email?: string;
+            nickname?: string;
+            /** @enum {string} */
+            role?: "READER" | "CREATOR" | "ADMIN";
+            bio?: string;
+            avatarUrl?: string;
+            /** Format: date */
+            birthDate?: string;
+            /** Format: date-time */
+            createdAt?: string;
+        };
+        SeriesCreateRequest: {
+            title: string;
+            description?: string;
+            /** @enum {string} */
+            ageRating: "ALL" | "AGE_12" | "AGE_15" | "AGE_19";
+            /** @enum {string} */
+            status: "ONGOING" | "COMPLETED" | "HIATUS";
+            /** @enum {string} */
+            contentType?: "WEBTOON" | "ILLUSTRATION" | "DESIGN" | "PHOTO" | "DRAWING" | "NOVEL" | "AUDIO";
+            publishDays?: ("MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY" | "SUNDAY")[];
+            adultOnly?: boolean;
+            /** @enum {string} */
+            genre?: "ROMANCE" | "FANTASY" | "ACTION" | "DRAMA" | "DAILY" | "COMEDY" | "THRILLER" | "SPORTS" | "HORROR" | "ETC";
+            tags?: string[];
+        };
+        IdResponse: {
+            /** Format: int64 */
+            id?: number;
+        };
+        EpisodeNoResponse: {
             /** Format: int32 */
             episodeNo?: number;
-            episodeTitle?: string;
-            /** Format: int64 */
-            seriesId?: number;
-            seriesTitle?: string;
         };
         CommentCreateRequest: {
             content: string;
         };
-        CommentResponse: {
+        ReportCreateRequest: {
+            /** @enum {string} */
+            targetType: "POST" | "COMMENT" | "USER" | "SERIES" | "EPISODE";
+            /** Format: int64 */
+            targetId: number;
+            /** @enum {string} */
+            reason: "SPAM" | "ABUSE" | "SEXUAL" | "COPYRIGHT" | "ETC";
+            detail?: string;
+        };
+        PostCommentResponse: {
+            /** Format: int64 */
+            id?: number;
             authorNickname?: string;
             content?: string;
             /** Format: date-time */
             createdAt?: string;
-            /** Format: int64 */
-            id?: number;
+            replies?: components["schemas"]["PostCommentResponse"][];
         };
-        ConsentResponse: {
-            agreed?: boolean;
-            /** Format: date-time */
-            agreedAt?: string;
-            /** @enum {string} */
-            consentType?: "TERMS_OF_SERVICE" | "PRIVACY_POLICY" | "MARKETING_EMAIL" | "ADULT_CONTENT_19";
-            required?: boolean;
-            /** Format: int32 */
-            version?: number;
+        SignupRequest: {
+            /** Format: email */
+            email: string;
+            password: string;
+            nickname: string;
+            /** Format: date */
+            birthDate: string;
+            consents?: {
+                [key: string]: boolean;
+            };
+        };
+        RefreshRequest: {
+            refreshToken: string;
+        };
+        TokenResponse: {
+            accessToken?: string;
+            refreshToken?: string;
+        };
+        LoginRequest: {
+            email: string;
+            password: string;
+        };
+        PasswordChangeRequest: {
+            currentPassword: string;
+            newPassword: string;
+        };
+        NicknameUpdateRequest: {
+            nickname: string;
         };
         ConsentUpdateRequest: {
             consents: {
                 [key: string]: boolean;
             };
         };
-        CreatorRequestAdminResponse: {
-            adminNote?: string;
-            applicantEmail?: string;
-            applicantNickname?: string;
-            /** Format: date-time */
-            createdAt?: string;
-            /** Format: int64 */
-            id?: number;
-            requestReason?: string;
-            /** Format: date-time */
-            reviewedAt?: string;
+        ConsentResponse: {
             /** @enum {string} */
-            status?: "PENDING" | "APPROVED" | "REJECTED";
-            /** Format: int64 */
-            userId?: number;
-        };
-        CreatorRequestResponse: {
-            adminNote?: string;
-            /** Format: date-time */
-            createdAt?: string;
-            /** Format: int64 */
-            id?: number;
-            requestReason?: string;
-            /** Format: date-time */
-            reviewedAt?: string;
-            /** @enum {string} */
-            status?: "PENDING" | "APPROVED" | "REJECTED";
-        };
-        CreatorRequestReviewRequest: {
-            adminNote?: string;
-        };
-        CreatorRequestSubmitRequest: {
-            reason: string;
-        };
-        EpisodeDetailResponse: {
+            consentType?: "TERMS_OF_SERVICE" | "PRIVACY_POLICY" | "MARKETING_EMAIL" | "ADULT_CONTENT_19";
+            required?: boolean;
             /** Format: int32 */
-            episodeNo?: number;
+            version?: number;
+            agreed?: boolean;
             /** Format: date-time */
-            freeAt?: string;
-            images?: components["schemas"]["EpisodeImageResponse"][];
-            /** Format: int64 */
-            likeCount?: number;
-            liked?: boolean;
-            /** @enum {string} */
-            lockReason?: "NONE" | "WAIT";
-            locked?: boolean;
-            /** Format: date-time */
-            publishAt?: string;
-            /** @enum {string} */
-            status?: "DRAFT" | "SCHEDULED" | "PUBLISHED";
-            title?: string;
-            /** Format: int64 */
-            viewCount?: number;
+            agreedAt?: string;
         };
-        EpisodeImageResponse: {
-            /** Format: int32 */
-            height?: number;
-            /** Format: int32 */
-            sortOrder?: number;
-            url?: string;
-            /** Format: int32 */
-            width?: number;
-        };
-        EpisodeNoResponse: {
-            /** Format: int32 */
-            episodeNo?: number;
-        };
-        EpisodeSummaryResponse: {
-            /** Format: int32 */
-            episodeNo?: number;
-            /** Format: date-time */
-            freeAt?: string;
-            locked?: boolean;
-            /** Format: date-time */
-            publishAt?: string;
-            title?: string;
-        };
-        FollowStatsResponse: {
-            /** Format: int64 */
-            followerCount?: number;
-            /** Format: int64 */
-            followingCount?: number;
-            isFollowing?: boolean;
-        };
-        FollowUserResponse: {
-            avatarUrl?: string;
-            nickname?: string;
-            /** Format: int64 */
-            userId?: number;
-        };
-        IdResponse: {
-            /** Format: int64 */
-            id?: number;
-        };
-        InquiryAdminDetailResponse: {
-            answer?: string;
-            authorEmail?: string;
-            authorNickname?: string;
-            /** @enum {string} */
-            authorRole?: "READER" | "CREATOR" | "ADMIN";
-            content?: string;
-            /** Format: date-time */
-            createdAt?: string;
-            /** Format: int64 */
-            id?: number;
-            images?: components["schemas"]["InquiryImageResponse"][];
-            /** @enum {string} */
-            status?: "PENDING" | "ANSWERED" | "CLOSED";
-            title?: string;
-            /** @enum {string} */
-            type?: "ACCOUNT" | "PAYMENT" | "CONTENT" | "CREATOR" | "BUG" | "ETC";
-            /** Format: date-time */
-            updatedAt?: string;
-        };
-        InquiryAdminResponse: {
-            authorNickname?: string;
-            /** @enum {string} */
-            authorRole?: "READER" | "CREATOR" | "ADMIN";
-            /** Format: date-time */
-            createdAt?: string;
-            /** Format: int64 */
-            id?: number;
-            /** @enum {string} */
-            status?: "PENDING" | "ANSWERED" | "CLOSED";
-            title?: string;
-            /** @enum {string} */
-            type?: "ACCOUNT" | "PAYMENT" | "CONTENT" | "CREATOR" | "BUG" | "ETC";
-        };
-        InquiryAnswerRequest: {
-            answer: string;
-        };
-        InquiryDetailResponse: {
-            answer?: string;
-            content?: string;
-            /** Format: date-time */
-            createdAt?: string;
-            /** Format: int64 */
-            id?: number;
-            images?: components["schemas"]["InquiryImageResponse"][];
-            /** @enum {string} */
-            status?: "PENDING" | "ANSWERED" | "CLOSED";
-            title?: string;
-            /** @enum {string} */
-            type?: "ACCOUNT" | "PAYMENT" | "CONTENT" | "CREATOR" | "BUG" | "ETC";
-            /** Format: date-time */
-            updatedAt?: string;
-        };
-        InquiryImageResponse: {
-            /** Format: int32 */
-            height?: number;
-            /** Format: int32 */
-            sortOrder?: number;
-            url?: string;
-            /** Format: int32 */
-            width?: number;
-        };
-        InquiryResponse: {
-            /** Format: date-time */
-            createdAt?: string;
-            /** Format: int64 */
-            id?: number;
-            /** @enum {string} */
-            status?: "PENDING" | "ANSWERED" | "CLOSED";
-            title?: string;
-            /** @enum {string} */
-            type?: "ACCOUNT" | "PAYMENT" | "CONTENT" | "CREATOR" | "BUG" | "ETC";
-        };
-        InquiryStatusUpdateRequest: {
-            /** @enum {string} */
-            status: "PENDING" | "ANSWERED" | "CLOSED";
-        };
-        LoginRequest: {
-            email: string;
-            password: string;
-        };
-        MyCommentResponse: {
-            blinded?: boolean;
-            content?: string;
-            /** Format: date-time */
-            createdAt?: string;
-            /** Format: int64 */
-            id?: number;
-            postBlinded?: boolean;
-            /** Format: int64 */
-            postId?: number;
-            postTitle?: string;
-        };
-        MyPostResponse: {
-            blinded?: boolean;
-            /** @enum {string} */
-            category?: "RECOMMEND" | "FREE" | "FANART" | "QUESTION";
-            /** Format: date-time */
-            createdAt?: string;
-            /** Format: int64 */
-            id?: number;
-            /** Format: int32 */
-            likeCount?: number;
-            title?: string;
-        };
-        MyProfileResponse: {
-            avatarUrl?: string;
+        BioUpdateRequest: {
             bio?: string;
-            /** Format: date */
-            birthDate?: string;
-            /** Format: date-time */
-            createdAt?: string;
-            email?: string;
-            /** Format: int64 */
-            id?: number;
-            nickname?: string;
-            /** @enum {string} */
-            role?: "READER" | "CREATOR" | "ADMIN";
-        };
-        NicknameUpdateRequest: {
-            nickname: string;
-        };
-        NotificationResponse: {
-            /** Format: int64 */
-            actorId?: number;
-            /** Format: date-time */
-            createdAt?: string;
-            /** Format: int64 */
-            id?: number;
-            message?: string;
-            read?: boolean;
-            /** Format: int64 */
-            targetId?: number;
-            /** @enum {string} */
-            targetType?: "SERIES" | "EPISODE" | "INQUIRY" | "POST" | "COMMENT" | "USER";
-            title?: string;
-            /** @enum {string} */
-            type?: "EPISODE_PUBLISHED" | "INQUIRY_ANSWERED" | "POST_COMMENT" | "COMMENT_REPLY" | "FOLLOWED" | "POST_MENTIONED";
-        };
-        PageResponseCommentResponse: {
-            content?: components["schemas"]["CommentResponse"][];
-            last?: boolean;
-            /** Format: int32 */
-            page?: number;
-            /** Format: int32 */
-            size?: number;
-            /** Format: int64 */
-            totalElements?: number;
-            /** Format: int32 */
-            totalPages?: number;
-        };
-        PageResponseCreatorRequestAdminResponse: {
-            content?: components["schemas"]["CreatorRequestAdminResponse"][];
-            last?: boolean;
-            /** Format: int32 */
-            page?: number;
-            /** Format: int32 */
-            size?: number;
-            /** Format: int64 */
-            totalElements?: number;
-            /** Format: int32 */
-            totalPages?: number;
-        };
-        PageResponseInquiryAdminResponse: {
-            content?: components["schemas"]["InquiryAdminResponse"][];
-            last?: boolean;
-            /** Format: int32 */
-            page?: number;
-            /** Format: int32 */
-            size?: number;
-            /** Format: int64 */
-            totalElements?: number;
-            /** Format: int32 */
-            totalPages?: number;
-        };
-        PageResponseInquiryResponse: {
-            content?: components["schemas"]["InquiryResponse"][];
-            last?: boolean;
-            /** Format: int32 */
-            page?: number;
-            /** Format: int32 */
-            size?: number;
-            /** Format: int64 */
-            totalElements?: number;
-            /** Format: int32 */
-            totalPages?: number;
-        };
-        PageResponseMyCommentResponse: {
-            content?: components["schemas"]["MyCommentResponse"][];
-            last?: boolean;
-            /** Format: int32 */
-            page?: number;
-            /** Format: int32 */
-            size?: number;
-            /** Format: int64 */
-            totalElements?: number;
-            /** Format: int32 */
-            totalPages?: number;
-        };
-        PageResponseMyPostResponse: {
-            content?: components["schemas"]["MyPostResponse"][];
-            last?: boolean;
-            /** Format: int32 */
-            page?: number;
-            /** Format: int32 */
-            size?: number;
-            /** Format: int64 */
-            totalElements?: number;
-            /** Format: int32 */
-            totalPages?: number;
-        };
-        PageResponseNotificationResponse: {
-            content?: components["schemas"]["NotificationResponse"][];
-            last?: boolean;
-            /** Format: int32 */
-            page?: number;
-            /** Format: int32 */
-            size?: number;
-            /** Format: int64 */
-            totalElements?: number;
-            /** Format: int32 */
-            totalPages?: number;
-        };
-        PageResponsePostAdminResponse: {
-            content?: components["schemas"]["PostAdminResponse"][];
-            last?: boolean;
-            /** Format: int32 */
-            page?: number;
-            /** Format: int32 */
-            size?: number;
-            /** Format: int64 */
-            totalElements?: number;
-            /** Format: int32 */
-            totalPages?: number;
-        };
-        PageResponsePostResponse: {
-            content?: components["schemas"]["PostResponse"][];
-            last?: boolean;
-            /** Format: int32 */
-            page?: number;
-            /** Format: int32 */
-            size?: number;
-            /** Format: int64 */
-            totalElements?: number;
-            /** Format: int32 */
-            totalPages?: number;
-        };
-        PageResponseReadHistoryResponse: {
-            content?: components["schemas"]["ReadHistoryResponse"][];
-            last?: boolean;
-            /** Format: int32 */
-            page?: number;
-            /** Format: int32 */
-            size?: number;
-            /** Format: int64 */
-            totalElements?: number;
-            /** Format: int32 */
-            totalPages?: number;
-        };
-        PageResponseReportAdminResponse: {
-            content?: components["schemas"]["ReportAdminResponse"][];
-            last?: boolean;
-            /** Format: int32 */
-            page?: number;
-            /** Format: int32 */
-            size?: number;
-            /** Format: int64 */
-            totalElements?: number;
-            /** Format: int32 */
-            totalPages?: number;
-        };
-        PageResponseSeriesSummaryResponse: {
-            content?: components["schemas"]["SeriesSummaryResponse"][];
-            last?: boolean;
-            /** Format: int32 */
-            page?: number;
-            /** Format: int32 */
-            size?: number;
-            /** Format: int64 */
-            totalElements?: number;
-            /** Format: int32 */
-            totalPages?: number;
-        };
-        PageResponseUserResponse: {
-            content?: components["schemas"]["UserResponse"][];
-            last?: boolean;
-            /** Format: int32 */
-            page?: number;
-            /** Format: int32 */
-            size?: number;
-            /** Format: int64 */
-            totalElements?: number;
-            /** Format: int32 */
-            totalPages?: number;
-        };
-        Pageable: {
-            /** Format: int32 */
-            page?: number;
-            /** Format: int32 */
-            size?: number;
-            sort?: string[];
-        };
-        PasswordChangeRequest: {
-            currentPassword: string;
-            newPassword: string;
-        };
-        PostAdminDetailResponse: {
-            authorNickname?: string;
-            blinded?: boolean;
-            /** Format: date-time */
-            blindedAt?: string;
-            /** @enum {string} */
-            category?: "RECOMMEND" | "FREE" | "FANART" | "QUESTION";
-            content?: string;
-            /** Format: date-time */
-            createdAt?: string;
-            /** Format: int64 */
-            id?: number;
-            images?: components["schemas"]["PostImageResponse"][];
-            /** Format: int32 */
-            likeCount?: number;
-            title?: string;
-        };
-        PostAdminResponse: {
-            authorNickname?: string;
-            blinded?: boolean;
-            /** @enum {string} */
-            category?: "RECOMMEND" | "FREE" | "FANART" | "QUESTION";
-            /** Format: date-time */
-            createdAt?: string;
-            /** Format: int64 */
-            id?: number;
-            /** Format: int32 */
-            likeCount?: number;
-            title?: string;
-        };
-        PostCommentResponse: {
-            authorNickname?: string;
-            content?: string;
-            /** Format: date-time */
-            createdAt?: string;
-            /** Format: int64 */
-            id?: number;
-            replies?: components["schemas"]["PostCommentResponse"][];
-        };
-        PostDetailResponse: {
-            authorNickname?: string;
-            /** @enum {string} */
-            category?: "RECOMMEND" | "FREE" | "FANART" | "QUESTION";
-            content?: string;
-            /** Format: date-time */
-            createdAt?: string;
-            /** Format: int64 */
-            id?: number;
-            images?: components["schemas"]["PostImageResponse"][];
-            /** Format: int32 */
-            likeCount?: number;
-            liked?: boolean;
-            title?: string;
-        };
-        PostImageResponse: {
-            /** Format: int32 */
-            height?: number;
-            /** Format: int32 */
-            sortOrder?: number;
-            url?: string;
-            /** Format: int32 */
-            width?: number;
-        };
-        PostResponse: {
-            authorNickname?: string;
-            /** @enum {string} */
-            category?: "RECOMMEND" | "FREE" | "FANART" | "QUESTION";
-            /** Format: date-time */
-            createdAt?: string;
-            /** Format: int64 */
-            id?: number;
-            /** Format: int32 */
-            likeCount?: number;
-            title?: string;
-        };
-        ReadHistoryResponse: {
-            /** Format: date-time */
-            lastReadAt?: string;
-            /** Format: int32 */
-            lastReadEpisodeNo?: number;
-            /** Format: int64 */
-            seriesId?: number;
-            seriesTitle?: string;
-        };
-        RefreshRequest: {
-            refreshToken: string;
-        };
-        ReportAdminDetailResponse: {
-            /** Format: date-time */
-            createdAt?: string;
-            detail?: string;
-            /** Format: int64 */
-            id?: number;
-            /** @enum {string} */
-            reason?: "SPAM" | "ABUSE" | "SEXUAL" | "COPYRIGHT" | "ETC";
-            /** Format: int64 */
-            relatedReportCount?: number;
-            reporterNickname?: string;
-            /** @enum {string} */
-            status?: "PENDING" | "RESOLVED" | "DISMISSED";
-            targetAuthorNickname?: string;
-            targetContent?: string;
-            /** Format: int64 */
-            targetId?: number;
-            /** @enum {string} */
-            targetType?: "POST" | "COMMENT" | "USER" | "SERIES" | "EPISODE";
-        };
-        ReportAdminResponse: {
-            /** Format: date-time */
-            createdAt?: string;
-            detail?: string;
-            /** Format: int64 */
-            id?: number;
-            /** @enum {string} */
-            reason?: "SPAM" | "ABUSE" | "SEXUAL" | "COPYRIGHT" | "ETC";
-            reporterNickname?: string;
-            /** @enum {string} */
-            status?: "PENDING" | "RESOLVED" | "DISMISSED";
-            /** Format: int64 */
-            targetId?: number;
-            /** @enum {string} */
-            targetType?: "POST" | "COMMENT" | "USER" | "SERIES" | "EPISODE";
-        };
-        ReportCreateRequest: {
-            detail?: string;
-            /** @enum {string} */
-            reason: "SPAM" | "ABUSE" | "SEXUAL" | "COPYRIGHT" | "ETC";
-            /** Format: int64 */
-            targetId: number;
-            /** @enum {string} */
-            targetType: "POST" | "COMMENT" | "USER" | "SERIES" | "EPISODE";
-        };
-        ReportResolveRequest: {
-            /** @enum {string} */
-            action?: "NONE" | "BLIND_TARGET" | "DELETE_TARGET";
-        };
-        RoleUpdateRequest: {
-            /** @enum {string} */
-            role: "READER" | "CREATOR" | "ADMIN";
-        };
-        SeriesCreateRequest: {
-            adultOnly?: boolean;
-            /** @enum {string} */
-            ageRating: "ALL" | "AGE_12" | "AGE_15" | "AGE_19";
-            description?: string;
-            /** @enum {string} */
-            genre?: "ROMANCE" | "FANTASY" | "ACTION" | "DRAMA" | "DAILY" | "COMEDY" | "THRILLER" | "SPORTS" | "HORROR" | "ETC";
-            publishDays: ("MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY" | "SUNDAY")[];
-            /** @enum {string} */
-            status: "ONGOING" | "COMPLETED" | "HIATUS";
-            tags?: string[];
-            title: string;
-        };
-        SeriesDetailResponse: {
-            adultOnly?: boolean;
-            /** @enum {string} */
-            ageRating?: "ALL" | "AGE_12" | "AGE_15" | "AGE_19";
-            authorNickname?: string;
-            /** Format: date-time */
-            createdAt?: string;
-            description?: string;
-            /** Format: int32 */
-            episodeCount?: number;
-            /** @enum {string} */
-            genre?: "ROMANCE" | "FANTASY" | "ACTION" | "DRAMA" | "DAILY" | "COMEDY" | "THRILLER" | "SPORTS" | "HORROR" | "ETC";
-            /** Format: int64 */
-            id?: number;
-            isSubscribed?: boolean;
-            /** Format: int32 */
-            latestEpisodeNo?: number;
-            publishDays?: ("MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY" | "SUNDAY")[];
-            /** @enum {string} */
-            releasePolicy?: "FREE_ALL" | "WAIT_FREE";
-            /** @enum {string} */
-            status?: "ONGOING" | "COMPLETED" | "HIATUS";
-            tags?: string[];
-            title?: string;
-            visible?: boolean;
-            /** Format: int32 */
-            waitFreeDays?: number;
-        };
-        SeriesGenreTagsRequest: {
-            /** @enum {string} */
-            genre?: "ROMANCE" | "FANTASY" | "ACTION" | "DRAMA" | "DAILY" | "COMEDY" | "THRILLER" | "SPORTS" | "HORROR" | "ETC";
-            tags?: string[];
-        };
-        SeriesGenreTagsResponse: {
-            /** @enum {string} */
-            genre?: "ROMANCE" | "FANTASY" | "ACTION" | "DRAMA" | "DAILY" | "COMEDY" | "THRILLER" | "SPORTS" | "HORROR" | "ETC";
-            tags?: string[];
         };
         SeriesReleasePolicyRequest: {
             /** @enum {string} */
@@ -1777,92 +1276,632 @@ export interface components {
             /** Format: int32 */
             waitFreeDays?: number;
         };
-        SeriesResponse: {
-            adultOnly?: boolean;
-            /** @enum {string} */
-            ageRating?: "ALL" | "AGE_12" | "AGE_15" | "AGE_19";
-            authorNickname?: string;
-            /** Format: date-time */
-            createdAt?: string;
-            description?: string;
-            /** Format: int64 */
-            id?: number;
-            publishDays?: ("MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY" | "SUNDAY")[];
-            /** @enum {string} */
-            status?: "ONGOING" | "COMPLETED" | "HIATUS";
-            title?: string;
-            visible?: boolean;
-        };
-        SeriesSummaryResponse: {
-            adultOnly?: boolean;
-            /** @enum {string} */
-            ageRating?: "ALL" | "AGE_12" | "AGE_15" | "AGE_19";
-            authorNickname?: string;
+        SeriesGenreTagsRequest: {
             /** @enum {string} */
             genre?: "ROMANCE" | "FANTASY" | "ACTION" | "DRAMA" | "DAILY" | "COMEDY" | "THRILLER" | "SPORTS" | "HORROR" | "ETC";
+            tags?: string[];
+        };
+        SeriesGenreTagsResponse: {
+            /** @enum {string} */
+            genre?: "ROMANCE" | "FANTASY" | "ACTION" | "DRAMA" | "DAILY" | "COMEDY" | "THRILLER" | "SPORTS" | "HORROR" | "ETC";
+            tags?: string[];
+        };
+        NotificationResponse: {
             /** Format: int64 */
             id?: number;
             /** @enum {string} */
-            status?: "ONGOING" | "COMPLETED" | "HIATUS";
+            type?: "EPISODE_PUBLISHED" | "INQUIRY_ANSWERED" | "POST_COMMENT" | "COMMENT_REPLY" | "FOLLOWED" | "POST_MENTIONED";
+            /** @enum {string} */
+            targetType?: "SERIES" | "EPISODE" | "INQUIRY" | "POST" | "COMMENT" | "USER";
+            /** Format: int64 */
+            targetId?: number;
+            /** Format: int64 */
+            actorId?: number;
             title?: string;
+            message?: string;
+            read?: boolean;
+            /** Format: date-time */
+            createdAt?: string;
+        };
+        RoleUpdateRequest: {
+            /** @enum {string} */
+            role: "READER" | "CREATOR" | "ADMIN";
+        };
+        UserResponse: {
+            /** Format: int64 */
+            id?: number;
+            email?: string;
+            nickname?: string;
+            /** @enum {string} */
+            role?: "READER" | "CREATOR" | "ADMIN";
+            /** Format: date-time */
+            createdAt?: string;
+        };
+        VisibilityUpdateRequest: {
+            visible: boolean;
+        };
+        SeriesResponse: {
+            /** Format: int64 */
+            id?: number;
+            title?: string;
+            description?: string;
+            authorNickname?: string;
+            /** @enum {string} */
+            ageRating?: "ALL" | "AGE_12" | "AGE_15" | "AGE_19";
+            /** @enum {string} */
+            status?: "ONGOING" | "COMPLETED" | "HIATUS";
+            publishDays?: ("MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY" | "SUNDAY")[];
             visible?: boolean;
+            adultOnly?: boolean;
+            /** Format: date-time */
+            createdAt?: string;
         };
-        SignupRequest: {
-            /** Format: date */
-            birthDate: string;
-            consents?: {
-                [key: string]: boolean;
-            };
-            /** Format: email */
-            email: string;
-            nickname: string;
-            password: string;
+        AgeRatingUpdateRequest: {
+            /** @enum {string} */
+            ageRating: "ALL" | "AGE_12" | "AGE_15" | "AGE_19";
         };
-        SliceResponseEpisodeSummaryResponse: {
-            content?: components["schemas"]["EpisodeSummaryResponse"][];
-            hasNext?: boolean;
+        AdultOnlyUpdateRequest: {
+            adultOnly: boolean;
+        };
+        ReportResolveRequest: {
+            /** @enum {string} */
+            action?: "NONE" | "BLIND_TARGET" | "DELETE_TARGET";
+        };
+        ReportAdminDetailResponse: {
+            /** Format: int64 */
+            id?: number;
+            reporterNickname?: string;
+            /** @enum {string} */
+            targetType?: "POST" | "COMMENT" | "USER" | "SERIES" | "EPISODE";
+            /** Format: int64 */
+            targetId?: number;
+            targetContent?: string;
+            targetAuthorNickname?: string;
+            /** Format: int64 */
+            relatedReportCount?: number;
+            /** @enum {string} */
+            reason?: "SPAM" | "ABUSE" | "SEXUAL" | "COPYRIGHT" | "ETC";
+            detail?: string;
+            /** @enum {string} */
+            status?: "PENDING" | "RESOLVED" | "DISMISSED";
+            /** Format: date-time */
+            createdAt?: string;
+        };
+        InquiryStatusUpdateRequest: {
+            /** @enum {string} */
+            status: "PENDING" | "ANSWERED" | "CLOSED";
+        };
+        InquiryAdminDetailResponse: {
+            /** Format: int64 */
+            id?: number;
+            /** @enum {string} */
+            type?: "ACCOUNT" | "PAYMENT" | "CONTENT" | "CREATOR" | "BUG" | "ETC";
+            title?: string;
+            content?: string;
+            answer?: string;
+            /** @enum {string} */
+            status?: "PENDING" | "ANSWERED" | "CLOSED";
+            authorNickname?: string;
+            authorEmail?: string;
+            /** @enum {string} */
+            authorRole?: "READER" | "CREATOR" | "ADMIN";
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+            images?: components["schemas"]["InquiryImageResponse"][];
+        };
+        InquiryImageResponse: {
+            url?: string;
+            /** Format: int32 */
+            width?: number;
+            /** Format: int32 */
+            height?: number;
+            /** Format: int32 */
+            sortOrder?: number;
+        };
+        InquiryAnswerRequest: {
+            answer: string;
+        };
+        CreatorRequestReviewRequest: {
+            adminNote?: string;
+        };
+        CreatorRequestAdminResponse: {
+            /** Format: int64 */
+            id?: number;
+            /** Format: int64 */
+            userId?: number;
+            applicantNickname?: string;
+            applicantEmail?: string;
+            /** @enum {string} */
+            status?: "PENDING" | "APPROVED" | "REJECTED";
+            requestReason?: string;
+            adminNote?: string;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            reviewedAt?: string;
+        };
+        FollowStatsResponse: {
+            /** Format: int64 */
+            followerCount?: number;
+            /** Format: int64 */
+            followingCount?: number;
+            isFollowing?: boolean;
+        };
+        FollowUserResponse: {
+            /** Format: int64 */
+            userId?: number;
+            nickname?: string;
+            avatarUrl?: string;
+        };
+        Pageable: {
             /** Format: int32 */
             page?: number;
             /** Format: int32 */
             size?: number;
+            sort?: string[];
         };
-        SubscriptionResponse: {
+        PageResponseSeriesSummaryResponse: {
+            content?: components["schemas"]["SeriesSummaryResponse"][];
             /** Format: int32 */
-            lastReadEpisodeNo?: number;
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            totalElements?: number;
+            /** Format: int32 */
+            totalPages?: number;
+            last?: boolean;
+        };
+        SeriesSummaryResponse: {
+            /** Format: int64 */
+            id?: number;
+            title?: string;
+            authorNickname?: string;
+            /** @enum {string} */
+            ageRating?: "ALL" | "AGE_12" | "AGE_15" | "AGE_19";
+            /** @enum {string} */
+            status?: "ONGOING" | "COMPLETED" | "HIATUS";
+            /** @enum {string} */
+            contentType?: "WEBTOON" | "ILLUSTRATION" | "DESIGN" | "PHOTO" | "DRAWING" | "NOVEL" | "AUDIO";
+            /** @enum {string} */
+            genre?: "ROMANCE" | "FANTASY" | "ACTION" | "DRAMA" | "DAILY" | "COMEDY" | "THRILLER" | "SPORTS" | "HORROR" | "ETC";
+            visible?: boolean;
+            adultOnly?: boolean;
+            coverUrl?: string;
+        };
+        EpisodeSummaryResponse: {
+            /** Format: int64 */
+            id?: number;
+            /** Format: int32 */
+            episodeNo?: number;
+            title?: string;
+            /** Format: date-time */
+            publishAt?: string;
+            locked?: boolean;
+            /** Format: date-time */
+            freeAt?: string;
+        };
+        SliceResponseEpisodeSummaryResponse: {
+            content?: components["schemas"]["EpisodeSummaryResponse"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            hasNext?: boolean;
+        };
+        EpisodeDetailResponse: {
+            /** Format: int64 */
+            id?: number;
+            /** Format: int32 */
+            episodeNo?: number;
+            title?: string;
+            /** @enum {string} */
+            status?: "DRAFT" | "SCHEDULED" | "PUBLISHED";
+            /** Format: date-time */
+            publishAt?: string;
+            images?: components["schemas"]["EpisodeImageResponse"][];
+            /** Format: int64 */
+            viewCount?: number;
+            /** Format: int64 */
+            likeCount?: number;
+            liked?: boolean;
+            locked?: boolean;
+            /** @enum {string} */
+            lockReason?: "NONE" | "WAIT";
+            /** Format: date-time */
+            freeAt?: string;
+        };
+        EpisodeImageResponse: {
+            /** Format: int32 */
+            sortOrder?: number;
+            url?: string;
+            /** @enum {string} */
+            mediaKind?: "IMAGE" | "AUDIO" | "TEXT";
+            mimeType?: string;
+            /** Format: int32 */
+            width?: number;
+            /** Format: int32 */
+            height?: number;
+            /** Format: int64 */
+            durationMs?: number;
+        };
+        CommentResponse: {
+            /** Format: int64 */
+            id?: number;
+            content?: string;
+            authorNickname?: string;
+            /** Format: date-time */
+            createdAt?: string;
+        };
+        PageResponseCommentResponse: {
+            content?: components["schemas"]["CommentResponse"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            totalElements?: number;
+            /** Format: int32 */
+            totalPages?: number;
+            last?: boolean;
+        };
+        SeriesDetailResponse: {
+            /** Format: int64 */
+            id?: number;
+            title?: string;
+            description?: string;
+            authorNickname?: string;
+            /** @enum {string} */
+            ageRating?: "ALL" | "AGE_12" | "AGE_15" | "AGE_19";
+            /** @enum {string} */
+            status?: "ONGOING" | "COMPLETED" | "HIATUS";
+            /** @enum {string} */
+            contentType?: "WEBTOON" | "ILLUSTRATION" | "DESIGN" | "PHOTO" | "DRAWING" | "NOVEL" | "AUDIO";
+            coverUrl?: string;
+            /** @enum {string} */
+            genre?: "ROMANCE" | "FANTASY" | "ACTION" | "DRAMA" | "DAILY" | "COMEDY" | "THRILLER" | "SPORTS" | "HORROR" | "ETC";
+            publishDays?: ("MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY" | "SUNDAY")[];
+            tags?: string[];
+            visible?: boolean;
+            adultOnly?: boolean;
+            /** @enum {string} */
+            releasePolicy?: "FREE_ALL" | "WAIT_FREE";
+            /** Format: int32 */
+            waitFreeDays?: number;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: int32 */
+            episodeCount?: number;
             /** Format: int32 */
             latestEpisodeNo?: number;
+            isSubscribed?: boolean;
+        };
+        PageResponsePostResponse: {
+            content?: components["schemas"]["PostResponse"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            totalElements?: number;
+            /** Format: int32 */
+            totalPages?: number;
+            last?: boolean;
+        };
+        PostResponse: {
+            /** Format: int64 */
+            id?: number;
+            /** @enum {string} */
+            category?: "RECOMMEND" | "FREE" | "FANART" | "QUESTION";
+            title?: string;
+            authorNickname?: string;
+            /** Format: int32 */
+            likeCount?: number;
+            /** Format: date-time */
+            createdAt?: string;
+        };
+        PostDetailResponse: {
+            /** Format: int64 */
+            id?: number;
+            /** @enum {string} */
+            category?: "RECOMMEND" | "FREE" | "FANART" | "QUESTION";
+            title?: string;
+            content?: string;
+            authorNickname?: string;
+            /** Format: int32 */
+            likeCount?: number;
+            liked?: boolean;
+            images?: components["schemas"]["PostImageResponse"][];
+            /** Format: date-time */
+            createdAt?: string;
+        };
+        PostImageResponse: {
+            url?: string;
+            /** Format: int32 */
+            width?: number;
+            /** Format: int32 */
+            height?: number;
+            /** Format: int32 */
+            sortOrder?: number;
+        };
+        SubscriptionResponse: {
             /** Format: int64 */
             seriesId?: number;
             title?: string;
+            /** Format: int32 */
+            latestEpisodeNo?: number;
+            /** Format: int32 */
+            lastReadEpisodeNo?: number;
             up?: boolean;
         };
-        TokenResponse: {
-            accessToken?: string;
-            refreshToken?: string;
+        PageResponseReadHistoryResponse: {
+            content?: components["schemas"]["ReadHistoryResponse"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            totalElements?: number;
+            /** Format: int32 */
+            totalPages?: number;
+            last?: boolean;
+        };
+        ReadHistoryResponse: {
+            /** Format: int64 */
+            seriesId?: number;
+            seriesTitle?: string;
+            /** Format: int32 */
+            lastReadEpisodeNo?: number;
+            /** Format: date-time */
+            lastReadAt?: string;
+        };
+        MyPostResponse: {
+            /** Format: int64 */
+            id?: number;
+            /** @enum {string} */
+            category?: "RECOMMEND" | "FREE" | "FANART" | "QUESTION";
+            title?: string;
+            /** Format: int32 */
+            likeCount?: number;
+            blinded?: boolean;
+            /** Format: date-time */
+            createdAt?: string;
+        };
+        PageResponseMyPostResponse: {
+            content?: components["schemas"]["MyPostResponse"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            totalElements?: number;
+            /** Format: int32 */
+            totalPages?: number;
+            last?: boolean;
+        };
+        MyCommentResponse: {
+            /** Format: int64 */
+            id?: number;
+            content?: string;
+            blinded?: boolean;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: int64 */
+            postId?: number;
+            postTitle?: string;
+            postBlinded?: boolean;
+        };
+        PageResponseMyCommentResponse: {
+            content?: components["schemas"]["MyCommentResponse"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            totalElements?: number;
+            /** Format: int32 */
+            totalPages?: number;
+            last?: boolean;
+        };
+        PageResponseNotificationResponse: {
+            content?: components["schemas"]["NotificationResponse"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            totalElements?: number;
+            /** Format: int32 */
+            totalPages?: number;
+            last?: boolean;
+        };
+        UnreadSummaryResponse: {
+            /** Format: int64 */
+            total?: number;
+            byType?: {
+                [key: string]: number;
+            };
         };
         UnreadCountResponse: {
             /** Format: int64 */
             count?: number;
         };
-        UnreadSummaryResponse: {
-            byType?: {
-                [key: string]: number;
-            };
-            /** Format: int64 */
-            total?: number;
-        };
-        UserResponse: {
-            /** Format: date-time */
-            createdAt?: string;
-            email?: string;
+        InquiryResponse: {
             /** Format: int64 */
             id?: number;
-            nickname?: string;
             /** @enum {string} */
-            role?: "READER" | "CREATOR" | "ADMIN";
+            type?: "ACCOUNT" | "PAYMENT" | "CONTENT" | "CREATOR" | "BUG" | "ETC";
+            title?: string;
+            /** @enum {string} */
+            status?: "PENDING" | "ANSWERED" | "CLOSED";
+            /** Format: date-time */
+            createdAt?: string;
         };
-        VisibilityUpdateRequest: {
-            visible: boolean;
+        PageResponseInquiryResponse: {
+            content?: components["schemas"]["InquiryResponse"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            totalElements?: number;
+            /** Format: int32 */
+            totalPages?: number;
+            last?: boolean;
+        };
+        InquiryDetailResponse: {
+            /** Format: int64 */
+            id?: number;
+            /** @enum {string} */
+            type?: "ACCOUNT" | "PAYMENT" | "CONTENT" | "CREATOR" | "BUG" | "ETC";
+            title?: string;
+            content?: string;
+            answer?: string;
+            /** @enum {string} */
+            status?: "PENDING" | "ANSWERED" | "CLOSED";
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+            images?: components["schemas"]["InquiryImageResponse"][];
+        };
+        BookmarkResponse: {
+            /** Format: int64 */
+            seriesId?: number;
+            seriesTitle?: string;
+            /** Format: int32 */
+            episodeNo?: number;
+            episodeTitle?: string;
+            /** Format: date-time */
+            createdAt?: string;
+        };
+        ContentTypeResponse: {
+            key?: string;
+            label?: string;
+            serialized?: boolean;
+            assetKinds?: ("IMAGE" | "AUDIO" | "TEXT")[];
+        };
+        PageResponseUserResponse: {
+            content?: components["schemas"]["UserResponse"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            totalElements?: number;
+            /** Format: int32 */
+            totalPages?: number;
+            last?: boolean;
+        };
+        PageResponseReportAdminResponse: {
+            content?: components["schemas"]["ReportAdminResponse"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            totalElements?: number;
+            /** Format: int32 */
+            totalPages?: number;
+            last?: boolean;
+        };
+        ReportAdminResponse: {
+            /** Format: int64 */
+            id?: number;
+            reporterNickname?: string;
+            /** @enum {string} */
+            targetType?: "POST" | "COMMENT" | "USER" | "SERIES" | "EPISODE";
+            /** Format: int64 */
+            targetId?: number;
+            /** @enum {string} */
+            reason?: "SPAM" | "ABUSE" | "SEXUAL" | "COPYRIGHT" | "ETC";
+            detail?: string;
+            /** @enum {string} */
+            status?: "PENDING" | "RESOLVED" | "DISMISSED";
+            /** Format: date-time */
+            createdAt?: string;
+        };
+        PageResponsePostAdminResponse: {
+            content?: components["schemas"]["PostAdminResponse"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            totalElements?: number;
+            /** Format: int32 */
+            totalPages?: number;
+            last?: boolean;
+        };
+        PostAdminResponse: {
+            /** Format: int64 */
+            id?: number;
+            /** @enum {string} */
+            category?: "RECOMMEND" | "FREE" | "FANART" | "QUESTION";
+            title?: string;
+            authorNickname?: string;
+            /** Format: int32 */
+            likeCount?: number;
+            blinded?: boolean;
+            /** Format: date-time */
+            createdAt?: string;
+        };
+        PostAdminDetailResponse: {
+            /** Format: int64 */
+            id?: number;
+            /** @enum {string} */
+            category?: "RECOMMEND" | "FREE" | "FANART" | "QUESTION";
+            title?: string;
+            content?: string;
+            authorNickname?: string;
+            /** Format: int32 */
+            likeCount?: number;
+            blinded?: boolean;
+            /** Format: date-time */
+            blindedAt?: string;
+            images?: components["schemas"]["PostImageResponse"][];
+            /** Format: date-time */
+            createdAt?: string;
+        };
+        InquiryAdminResponse: {
+            /** Format: int64 */
+            id?: number;
+            /** @enum {string} */
+            type?: "ACCOUNT" | "PAYMENT" | "CONTENT" | "CREATOR" | "BUG" | "ETC";
+            title?: string;
+            /** @enum {string} */
+            status?: "PENDING" | "ANSWERED" | "CLOSED";
+            authorNickname?: string;
+            /** @enum {string} */
+            authorRole?: "READER" | "CREATOR" | "ADMIN";
+            /** Format: date-time */
+            createdAt?: string;
+        };
+        PageResponseInquiryAdminResponse: {
+            content?: components["schemas"]["InquiryAdminResponse"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            totalElements?: number;
+            /** Format: int32 */
+            totalPages?: number;
+            last?: boolean;
+        };
+        PageResponseCreatorRequestAdminResponse: {
+            content?: components["schemas"]["CreatorRequestAdminResponse"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            totalElements?: number;
+            /** Format: int32 */
+            totalPages?: number;
+            last?: boolean;
         };
     };
     responses: never;
@@ -1873,133 +1912,32 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    list_8: {
-        parameters: {
-            query: {
-                status?: "PENDING" | "APPROVED" | "REJECTED";
-                pageable: components["schemas"]["Pageable"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["PageResponseCreatorRequestAdminResponse"];
-                };
-            };
-        };
-    };
-    approve: {
+    follow: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                requestId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["CreatorRequestReviewRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["CreatorRequestAdminResponse"];
-                };
-            };
-        };
-    };
-    reject: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                requestId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["CreatorRequestReviewRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["CreatorRequestAdminResponse"];
-                };
-            };
-        };
-    };
-    list_7: {
-        parameters: {
-            query: {
-                type?: "ACCOUNT" | "PAYMENT" | "CONTENT" | "CREATOR" | "BUG" | "ETC";
-                status?: "PENDING" | "ANSWERED" | "CLOSED";
-                pageable: components["schemas"]["Pageable"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["PageResponseInquiryAdminResponse"];
-                };
-            };
-        };
-    };
-    detail_6: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                inquiryId: number;
+                targetId: number;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description OK */
-            200: {
+            /** @description Created */
+            201: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "*/*": components["schemas"]["InquiryAdminDetailResponse"];
-                };
+                content?: never;
             };
         };
     };
-    delete_2: {
+    unfollow: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                inquiryId: number;
+                targetId: number;
             };
             cookie?: never;
         };
@@ -2014,66 +1952,9 @@ export interface operations {
             };
         };
     };
-    answer: {
+    mine: {
         parameters: {
             query?: never;
-            header?: never;
-            path: {
-                inquiryId: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["InquiryAnswerRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["InquiryAdminDetailResponse"];
-                };
-            };
-        };
-    };
-    changeStatus: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                inquiryId: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["InquiryStatusUpdateRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["InquiryAdminDetailResponse"];
-                };
-            };
-        };
-    };
-    list_6: {
-        parameters: {
-            query: {
-                category?: "RECOMMEND" | "FREE" | "FANART" | "QUESTION";
-                keyword?: string;
-                blinded?: boolean;
-                pageable: components["schemas"]["Pageable"];
-            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -2086,320 +1967,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["PageResponsePostAdminResponse"];
+                    "*/*": components["schemas"]["CreatorRequestResponse"];
                 };
             };
         };
     };
-    detail_5: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["PostAdminDetailResponse"];
-                };
-            };
-        };
-    };
-    blind: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No Content */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    unblind: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No Content */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    list_5: {
-        parameters: {
-            query: {
-                status?: "PENDING" | "RESOLVED" | "DISMISSED";
-                targetType?: "POST" | "COMMENT" | "USER" | "SERIES" | "EPISODE";
-                reason?: "SPAM" | "ABUSE" | "SEXUAL" | "COPYRIGHT" | "ETC";
-                pageable: components["schemas"]["Pageable"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["PageResponseReportAdminResponse"];
-                };
-            };
-        };
-    };
-    detail_4: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                reportId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["ReportAdminDetailResponse"];
-                };
-            };
-        };
-    };
-    dismiss: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                reportId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["ReportAdminDetailResponse"];
-                };
-            };
-        };
-    };
-    resolve: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                reportId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["ReportResolveRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["ReportAdminDetailResponse"];
-                };
-            };
-        };
-    };
-    series: {
-        parameters: {
-            query: {
-                visible?: boolean;
-                pageable: components["schemas"]["Pageable"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["PageResponseSeriesSummaryResponse"];
-                };
-            };
-        };
-    };
-    changeAdultOnly: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                seriesId: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["AdultOnlyUpdateRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["SeriesResponse"];
-                };
-            };
-        };
-    };
-    changeAgeRating: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                seriesId: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["AgeRatingUpdateRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["SeriesResponse"];
-                };
-            };
-        };
-    };
-    changeVisibility: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                seriesId: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["VisibilityUpdateRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["SeriesResponse"];
-                };
-            };
-        };
-    };
-    users: {
-        parameters: {
-            query: {
-                keyword?: string;
-                role?: "READER" | "CREATOR" | "ADMIN";
-                pageable: components["schemas"]["Pageable"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["PageResponseUserResponse"];
-                };
-            };
-        };
-    };
-    changeRole: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                userId: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["RoleUpdateRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["UserResponse"];
-                };
-            };
-        };
-    };
-    login: {
+    submit: {
         parameters: {
             query?: never;
             header?: never;
@@ -2408,55 +1981,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["LoginRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["TokenResponse"];
-                };
-            };
-        };
-    };
-    refresh: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["RefreshRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["TokenResponse"];
-                };
-            };
-        };
-    };
-    signup: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["SignupRequest"];
+                "application/json": components["schemas"]["CreatorRequestSubmitRequest"];
             };
         };
         responses: {
@@ -2466,128 +1991,14 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["IdResponse"];
+                    "*/*": components["schemas"]["CreatorRequestResponse"];
                 };
             };
         };
     };
-    authorPosts: {
-        parameters: {
-            query: {
-                pageable: components["schemas"]["Pageable"];
-            };
-            header?: never;
-            path: {
-                authorId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["PageResponsePostResponse"];
-                };
-            };
-        };
-    };
-    health: {
+    uploadAvatar: {
         parameters: {
             query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": {
-                        [key: string]: string;
-                    };
-                };
-            };
-        };
-    };
-    authorNewsFeed: {
-        parameters: {
-            query: {
-                pageable: components["schemas"]["Pageable"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["PageResponsePostResponse"];
-                };
-            };
-        };
-    };
-    myBookmarks: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["BookmarkResponse"][];
-                };
-            };
-        };
-    };
-    mine_1: {
-        parameters: {
-            query: {
-                pageable: components["schemas"]["Pageable"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["PageResponseInquiryResponse"];
-                };
-            };
-        };
-    };
-    create_2: {
-        parameters: {
-            query: {
-                type: "ACCOUNT" | "PAYMENT" | "CONTENT" | "CREATOR" | "BUG" | "ETC";
-                title: string;
-                content: string;
-            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -2595,32 +2006,11 @@ export interface operations {
         requestBody?: {
             content: {
                 "application/json": {
-                    images?: string[];
+                    /** Format: binary */
+                    file: string;
                 };
             };
         };
-        responses: {
-            /** @description Created */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["IdResponse"];
-                };
-            };
-        };
-    };
-    detail_3: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                inquiryId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
         responses: {
             /** @description OK */
             200: {
@@ -2628,77 +2018,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["InquiryDetailResponse"];
+                    "*/*": components["schemas"]["MyProfileResponse"];
                 };
             };
         };
     };
-    delete_1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                inquiryId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No Content */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    myLikedPosts: {
-        parameters: {
-            query: {
-                pageable: components["schemas"]["Pageable"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["PageResponsePostResponse"];
-                };
-            };
-        };
-    };
-    mine_2: {
-        parameters: {
-            query: {
-                type?: "EPISODE_PUBLISHED" | "INQUIRY_ANSWERED" | "POST_COMMENT" | "COMMENT_REPLY" | "FOLLOWED" | "POST_MENTIONED";
-                pageable: components["schemas"]["Pageable"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["PageResponseNotificationResponse"];
-                };
-            };
-        };
-    };
-    readAll: {
+    deleteAvatar: {
         parameters: {
             query?: never;
             header?: never;
@@ -2709,381 +2034,6 @@ export interface operations {
         responses: {
             /** @description No Content */
             204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    unreadCount: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["UnreadCountResponse"];
-                };
-            };
-        };
-    };
-    unreadSummary: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["UnreadSummaryResponse"];
-                };
-            };
-        };
-    };
-    read_1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                notificationId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["NotificationResponse"];
-                };
-            };
-        };
-    };
-    myComments: {
-        parameters: {
-            query: {
-                pageable: components["schemas"]["Pageable"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["PageResponseMyCommentResponse"];
-                };
-            };
-        };
-    };
-    myPosts: {
-        parameters: {
-            query: {
-                pageable: components["schemas"]["Pageable"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["PageResponseMyPostResponse"];
-                };
-            };
-        };
-    };
-    myReadHistory: {
-        parameters: {
-            query: {
-                pageable: components["schemas"]["Pageable"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["PageResponseReadHistoryResponse"];
-                };
-            };
-        };
-    };
-    mySubscriptions: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["SubscriptionResponse"][];
-                };
-            };
-        };
-    };
-    list_3: {
-        parameters: {
-            query: {
-                category?: "RECOMMEND" | "FREE" | "FANART" | "QUESTION";
-                sort?: "LATEST" | "BEST";
-                pageable: components["schemas"]["Pageable"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["PageResponsePostResponse"];
-                };
-            };
-        };
-    };
-    create_1: {
-        parameters: {
-            query: {
-                category: "RECOMMEND" | "FREE" | "FANART" | "QUESTION";
-                title: string;
-                content: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": {
-                    images?: string[];
-                };
-            };
-        };
-        responses: {
-            /** @description Created */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["IdResponse"];
-                };
-            };
-        };
-    };
-    detail_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["PostDetailResponse"];
-                };
-            };
-        };
-    };
-    delete: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No Content */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    like_1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    unlike_1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    list_4: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                postId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["PostCommentResponse"][];
-                };
-            };
-        };
-    };
-    write_1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                postId: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CommentCreateRequest"];
-            };
-        };
-        responses: {
-            /** @description Created */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["PostCommentResponse"];
-                };
-            };
-        };
-    };
-    delete_4: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                postId: number;
-                commentId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No Content */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    report: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ReportCreateRequest"];
-            };
-        };
-        responses: {
-            /** @description Created */
-            201: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -3097,6 +2047,7 @@ export interface operations {
                 day?: "MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY" | "SUNDAY";
                 ageRating?: "ALL" | "AGE_12" | "AGE_15" | "AGE_19";
                 genre?: "ROMANCE" | "FANTASY" | "ACTION" | "DRAMA" | "DAILY" | "COMEDY" | "THRILLER" | "SPORTS" | "HORROR" | "ETC";
+                contentType?: "WEBTOON" | "ILLUSTRATION" | "DESIGN" | "PHOTO" | "DRAWING" | "NOVEL" | "AUDIO";
                 keyword?: string;
                 adultOnly?: boolean;
                 tag?: string;
@@ -3144,97 +2095,43 @@ export interface operations {
             };
         };
     };
-    mySeries: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["SeriesSummaryResponse"][];
-                };
-            };
-        };
-    };
-    detail_1: {
+    subscribe: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                id: number;
+                seriesId: number;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description OK */
-            200: {
+            /** @description Created */
+            201: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "*/*": components["schemas"]["SeriesDetailResponse"];
-                };
+                content?: never;
             };
         };
     };
-    updateGenreTags: {
+    unsubscribe: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                id: number;
+                seriesId: number;
             };
             cookie?: never;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["SeriesGenreTagsRequest"];
-            };
-        };
+        requestBody?: never;
         responses: {
-            /** @description OK */
-            200: {
+            /** @description No Content */
+            204: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "*/*": components["schemas"]["SeriesGenreTagsResponse"];
-                };
-            };
-        };
-    };
-    updateReleasePolicy: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["SeriesReleasePolicyRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["SeriesReleasePolicyResponse"];
-                };
+                content?: never;
             };
         };
     };
@@ -3293,30 +2190,7 @@ export interface operations {
             };
         };
     };
-    detail: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                seriesId: number;
-                episodeNo: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["EpisodeDetailResponse"];
-                };
-            };
-        };
-    };
-    bookmark: {
+    read: {
         parameters: {
             query?: never;
             header?: never;
@@ -3337,7 +2211,28 @@ export interface operations {
             };
         };
     };
-    unbookmark: {
+    like: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                seriesId: number;
+                episodeNo: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    unlike: {
         parameters: {
             query?: never;
             header?: never;
@@ -3410,27 +2305,7 @@ export interface operations {
             };
         };
     };
-    delete_3: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                commentId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No Content */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    like: {
+    bookmark: {
         parameters: {
             query?: never;
             header?: never;
@@ -3451,7 +2326,7 @@ export interface operations {
             };
         };
     };
-    unlike: {
+    unbookmark: {
         parameters: {
             query?: never;
             header?: never;
@@ -3472,133 +2347,7 @@ export interface operations {
             };
         };
     };
-    read: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                seriesId: number;
-                episodeNo: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Created */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    subscribe: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                seriesId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Created */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    unsubscribe: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                seriesId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No Content */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    me: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["MyProfileResponse"];
-                };
-            };
-        };
-    };
-    uploadAvatar: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": {
-                    /** Format: binary */
-                    file: string;
-                };
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["MyProfileResponse"];
-                };
-            };
-        };
-    };
-    deleteAvatar: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No Content */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    changeBio: {
+    report: {
         parameters: {
             query?: never;
             header?: never;
@@ -3607,7 +2356,317 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["BioUpdateRequest"];
+                "application/json": components["schemas"]["ReportCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    list_3: {
+        parameters: {
+            query: {
+                category?: "RECOMMEND" | "FREE" | "FANART" | "QUESTION";
+                sort?: "LATEST" | "BEST";
+                pageable: components["schemas"]["Pageable"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PageResponsePostResponse"];
+                };
+            };
+        };
+    };
+    create_1: {
+        parameters: {
+            query: {
+                category: "RECOMMEND" | "FREE" | "FANART" | "QUESTION";
+                title: string;
+                content: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": {
+                    images?: string[];
+                };
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["IdResponse"];
+                };
+            };
+        };
+    };
+    list_4: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                postId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PostCommentResponse"][];
+                };
+            };
+        };
+    };
+    write_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                postId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CommentCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PostCommentResponse"];
+                };
+            };
+        };
+    };
+    like_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    unlike_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    mine_1: {
+        parameters: {
+            query: {
+                pageable: components["schemas"]["Pageable"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PageResponseInquiryResponse"];
+                };
+            };
+        };
+    };
+    create_2: {
+        parameters: {
+            query: {
+                type: "ACCOUNT" | "PAYMENT" | "CONTENT" | "CREATOR" | "BUG" | "ETC";
+                title: string;
+                content: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": {
+                    images?: string[];
+                };
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["IdResponse"];
+                };
+            };
+        };
+    };
+    signup: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SignupRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["IdResponse"];
+                };
+            };
+        };
+    };
+    refresh: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RefreshRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["TokenResponse"];
+                };
+            };
+        };
+    };
+    login: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LoginRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["TokenResponse"];
+                };
+            };
+        };
+    };
+    changePassword: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PasswordChangeRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    changeNickname: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NicknameUpdateRequest"];
             };
         };
         responses: {
@@ -3666,27 +2725,7 @@ export interface operations {
             };
         };
     };
-    mine: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["CreatorRequestResponse"];
-                };
-            };
-        };
-    };
-    submit: {
+    changeBio: {
         parameters: {
             query?: never;
             header?: never;
@@ -3695,22 +2734,432 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["CreatorRequestSubmitRequest"];
+                "application/json": components["schemas"]["BioUpdateRequest"];
             };
         };
         responses: {
-            /** @description Created */
-            201: {
+            /** @description OK */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["CreatorRequestResponse"];
+                    "*/*": components["schemas"]["MyProfileResponse"];
                 };
             };
         };
     };
-    followers: {
+    updateReleasePolicy: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SeriesReleasePolicyRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["SeriesReleasePolicyResponse"];
+                };
+            };
+        };
+    };
+    updateGenreTags: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SeriesGenreTagsRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["SeriesGenreTagsResponse"];
+                };
+            };
+        };
+    };
+    read_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                notificationId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["NotificationResponse"];
+                };
+            };
+        };
+    };
+    readAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    changeRole: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                userId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RoleUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["UserResponse"];
+                };
+            };
+        };
+    };
+    changeVisibility: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                seriesId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VisibilityUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["SeriesResponse"];
+                };
+            };
+        };
+    };
+    changeAgeRating: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                seriesId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AgeRatingUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["SeriesResponse"];
+                };
+            };
+        };
+    };
+    changeAdultOnly: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                seriesId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdultOnlyUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["SeriesResponse"];
+                };
+            };
+        };
+    };
+    resolve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                reportId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ReportResolveRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ReportAdminDetailResponse"];
+                };
+            };
+        };
+    };
+    dismiss: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                reportId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ReportAdminDetailResponse"];
+                };
+            };
+        };
+    };
+    unblind: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    blind: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    changeStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                inquiryId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InquiryStatusUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["InquiryAdminDetailResponse"];
+                };
+            };
+        };
+    };
+    answer: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                inquiryId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InquiryAnswerRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["InquiryAdminDetailResponse"];
+                };
+            };
+        };
+    };
+    reject: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                requestId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["CreatorRequestReviewRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CreatorRequestAdminResponse"];
+                };
+            };
+        };
+    };
+    approve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                requestId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["CreatorRequestReviewRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CreatorRequestAdminResponse"];
+                };
+            };
+        };
+    };
+    stats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                targetId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["FollowStatsResponse"];
+                };
+            };
+        };
+    };
+    me: {
         parameters: {
             query?: never;
             header?: never;
@@ -3725,7 +3174,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["FollowUserResponse"][];
+                    "*/*": components["schemas"]["MyProfileResponse"];
                 };
             };
         };
@@ -3750,18 +3199,14 @@ export interface operations {
             };
         };
     };
-    changeNickname: {
+    followers: {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["NicknameUpdateRequest"];
-            };
-        };
+        requestBody?: never;
         responses: {
             /** @description OK */
             200: {
@@ -3769,59 +3214,104 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["MyProfileResponse"];
+                    "*/*": components["schemas"]["FollowUserResponse"][];
                 };
             };
         };
     };
-    changePassword: {
+    detail: {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                seriesId: number;
+                episodeNo: number;
+            };
             cookie?: never;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PasswordChangeRequest"];
-            };
-        };
+        requestBody?: never;
         responses: {
             /** @description OK */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "*/*": components["schemas"]["EpisodeDetailResponse"];
+                };
             };
         };
     };
-    follow: {
+    detail_1: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                targetId: number;
+                id: number;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Created */
-            201: {
+            /** @description OK */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "*/*": components["schemas"]["SeriesDetailResponse"];
+                };
             };
         };
     };
-    unfollow: {
+    mySeries: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["SeriesSummaryResponse"][];
+                };
+            };
+        };
+    };
+    detail_2: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                targetId: number;
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PostDetailResponse"];
+                };
+            };
+        };
+    };
+    delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
             };
             cookie?: never;
         };
@@ -3836,12 +3326,183 @@ export interface operations {
             };
         };
     };
-    stats: {
+    mySubscriptions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["SubscriptionResponse"][];
+                };
+            };
+        };
+    };
+    myReadHistory: {
+        parameters: {
+            query: {
+                pageable: components["schemas"]["Pageable"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PageResponseReadHistoryResponse"];
+                };
+            };
+        };
+    };
+    myPosts: {
+        parameters: {
+            query: {
+                pageable: components["schemas"]["Pageable"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PageResponseMyPostResponse"];
+                };
+            };
+        };
+    };
+    myComments: {
+        parameters: {
+            query: {
+                pageable: components["schemas"]["Pageable"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PageResponseMyCommentResponse"];
+                };
+            };
+        };
+    };
+    mine_2: {
+        parameters: {
+            query: {
+                type?: "EPISODE_PUBLISHED" | "INQUIRY_ANSWERED" | "POST_COMMENT" | "COMMENT_REPLY" | "FOLLOWED" | "POST_MENTIONED";
+                pageable: components["schemas"]["Pageable"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PageResponseNotificationResponse"];
+                };
+            };
+        };
+    };
+    unreadSummary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["UnreadSummaryResponse"];
+                };
+            };
+        };
+    };
+    unreadCount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["UnreadCountResponse"];
+                };
+            };
+        };
+    };
+    myLikedPosts: {
+        parameters: {
+            query: {
+                pageable: components["schemas"]["Pageable"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PageResponsePostResponse"];
+                };
+            };
+        };
+    };
+    detail_3: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                targetId: number;
+                inquiryId: number;
             };
             cookie?: never;
         };
@@ -3853,8 +3514,407 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["FollowStatsResponse"];
+                    "*/*": components["schemas"]["InquiryDetailResponse"];
                 };
+            };
+        };
+    };
+    delete_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                inquiryId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    myBookmarks: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["BookmarkResponse"][];
+                };
+            };
+        };
+    };
+    authorNewsFeed: {
+        parameters: {
+            query: {
+                pageable: components["schemas"]["Pageable"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PageResponsePostResponse"];
+                };
+            };
+        };
+    };
+    health: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": {
+                        [key: string]: string;
+                    };
+                };
+            };
+        };
+    };
+    types: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ContentTypeResponse"][];
+                };
+            };
+        };
+    };
+    authorPosts: {
+        parameters: {
+            query: {
+                pageable: components["schemas"]["Pageable"];
+            };
+            header?: never;
+            path: {
+                authorId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PageResponsePostResponse"];
+                };
+            };
+        };
+    };
+    users: {
+        parameters: {
+            query: {
+                keyword?: string;
+                role?: "READER" | "CREATOR" | "ADMIN";
+                pageable: components["schemas"]["Pageable"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PageResponseUserResponse"];
+                };
+            };
+        };
+    };
+    series: {
+        parameters: {
+            query: {
+                visible?: boolean;
+                pageable: components["schemas"]["Pageable"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PageResponseSeriesSummaryResponse"];
+                };
+            };
+        };
+    };
+    list_5: {
+        parameters: {
+            query: {
+                status?: "PENDING" | "RESOLVED" | "DISMISSED";
+                targetType?: "POST" | "COMMENT" | "USER" | "SERIES" | "EPISODE";
+                reason?: "SPAM" | "ABUSE" | "SEXUAL" | "COPYRIGHT" | "ETC";
+                pageable: components["schemas"]["Pageable"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PageResponseReportAdminResponse"];
+                };
+            };
+        };
+    };
+    detail_4: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                reportId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ReportAdminDetailResponse"];
+                };
+            };
+        };
+    };
+    list_6: {
+        parameters: {
+            query: {
+                category?: "RECOMMEND" | "FREE" | "FANART" | "QUESTION";
+                keyword?: string;
+                blinded?: boolean;
+                pageable: components["schemas"]["Pageable"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PageResponsePostAdminResponse"];
+                };
+            };
+        };
+    };
+    detail_5: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PostAdminDetailResponse"];
+                };
+            };
+        };
+    };
+    list_7: {
+        parameters: {
+            query: {
+                type?: "ACCOUNT" | "PAYMENT" | "CONTENT" | "CREATOR" | "BUG" | "ETC";
+                status?: "PENDING" | "ANSWERED" | "CLOSED";
+                pageable: components["schemas"]["Pageable"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PageResponseInquiryAdminResponse"];
+                };
+            };
+        };
+    };
+    detail_6: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                inquiryId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["InquiryAdminDetailResponse"];
+                };
+            };
+        };
+    };
+    delete_2: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                inquiryId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    list_8: {
+        parameters: {
+            query: {
+                status?: "PENDING" | "APPROVED" | "REJECTED";
+                pageable: components["schemas"]["Pageable"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PageResponseCreatorRequestAdminResponse"];
+                };
+            };
+        };
+    };
+    delete_3: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                commentId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    delete_4: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                postId: number;
+                commentId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
