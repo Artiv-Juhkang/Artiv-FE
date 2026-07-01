@@ -42,6 +42,7 @@ import {
   SeriesGridCardSkeleton,
   seriesGridLayout,
   SERIES_GRID,
+  isRecentlyUpdated,
 } from '@/features/series/components/SeriesGridCard';
 import { isAppError } from '@/lib/errors';
 import { useGuardedNavigation } from '@/lib/navigation/useGuardedNavigation';
@@ -199,6 +200,7 @@ function TypeGridView({ contentType }: { contentType: string }) {
         series={item}
         width={cellWidth}
         coverUrl={item.coverUrl}
+        isUp={isRecentlyUpdated(item.lastPublishedAt)}
         onPress={() =>
           // 셀은 자체 push 안 함 — 네비게이션은 부모가 주입(typedRoutes 객체 형태 필수).
           nav.push({ pathname: '/series/[id]', params: { id: item.id! } })

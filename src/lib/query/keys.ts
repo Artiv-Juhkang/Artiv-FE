@@ -41,8 +41,6 @@ export const keys = {
     types: () => ['creativity', 'types'] as const,
     // 디스커버 '전체' 레일 — 매체 타입별 page-0 미리보기(그리드 무한쿼리와 별도 캐시).
     rail: (typeKey: string) => ['creativity', 'rail', typeKey] as const,
-    // 디스커버 '전체' 최상단 크로스타입 '최근 업데이트' 스트립.
-    recentUpdates: () => ['creativity', 'recent-updates'] as const,
   },
   episodes: {
     all: ['episodes'] as const,

@@ -30,6 +30,7 @@ import {
   SeriesGridCard,
   seriesGridLayout,
   SERIES_GRID,
+  isRecentlyUpdated,
 } from '@/features/series/components/SeriesGridCard';
 import { GENRE_LABEL, GENRE_SUGGESTIONS, parseSearch } from '@/features/search/genre';
 import { useGuardedNavigation } from '@/lib/navigation/useGuardedNavigation';
@@ -480,6 +481,7 @@ function Results({
                 series={s}
                 width={cellWidth}
                 coverUrl={s.coverUrl}
+                isUp={isRecentlyUpdated(s.lastPublishedAt)}
                 onPress={() => nav.push({ pathname: '/series/[id]', params: { id: s.id! } })}
               />
             ))}

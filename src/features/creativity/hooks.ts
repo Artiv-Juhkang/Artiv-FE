@@ -32,24 +32,6 @@ export interface DiscoverRail {
 /** 레일당 미리보기 개수. */
 const RAIL_SIZE = 8;
 
-/** 크로스타입 '최근 업데이트' 스트립 노출 개수. */
-const STRIP_SIZE = 8;
-
-/**
- * 디스커버 '전체' 최상단 크로스타입 '최근 업데이트' 스트립.
- *
- * 매체 구분 없이 최근 발행 회차가 있는 작품 상위 N(UPDATED 정렬 = last_published_at DESC).
- * 매체별 레일이 '무슨 매체를 볼까'의 발견이라면, 이 스트립은 '방금 플랫폼에 뭐가 올라왔나'의
- * 한눈 요약이다(A+C 하이브리드). 백엔드 무변경 — 기존 listSeries의 sort/size만 사용.
- */
-export function useRecentUpdates() {
-  return useQuery({
-    queryKey: keys.creativity.recentUpdates(),
-    queryFn: ({ signal }) => listSeries({ page: 0, sort: 'UPDATED', size: STRIP_SIZE }, signal),
-    staleTime: 1000 * 60 * 5, // 5m
-  });
-}
-
 /**
  * 디스커버 '전체' — 매체 타입별 가로 레일 데이터.
  *

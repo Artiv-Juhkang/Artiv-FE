@@ -17,10 +17,11 @@ import {
   SeriesGridCard,
   SeriesGridCardSkeleton,
   SERIES_GRID,
+  isRecentlyUpdated,
 } from '@/features/series/components/SeriesGridCard';
 import { mediaColor } from '@/ui/tokens';
 
-import { useDiscoverRails, useRecentUpdates, type DiscoverRail } from './hooks';
+import { useDiscoverRails, type DiscoverRail } from './hooks';
 
 /** 레일 포스터 카드 폭(phone). ~2.5장이 비쳐 스크롤을 유도. */
 const RAIL_CARD_WIDTH = 132;
@@ -53,9 +54,6 @@ export function DiscoverRails({ onSeeAll }: DiscoverRailsProps) {
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{ paddingTop: t.space.sm, paddingBottom: t.space.xl }}
     >
-      {/* 크로스타입 '최근 업데이트' 스트립 — 매체 레일보다 위에서 '방금 뭐가 올라왔나'를 요약. */}
-      <RecentUpdatesStrip />
-
       {ready.map((rail) => (
         <RailSection key={rail.type.key} rail={rail} onSeeAll={onSeeAll} />
       ))}
@@ -118,51 +116,7 @@ function RailSection({
             series={item}
             width={RAIL_CARD_WIDTH}
             coverUrl={item.coverUrl}
-            onPress={() => nav.push({ pathname: '/series/[id]', params: { id: item.id! } })}
-          />
-        )}
-      />
-    </View>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-
-/**
- * RecentUpdatesStrip — '전체' 최상단 크로스타입 '최근 업데이트' 요약.
- * 매체 구분 없이 방금 발행된 작품 상위 N(UPDATED). 매체 레일과 달리 매체색 도트가 없어
- * '전체 매체를 가로지르는 최신'임을 시각적으로 구분한다. 데이터 없으면 조용히 생략.
- */
-function RecentUpdatesStrip() {
-  const t = useTheme();
-  const nav = useGuardedNavigation();
-  const { data, isLoading } = useRecentUpdates();
-  const series = data?.content ?? [];
-
-  // 로딩/빈 값이면 렌더 생략 — 아래 매체 레일(또는 그 스켈레톤)이 이미 화면을 채운다.
-  if (isLoading || series.length === 0) return null;
-
-  return (
-    <View style={{ marginBottom: t.space.xs }}>
-      <View style={{ paddingHorizontal: t.space.lg, marginBottom: t.space.sm }}>
-        <Text variant="headline" weight="bold">
-          최근 업데이트
-        </Text>
-        <Text variant="caption" color="onSurfaceSecondary" style={{ marginTop: 2 }}>
-          매체 구분 없이 방금 올라온 작품
-        </Text>
-      </View>
-      <FlatList
-        horizontal
-        data={series}
-        keyExtractor={(item) => `ru-${item.id}`}
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ paddingHorizontal: t.space.lg, gap: SERIES_GRID.gap }}
-        renderItem={({ item }: { item: SeriesSummary }) => (
-          <SeriesGridCard
-            series={item}
-            width={RAIL_CARD_WIDTH}
-            coverUrl={item.coverUrl}
+            isUp={isRecentlyUpdated(item.lastPublishedAt)}
             onPress={() => nav.push({ pathname: '/series/[id]', params: { id: item.id! } })}
           />
         )}

@@ -42,6 +42,24 @@ import { AppImage } from '@/ui/AppImage';
 import { Badge, Card, CountdownPill, Text, useTheme } from '@/ui';
 
 /* -------------------------------------------------------------------------- */
+/*  UP(업데이트) 판정 — 최신 발행 회차로부터 24시간 윈도우.                        */
+/* -------------------------------------------------------------------------- */
+
+/** 'UP' 배지 유지 시간: 최신 발행(예약/업데이트 시각)로부터 24시간. 지나면 UP 소멸. */
+export const UP_WINDOW_MS = 24 * 60 * 60 * 1000;
+
+/**
+ * `lastPublishedAt`(SeriesSummary, 최신 PUBLISHED 회차 시각)이 24시간 이내면 UP.
+ * 없거나(회차 없음) 24시간이 지났으면 false — 시간이 지나면 업데이트 조건은 자동 소멸한다.
+ */
+export function isRecentlyUpdated(lastPublishedAt: string | null | undefined): boolean {
+  if (!lastPublishedAt) return false;
+  const then = new Date(lastPublishedAt).getTime();
+  if (!Number.isFinite(then)) return false;
+  return Date.now() - then < UP_WINDOW_MS;
+}
+
+/* -------------------------------------------------------------------------- */
 /*  Grid metrics — the single source of geometry the card + grid share.       */
 /* -------------------------------------------------------------------------- */
 

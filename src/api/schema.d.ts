@@ -1470,6 +1470,8 @@ export interface components {
             visible?: boolean;
             adultOnly?: boolean;
             coverUrl?: string;
+            /** Format: date-time */
+            lastPublishedAt?: string;
         };
         EpisodeSummaryResponse: {
             /** Format: int64 */
