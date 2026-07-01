@@ -17,12 +17,17 @@ import {
   getReadHistory,
   setEpisodeBookmark,
 } from '@/api/endpoints/personalization';
-import { listEpisodes } from '@/api/endpoints/episodes';
-import type { EpisodeSummary, ReadHistoryResponse } from '@/api/types';
+import { listEpisodes, setEpisodeLike } from '@/api/endpoints/episodes';
+import type {
+  EpisodeDetail,
+  EpisodeSummary,
+  ReadHistoryResponse,
+} from '@/api/types';
 import {
   createPageInfiniteQuery,
   createSliceInfiniteQuery,
   keys,
+  useToggleMutation,
 } from '@/lib/query';
 
 /**
@@ -62,6 +67,30 @@ export function useEpisodeBookmarkToggle(seriesId: number, episodeNo: number) {
     onSettled: () => {
       qc.invalidateQueries({ queryKey: keys.me.bookmarks() });
     },
+  });
+}
+
+/**
+ * 회차 좋아요(추천) 토글 — 회차-스코프 멱등 POST(201)/DELETE(204) 무바디.
+ *
+ * 구독과 동일하게 patch 대상 detail 캐시(keys.episodes.detail)가 있으므로
+ * useToggleMutation 팩토리를 그대로 쓴다. onMutate 에서 liked 를 뒤집고 likeCount 를
+ * ±1(음수 방지), 실패 시 스냅샷 롤백, onSettled 에서 detail 을 invalidate 해 서버값과 재동기.
+ *
+ * 사용: const like = useEpisodeLikeToggle(seriesId, no); like.mutate(next);
+ */
+export function useEpisodeLikeToggle(seriesId: number, episodeNo: number) {
+  return useToggleMutation<EpisodeDetail>({
+    targetKey: keys.episodes.detail(seriesId, episodeNo),
+    mutationFn: (next: boolean) => setEpisodeLike(seriesId, episodeNo, next),
+    apply: (prev, next) =>
+      prev
+        ? {
+            ...prev,
+            liked: next,
+            likeCount: Math.max(0, (prev.likeCount ?? 0) + (next ? 1 : -1)),
+          }
+        : prev,
   });
 }
 

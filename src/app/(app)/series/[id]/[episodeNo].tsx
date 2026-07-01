@@ -11,15 +11,23 @@
  * 이어보기/서재를 갱신하고, 연재물은 이전/다음 화 이동을 제공한다(경계는
  * SeriesDetail.latestEpisodeNo). 잠김/빈 회차·연령 게이트(403)·에러를 각각 처리한다.
  */
-import { useEffect, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useLocalSearchParams, useRouter, type Href } from 'expo-router';
-import { View } from 'react-native';
+import {
+  Pressable,
+  View,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SymbolView } from 'expo-symbols';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { getEpisode, markRead } from '@/api/endpoints/episodes';
 import type { EpisodeDetail, EpisodeImage } from '@/api/types';
 import { resolveImageUrl } from '@/api/image';
 import { AudioReader } from '@/features/series/components/AudioReader';
+import { useEpisodeLikeToggle } from '@/features/series/episode-hooks';
 import { useSeriesDetail } from '@/features/series/hooks';
 import { isAppError } from '@/lib/errors';
 import { keys } from '@/lib/query';
@@ -28,6 +36,7 @@ import {
   Button,
   EmptyState,
   ErrorState,
+  GlassCard,
   HEADER_BAND_HEIGHT,
   Screen,
   Skeleton,
@@ -36,6 +45,12 @@ import {
   type HeaderConfig,
 } from '@/ui';
 import { AppImage } from '@/ui/AppImage';
+
+/** Cast an SF-Symbol string to SymbolView's `name` prop (header-actions와 동일 패턴). */
+type SymbolName = Parameters<typeof SymbolView>[0]['name'];
+
+/** 리모컨이 스크롤 콘텐츠 꼬리를 영구히 가리지 않도록 하단에 확보하는 여백(px). */
+const REMOTE_CLEARANCE = 96;
 
 export default function EpisodeViewerScreen() {
   const { id, episodeNo } = useLocalSearchParams<{ id: string; episodeNo: string }>();
@@ -124,25 +139,113 @@ export default function EpisodeViewerScreen() {
     );
   }
 
-  const kind = images[0].mediaKind;
-  const nav = <EpisodeNav seriesId={seriesId} no={no} latest={series?.latestEpisodeNo} />;
+  return (
+    <ViewerContent
+      images={images}
+      seriesId={seriesId}
+      no={no}
+      title={title}
+      header={header}
+      episode={data}
+      latest={series?.latestEpisodeNo}
+    />
+  );
+}
 
-  // 오디오 — 중앙 정렬 단일 플레이어.
-  if (kind === 'AUDIO') {
+/* -------------------------------------------------------------------------- */
+/*  뷰어 본문 + 플로팅 리모컨 — 리모컨 노출 상태·좋아요 토글·댓글 이동을 소유.      */
+/* -------------------------------------------------------------------------- */
+
+function ViewerContent({
+  images,
+  seriesId,
+  no,
+  title,
+  header,
+  episode,
+  latest,
+}: {
+  images: EpisodeImage[];
+  seriesId: number;
+  no: number;
+  title: string;
+  header: HeaderConfig;
+  episode: EpisodeDetail;
+  latest?: number;
+}) {
+  const router = useRouter();
+  const kind = images[0].mediaKind;
+  const isScrolling = kind !== 'AUDIO';
+
+  // 리모컨 노출: 스크롤 리더(웹툰/소설)는 몰입을 위해 기본 숨김(탭/역스크롤로 노출),
+  // 오디오는 스크롤이 없으므로 항상 노출한다.
+  const [remoteVisible, setRemoteVisible] = useState(!isScrolling);
+  const lastY = useRef(0);
+
+  // 역스크롤(위로 되짚음) → 노출, 아래로 읽는 중 → 숨김. 작은 데드존(6px)으로 미세 흔들림 무시.
+  const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const y = e.nativeEvent.contentOffset.y;
+    const dy = y - lastY.current;
+    if (dy > 6) setRemoteVisible(false);
+    else if (dy < -6) setRemoteVisible(true);
+    lastY.current = y;
+  };
+
+  const like = useEpisodeLikeToggle(seriesId, no);
+  const onLike = () => like.mutate(!(episode.liked === true));
+
+  const onComments = () =>
+    router.push({
+      pathname: '/series/[id]/[episodeNo]/comments',
+      params: { id: seriesId, episodeNo: no },
+    } as unknown as Href);
+
+  const remote = remoteVisible ? (
+    <ViewerRemote
+      seriesId={seriesId}
+      no={no}
+      latest={latest}
+      liked={episode.liked === true}
+      likeCount={episode.likeCount ?? 0}
+      commentCount={episode.commentCount ?? 0}
+      onLike={onLike}
+      onComments={onComments}
+    />
+  ) : null;
+
+  // 오디오 — 중앙 정렬 단일 플레이어 + 항상 노출 리모컨.
+  if (!isScrolling) {
     return (
-      <Screen surface="viewer" center header={header}>
-        <AudioReader url={images[0].url!} title={title} />
-        {nav}
-      </Screen>
+      <View style={{ flex: 1 }}>
+        <Screen surface="viewer" center header={header}>
+          <AudioReader url={images[0].url!} title={title} />
+        </Screen>
+        {remote}
+      </View>
     );
   }
 
-  // 이미지/텍스트 — 세로 스크롤. 이미지는 풀블리드(거터 0), 텍스트는 읽기 여백.
+  // 이미지/텍스트 — 세로 스크롤. 탭으로 리모컨 토글, 역스크롤로 노출. 리모컨은 Screen의
+  // 형제로 absolute 오버레이(스크롤에 안 쓸려 화면에 고정). 이미지는 풀블리드(거터 0).
   return (
-    <Screen surface="viewer" scroll header={header}>
-      {kind === 'TEXT' ? <NovelReader url={images[0].url!} /> : <WebtoonReader images={images} />}
-      {nav}
-    </Screen>
+    <View style={{ flex: 1 }}>
+      <Screen
+        surface="viewer"
+        scroll
+        header={header}
+        scrollProps={{ onScroll, scrollEventThrottle: 16 }}
+      >
+        <Pressable onPress={() => setRemoteVisible((v) => !v)}>
+          {kind === 'TEXT' ? (
+            <NovelReader url={images[0].url!} />
+          ) : (
+            <WebtoonReader images={images} />
+          )}
+          <View style={{ height: REMOTE_CLEARANCE }} />
+        </Pressable>
+      </Screen>
+      {remote}
+    </View>
   );
 }
 
@@ -242,24 +345,34 @@ function LockedView({ freeAt }: { freeAt?: string | null }) {
 }
 
 /* -------------------------------------------------------------------------- */
-/*  이전/다음 화 — 연재 경계 안에서만(1 ≤ no ≤ latest). 스택 누적 방지 위해 replace. */
+/*  플로팅 리모컨 — 이전/다음화(연재 경계 1 ≤ no ≤ latest, 스택 누적 방지 replace)      */
+/*  + 추천(좋아요 토글) + 댓글(개수·해당 회차 댓글 화면 이동). 아트 위에 뜨는 글래스 필. */
 /* -------------------------------------------------------------------------- */
 
-function EpisodeNav({
+function ViewerRemote({
   seriesId,
   no,
   latest,
+  liked,
+  likeCount,
+  commentCount,
+  onLike,
+  onComments,
 }: {
   seriesId: number;
   no: number;
   latest?: number;
+  liked: boolean;
+  likeCount: number;
+  commentCount: number;
+  onLike: () => void;
+  onComments: () => void;
 }) {
   const t = useTheme();
+  const insets = useSafeAreaInsets();
   const router = useRouter();
   const hasPrev = no > 1;
   const hasNext = typeof latest === 'number' ? no < latest : false;
-
-  if (!hasPrev && !hasNext) return null;
 
   const go = (target: number) => {
     router.replace({
@@ -269,14 +382,124 @@ function EpisodeNav({
   };
 
   return (
-    <View style={{ flexDirection: 'row', gap: t.space.sm, paddingHorizontal: t.space.lg, paddingVertical: t.space.lg }}>
-      <View style={{ flex: 1 }}>
-        <Button label="이전 화" variant="secondary" fullWidth disabled={!hasPrev} onPress={() => go(no - 1)} />
-      </View>
-      <View style={{ flex: 1 }}>
-        <Button label="다음 화" variant="primary" fullWidth disabled={!hasNext} onPress={() => go(no + 1)} />
-      </View>
+    // box-none: 필 바깥(투명) 영역의 탭은 아래 리더로 통과(탭 토글 유지).
+    <View
+      pointerEvents="box-none"
+      style={{
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        bottom: 0,
+        paddingHorizontal: t.space.lg,
+        paddingBottom: Math.max(insets.bottom, t.space.md),
+        alignItems: 'center',
+      }}
+    >
+      <GlassCard
+        radius="pill"
+        intensity="clear"
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          paddingHorizontal: t.space.xs,
+          paddingVertical: 4,
+        }}
+      >
+        <RemoteAction
+          symbol="chevron.left"
+          glyph="‹"
+          label="이전 화"
+          disabled={!hasPrev}
+          onPress={() => go(no - 1)}
+        />
+        <RemoteAction
+          symbol={liked ? 'heart.fill' : 'heart'}
+          glyph={liked ? '♥' : '♡'}
+          count={likeCount}
+          active={liked}
+          label={liked ? '추천 취소' : '추천'}
+          onPress={onLike}
+        />
+        <RemoteAction
+          symbol="text.bubble"
+          glyph="💬"
+          count={commentCount}
+          label="댓글 보기"
+          onPress={onComments}
+        />
+        <RemoteAction
+          symbol="chevron.right"
+          glyph="›"
+          label="다음 화"
+          disabled={!hasNext}
+          onPress={() => go(no + 1)}
+        />
+      </GlassCard>
     </View>
+  );
+}
+
+/**
+ * 리모컨 개별 컨트롤 — SF Symbol(+텍스트 폴백) 아이콘, 선택적 개수, 활성(accent)·비활성 잉크.
+ * 아트 위에 뜨므로 기본 잉크는 흰색(header-actions의 INK_ON_ART와 동일 컨벤션).
+ */
+function RemoteAction({
+  symbol,
+  glyph,
+  count,
+  label,
+  active = false,
+  disabled = false,
+  onPress,
+}: {
+  symbol: string;
+  glyph: string;
+  count?: number;
+  label: string;
+  active?: boolean;
+  disabled?: boolean;
+  onPress: () => void;
+}) {
+  const t = useTheme();
+  const ink = disabled
+    ? 'rgba(255,255,255,0.3)'
+    : active
+      ? t.color.accent
+      : '#FFFFFF';
+  return (
+    <Pressable
+      onPress={onPress}
+      disabled={disabled}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ disabled, selected: active }}
+      hitSlop={4}
+      style={({ pressed }) => ({
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 4,
+        paddingHorizontal: t.space.sm,
+        paddingVertical: t.space.sm,
+        opacity: pressed && !disabled ? t.opacity.pressed : 1,
+      })}
+    >
+      <SymbolView
+        name={symbol as SymbolName}
+        size={20}
+        weight="semibold"
+        tintColor={ink}
+        fallback={
+          <Text variant="label" weight="semibold" style={{ color: ink }}>
+            {glyph}
+          </Text>
+        }
+      />
+      {typeof count === 'number' ? (
+        <Text variant="caption" weight="semibold" style={{ color: ink }}>
+          {count}
+        </Text>
+      ) : null}
+    </Pressable>
   );
 }
 

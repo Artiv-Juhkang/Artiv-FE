@@ -1511,6 +1511,8 @@ export interface components {
             /** Format: int64 */
             likeCount?: number;
             liked?: boolean;
+            /** Format: int64 */
+            commentCount?: number;
             locked?: boolean;
             /** @enum {string} */
             lockReason?: "NONE" | "WAIT";
