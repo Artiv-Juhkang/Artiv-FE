@@ -8,8 +8,9 @@
  * 채팅 탭은 없고, 매체 서브칩도 없다. 채팅이 생기면 그룹만 추가하면 자동으로 켜진다.
  *
  * 한 건을 누르면 읽음 처리(PATCH read) 후 라우팅 신호(targetType,targetId)로 이동한다.
- * 지금 목적지 화면이 있는 건 SERIES(작품 상세)뿐 — 회차 뷰어·게시글·프로필 등은 아직
- * 없어 읽음 처리만 하고 머문다(graceful degrade). 목적지가 생기면 분기만 추가한다.
+ * 창작물(새 회차) 알림은 targetType=SERIES라 작품 상세로 이동한다(거기서 새 회차를 바로 본다).
+ * 그 외(커뮤니티 글·팔로우·문의)는 목적지 화면이 아직 없어 읽음 처리만 하고 머문다(graceful
+ * degrade). 목적지가 생기면 분기만 추가한다.
  */
 import { useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, View } from 'react-native';
@@ -68,7 +69,7 @@ export default function NotificationsScreen() {
       if (updated.targetType === 'SERIES' && updated.targetId) {
         nav.push({ pathname: '/series/[id]', params: { id: updated.targetId } });
       }
-      // 그 외 targetType(EPISODE·POST·USER…)은 목적지 화면이 아직 없어 읽음 처리만.
+      // 그 외 targetType(POST·COMMENT·USER·INQUIRY)은 목적지 화면이 아직 없어 읽음 처리만.
     },
   });
 

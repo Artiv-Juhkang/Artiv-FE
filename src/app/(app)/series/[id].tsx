@@ -36,7 +36,7 @@
  * string href for a dynamic route.
  */
 import { Suspense, type ReactNode } from 'react';
-import { useLocalSearchParams, type Href } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { Share, View } from 'react-native';
 
 import type { SeriesDetail } from '@/api/types';
@@ -222,17 +222,12 @@ function DetailContent({ seriesId }: { seriesId: number }) {
     resume.mode === 'resume' ? `이어보기 ${targetEpisodeNo}화` : '첫화 보기';
 
   const onPressCta = () => {
-    // Viewer is a FUTURE STUB: the route file (app)/series/[id]/[episodeNo].tsx
-    // does not exist yet, so typedRoutes has not generated its Href literal.
-    // We seed the exact target shape now and cast through Href; the instant the
-    // viewer route file lands, typedRoutes accepts this pathname natively and
-    // the cast can be dropped with zero call-site change. guardedPush is
-    // double-push safe across components.
-    const href = {
+    // 회차 뷰어로 이동(멀티미디어 리더). params 는 URL 세그먼트라 문자열로 넘긴다.
+    // guardedPush 는 컴포넌트 간 중복 push 방지.
+    nav.push({
       pathname: '/series/[id]/[episodeNo]',
-      params: { id: seriesId, episodeNo: targetEpisodeNo },
-    } as unknown as Href;
-    nav.push(href);
+      params: { id: String(seriesId), episodeNo: String(targetEpisodeNo) },
+    });
   };
 
   // Local share — no backend. Deep link uses the app scheme (app.json

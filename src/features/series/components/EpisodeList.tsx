@@ -21,15 +21,13 @@
  *      hero above stays), empty → EmptyState, slice end → no footer spinner.
  *   6. LOCK-SAFE navigation: a locked row tap does NOT navigate and does NOT
  *      markRead — it shows a "준비 중" countdown toast and returns. An unlocked
- *      row taps through to the (future) viewer via guardedPush.
+ *      row taps through to the multimedia viewer via guardedPush.
  *
- * The viewer route (/series/[id]/[episodeNo]) is a future stub; until it
- * exists this still guarded-pushes the typed route (the screen seed handles
- * its own not-found). We never fake a backend here.
+ * The viewer route (/series/[id]/[episodeNo]) is the real multimedia reader;
+ * this guarded-pushes the typed route with string params (URL segments).
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { View } from 'react-native';
-import type { Href } from 'expo-router';
 
 import type { EpisodeSummary } from '@/api/types';
 import { useEpisodeList, useReadState } from '@/features/series/episode-hooks';
@@ -103,15 +101,11 @@ export function EpisodeList({ seriesId }: { seriesId: number }) {
         return;
       }
       if (typeof no !== 'number') return; // can't route without an episodeNo
-      // Viewer route (/series/[id]/[episodeNo]) is a FUTURE STUB owned by the
-      // detail/viewer module; its typed Href literal only exists after that
-      // route file lands and expo-router regenerates router.d.ts. We code to
-      // the contract's object form and cast at this single boundary so the
-      // episode-list module typechecks in isolation before assembly.
+      // 회차 뷰어로 이동. params 는 URL 세그먼트라 문자열로 넘긴다.
       nav.push({
         pathname: '/series/[id]/[episodeNo]',
-        params: { id: seriesId, episodeNo: no },
-      } as Href);
+        params: { id: String(seriesId), episodeNo: String(no) },
+      });
     },
     [nav, seriesId, toast],
   );
