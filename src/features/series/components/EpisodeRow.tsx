@@ -37,6 +37,8 @@ import { View } from 'react-native';
 import type { EpisodeSummary } from '@/api/types';
 import { Badge, Card, CountdownPill, Text, useTheme } from '@/ui';
 
+import { isRecentlyUpdated } from './SeriesGridCard';
+
 export type EpisodeRowProps = {
   /** The episode summary (codegen-optional fields are guarded internally). */
   episode: EpisodeSummary;
@@ -60,6 +62,8 @@ export function EpisodeRow({ episode, isRead, isContinue, remainingMs, onPress }
   const episodeNo = episode.episodeNo;
   const title = episode.title ?? '';
   const locked = episode.locked === true;
+  // 이 회차가 최근(24h) 발행됐으면 UP — 카드의 작품 UP와 같은 배지·판정을 회차 단위로 재사용.
+  const isUp = isRecentlyUpdated(episode.publishAt);
   const publishedLabel = useMemo(
     () => formatRelativeTime(episode.publishAt),
     [episode.publishAt],
@@ -72,11 +76,12 @@ export function EpisodeRow({ episode, isRead, isContinue, remainingMs, onPress }
     const parts: string[] = [];
     if (noLabel) parts.push(noLabel);
     if (title) parts.push(title);
+    if (isUp) parts.push('새 회차');
     if (locked) parts.push('잠긴 회차');
     if (isRead) parts.push('읽음');
     if (isContinue) parts.push('이어보기');
     return parts.join(', ');
-  }, [noLabel, title, locked, isRead, isContinue]);
+  }, [noLabel, title, isUp, locked, isRead, isContinue]);
 
   return (
     <Card
@@ -117,6 +122,7 @@ export function EpisodeRow({ episode, isRead, isContinue, remainingMs, onPress }
       <View style={{ flex: 1, gap: 2 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: t.space.xs }}>
           {locked ? <Badge variant="lock" /> : null}
+          {isUp ? <Badge variant="up" /> : null}
           {isContinue ? (
             <View
               style={{
