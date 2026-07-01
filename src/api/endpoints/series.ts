@@ -85,6 +85,12 @@ export async function getMySeries(): Promise<SeriesSummary[]> {
   return data;
 }
 
+/** 작가 공개 프로필 — 특정 작가의 공개 작품 목록(비공개 제외). 배열. */
+export async function getAuthorSeries(authorId: number): Promise<SeriesSummary[]> {
+  const { data } = await api.get<SeriesSummary[]>(`/api/authors/${authorId}/series`);
+  return data;
+}
+
 /** 커버 이미지 업로드(작가 본인) → 설정된 공개 URL. */
 export async function uploadCover(
   seriesId: number,

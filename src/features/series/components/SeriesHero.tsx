@@ -30,16 +30,15 @@
  * `covers={[coverUrl]}` to the Screen's `background` CoverWall — this hero's
  * structure does not change.
  *
- * AUTHOR SEAM: the DTO carries only `authorNickname` (no authorId / avatarUrl),
- * so the author row is a STATIC label (Avatar falls back to the nickname
- * initial). It is intentionally not tappable — a 작가 프로필 route needs an
- * authorId the backend does not expose yet.
+ * AUTHOR SEAM: when `onAuthorPress` is provided (detail passes it once the DTO
+ * carries authorId), the author name underlines and taps through to 작가 작품
+ * 모아보기. Without it (avatarUrl still absent), the row stays a static label.
  *
  * Reuses ONLY existing primitives (GlassCard, Avatar, Badge, Text) + the
  * header band height token — no new tokens.
  */
 import { useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type {
@@ -58,7 +57,11 @@ import {
   useTheme,
 } from '@/ui';
 
-export type SeriesHeroProps = { series: SeriesDetail };
+export type SeriesHeroProps = {
+  series: SeriesDetail;
+  /** 작가 이름 탭 핸들러(작가 작품 모아보기). 없으면 이름은 정적 라벨. */
+  onAuthorPress?: () => void;
+};
 
 /* -------------------------------------------------------------------------- */
 /*  Localized vocabulary maps (presentation only).                            */
@@ -93,7 +96,7 @@ const COLLAPSED_LINES = 3;
  */
 const HERO_SCRIM_HEIGHT = 200;
 
-export function SeriesHero({ series }: SeriesHeroProps) {
+export function SeriesHero({ series, onAuthorPress }: SeriesHeroProps) {
   const t = useTheme();
   const insets = useSafeAreaInsets();
   const [expanded, setExpanded] = useState(false);
@@ -172,15 +175,34 @@ export function SeriesHero({ series }: SeriesHeroProps) {
           {title}
         </Text>
 
-        {/* 작가 행 — static (no authorId/avatarUrl ⇒ not tappable). */}
-        <View
-          style={{ flexDirection: 'row', alignItems: 'center', gap: t.space.sm }}
-        >
-          <Avatar uri={null} nickname={authorNickname} size="sm" />
-          <Text variant="callout" color="onSurfaceSecondary" numberOfLines={1}>
-            {authorNickname}
-          </Text>
-        </View>
+        {/* 작가 행 — onAuthorPress 있으면 이름 언더라인 + 탭(작가 작품 모아보기). */}
+        {onAuthorPress ? (
+          <Pressable
+            onPress={onAuthorPress}
+            accessibilityRole="button"
+            accessibilityLabel={`작가 ${authorNickname}, 작품 모아보기`}
+            style={{ flexDirection: 'row', alignItems: 'center', gap: t.space.sm }}
+          >
+            <Avatar uri={null} nickname={authorNickname} size="sm" />
+            <Text
+              variant="callout"
+              color="onSurfaceSecondary"
+              numberOfLines={1}
+              style={{ textDecorationLine: 'underline' }}
+            >
+              {authorNickname}
+            </Text>
+          </Pressable>
+        ) : (
+          <View
+            style={{ flexDirection: 'row', alignItems: 'center', gap: t.space.sm }}
+          >
+            <Avatar uri={null} nickname={authorNickname} size="sm" />
+            <Text variant="callout" color="onSurfaceSecondary" numberOfLines={1}>
+              {authorNickname}
+            </Text>
+          </View>
+        )}
 
         {/* 상태 / 19 / 기다리면무료 chips. */}
         {statusLabel || is19 || isWaitFree ? (

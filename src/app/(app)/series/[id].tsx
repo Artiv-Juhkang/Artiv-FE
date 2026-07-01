@@ -269,10 +269,23 @@ function DetailContent({ seriesId }: { seriesId: number }) {
     </>
   );
 
+  // 작가 이름 탭 → 작가 작품 모아보기. authorId 가 있어야 정확 링크(없으면 비탭).
+  const onAuthorPress =
+    typeof series.authorId === 'number'
+      ? () =>
+          nav.push({
+            pathname: '/authors/[id]',
+            params: {
+              id: String(series.authorId),
+              nickname: series.authorNickname ?? '',
+            },
+          })
+      : undefined;
+
   return (
     <DetailShell right={right}>
       <View style={{ gap: t.space.lg, paddingBottom: t.space.lg }}>
-        <SeriesHero series={series} />
+        <SeriesHero series={series} onAuthorPress={onAuthorPress} />
 
         <SeriesActionBar seriesId={seriesId} />
 

@@ -48,6 +48,10 @@ export const keys = {
     detail: (seriesId: number, no: number) =>
       ['episodes', 'detail', seriesId, no] as const,
   },
+  authors: {
+    all: ['authors'] as const,
+    series: (id: number) => ['authors', 'series', id] as const,
+  },
   posts: {
     all: ['posts'] as const,
     list: (params?: Record<string, unknown>) =>

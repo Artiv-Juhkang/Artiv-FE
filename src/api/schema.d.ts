@@ -1554,6 +1554,8 @@ export interface components {
             id?: number;
             title?: string;
             description?: string;
+            /** Format: int64 */
+            authorId?: number;
             authorNickname?: string;
             /** @enum {string} */
             ageRating?: "ALL" | "AGE_12" | "AGE_15" | "AGE_19";

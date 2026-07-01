@@ -32,6 +32,8 @@ export default function AppGroupLayout() {
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="series/[id]" options={{ headerShown: false }} />
         <Stack.Screen name="series/[id]/[episodeNo]" options={{ headerShown: false }} />
+        {/* 작가 작품 모아보기 — 창작물 상세의 작가 이름 탭으로 진입. */}
+        <Stack.Screen name="authors/[id]" options={{ headerShown: false }} />
         <Stack.Screen name="search" options={{ headerShown: false }} />
         <Stack.Screen name="notifications" options={{ headerShown: false }} />
         {/* 작가 스튜디오(작품 생성·회차 업로드) + 작가 전환 신청 — my 탭에서 진입. */}
