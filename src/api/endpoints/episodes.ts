@@ -6,7 +6,8 @@
  */
 import { api } from '@/api/client';
 import { buildFixedSortParams } from '@/api/paging';
-import type { EpisodeDetail, EpisodeSummary } from '@/api/types';
+import { uploadMultipart, type RNFilePart, type UploadProgress } from '@/api/multipart';
+import type { EpisodeDetail, EpisodeNoResponse, EpisodeSummary } from '@/api/types';
 import type { SliceResponse } from '@/lib/query/infinite';
 
 /** 회차 목록(Slice, 고정 정렬). 항목에 locked/freeAt 포함(자물쇠 배지용). */
@@ -56,4 +57,20 @@ export async function setEpisodeLike(
 /** 읽음 처리(멱등 POST). 잠긴 회차에는 호출하지 말 것(hook 가드). */
 export async function markRead(seriesId: number, no: number): Promise<void> {
   await api.post(`/api/series/${seriesId}/episodes/${no}/read`);
+}
+
+/**
+ * 회차 업로드(작가). 스칼라(title/publishAt)는 query, 자산 파일은 'images' 파트로 전송한다.
+ * 자산 종류(이미지/텍스트/오디오)는 작품 타입이 결정하므로 파트명은 'images'로 통일한다.
+ * publishAt(ISO) 이 미래면 서버가 SCHEDULED, 없으면 즉시 발행.
+ */
+export async function uploadEpisode(
+  seriesId: number,
+  args: { title: string; publishAt?: string; files: RNFilePart[]; onProgress?: (p: UploadProgress) => void },
+): Promise<EpisodeNoResponse> {
+  return uploadMultipart<EpisodeNoResponse>(`/api/series/${seriesId}/episodes`, {
+    query: { title: args.title, publishAt: args.publishAt },
+    files: { images: args.files },
+    onProgress: args.onProgress,
+  });
 }

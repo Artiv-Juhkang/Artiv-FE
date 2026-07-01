@@ -11,11 +11,12 @@
  *   out. The Button itself is double-tap-safe (useAsyncPress), so the Alert can
  *   only open once per cooldown.
  */
+import { useRouter, type Href } from 'expo-router';
 import { Alert, View } from 'react-native';
 
 import { resolveImageUrl } from '@/api/image';
 import type { Role } from '@/api/types';
-import { useAuth } from '@/features/auth';
+import { useAuth, isCreator } from '@/features/auth';
 import { ThemeModeToggle } from '@/features/settings/ThemeModeToggle';
 import { Avatar, Button, Card, Divider, Screen, Text, useTheme } from '@/ui';
 
@@ -27,6 +28,7 @@ const ROLE_LABEL: Record<Role, string> = {
 
 export default function MyPageScreen() {
   const t = useTheme();
+  const router = useRouter();
   const { user, role, logout } = useAuth();
 
   // user is set for any authenticated session (this tab lives under the (app)
@@ -108,6 +110,29 @@ export default function MyPageScreen() {
           <Text variant="caption" color="onSurfaceMuted">
             시스템 설정을 따르거나 라이트·다크를 직접 선택할 수 있어요.
           </Text>
+        </View>
+
+        <Divider />
+
+        {/* 창작 — 작가는 스튜디오, 독자는 작가 전환 신청으로. */}
+        <View style={{ gap: t.space.sm }}>
+          <Text variant="caption" weight="semibold" color="onSurfaceMuted" caps>
+            창작
+          </Text>
+          {isCreator(role) ? (
+            <Button
+              label="작가 스튜디오"
+              fullWidth
+              onPress={() => router.push('/studio' as Href)}
+            />
+          ) : (
+            <Button
+              label="작가 되기"
+              variant="secondary"
+              fullWidth
+              onPress={() => router.push('/creator-request' as Href)}
+            />
+          )}
         </View>
 
         <Divider />

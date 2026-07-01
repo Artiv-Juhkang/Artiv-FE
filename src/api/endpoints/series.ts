@@ -6,14 +6,30 @@
  */
 import { api } from '@/api/client';
 import { buildPageParams } from '@/api/paging';
+import { uploadMultipart, type RNFilePart } from '@/api/multipart';
 import type {
+  AgeRating,
   DayOfWeek,
   Genre,
   SeriesDetail,
   SeriesSort,
+  SeriesStatus,
   SeriesSummary,
 } from '@/api/types';
 import type { PageResponse } from '@/lib/query/infinite';
+
+/** 작품 생성 요청 바디(백엔드 SeriesCreateRequest 미러). contentType/publishDays 는 매체별 선택. */
+export interface CreateSeriesBody {
+  title: string;
+  description?: string;
+  ageRating: AgeRating;
+  status: SeriesStatus;
+  contentType?: string; // ContentType 키. 미지정 시 백엔드가 WEBTOON.
+  publishDays?: DayOfWeek[]; // 웹툰 연재요일
+  adultOnly?: boolean;
+  genre?: Genre;
+  tags?: string[];
+}
 
 /**
  * 시리즈 목록(Page, 정렬 가능).
@@ -55,6 +71,28 @@ export async function listSeries(
 export async function getSeries(id: number): Promise<SeriesDetail> {
   const { data } = await api.get<SeriesDetail>(`/api/series/${id}`);
   return data;
+}
+
+/** 작품 생성(작가). JSON 바디 → 생성된 작품 id. */
+export async function createSeries(body: CreateSeriesBody): Promise<{ id: number }> {
+  const { data } = await api.post<{ id: number }>('/api/series', body);
+  return data;
+}
+
+/** 내 작품 목록(작가 본인). 페이지네이션 없는 배열. */
+export async function getMySeries(): Promise<SeriesSummary[]> {
+  const { data } = await api.get<SeriesSummary[]>('/api/series/mine');
+  return data;
+}
+
+/** 커버 이미지 업로드(작가 본인) → 설정된 공개 URL. */
+export async function uploadCover(
+  seriesId: number,
+  file: RNFilePart,
+): Promise<{ coverUrl: string }> {
+  return uploadMultipart<{ coverUrl: string }>(`/api/series/${seriesId}/cover`, {
+    files: { cover: file },
+  });
 }
 
 /**

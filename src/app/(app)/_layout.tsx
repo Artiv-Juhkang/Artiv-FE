@@ -1,8 +1,8 @@
 /**
  * (app) group shell — the AUTHENTICATED area. Holds (tabs), the series detail
- * (`series/[id]`), and the viewer (`series/[id]/[episodeNo]`, future) later.
- * The root Stack.Protected guard={status === 'authenticated'} already gates
- * this whole group, so this is just a headerless Stack.
+ * (`series/[id]`), the multimedia viewer (`series/[id]/[episodeNo]`), 작가 스튜디오
+ * (`studio/*`) and 작가 전환 신청(`creator-request`). The root Stack.Protected
+ * guard={status === 'authenticated'} already gates this whole group.
  *
  * `series/[id]` is registered as a SIBLING of `(tabs)` so it is push-navigated
  * as a full screen OVER the tab bar (immersive art-led hero + back). We keep
@@ -31,11 +31,14 @@ export default function AppGroupLayout() {
       >
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="series/[id]" options={{ headerShown: false }} />
+        <Stack.Screen name="series/[id]/[episodeNo]" options={{ headerShown: false }} />
         <Stack.Screen name="search" options={{ headerShown: false }} />
         <Stack.Screen name="notifications" options={{ headerShown: false }} />
-        {/* FUTURE SEAM (viewer): once src/app/(app)/series/[id]/[episodeNo].tsx
-            exists, register it here with the viewer surface + immersive options:
-            <Stack.Screen name="series/[id]/[episodeNo]" options={{ headerShown: false }} /> */}
+        {/* 작가 스튜디오(작품 생성·회차 업로드) + 작가 전환 신청 — my 탭에서 진입. */}
+        <Stack.Screen name="studio/index" options={{ headerShown: false }} />
+        <Stack.Screen name="studio/new" options={{ headerShown: false }} />
+        <Stack.Screen name="studio/[id]/upload" options={{ headerShown: false }} />
+        <Stack.Screen name="creator-request" options={{ headerShown: false }} />
       </Stack>
     </AmbientProvider>
   );
