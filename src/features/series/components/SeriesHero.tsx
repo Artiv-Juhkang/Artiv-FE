@@ -97,6 +97,9 @@ export function SeriesHero({ series }: SeriesHeroProps) {
   const t = useTheme();
   const insets = useSafeAreaInsets();
   const [expanded, setExpanded] = useState(false);
+  // 설명이 3줄을 넘을 때만 더보기/접기를 노출한다(onTextLayout으로 실제 줄 수 측정).
+  // 3줄 이하면 클램프도 토글도 없이 전문을 그대로 보여준다.
+  const [needsToggle, setNeedsToggle] = useState(false);
 
   // Full-bleed: cancel the Screen body's horizontal gutter (space.lg) + the
   // safe-area left/right so the hero spans edge-to-edge, then re-pad inside.
@@ -236,25 +239,33 @@ export function SeriesHero({ series }: SeriesHeroProps) {
           </ScrollView>
         ) : null}
 
-        {/* description — hidden entirely when empty; 더보기/접기 otherwise. */}
+        {/* description — 없으면 블록 전체 숨김. 3줄 초과일 때만 클램프(…)+더보기/접기,
+            3줄 이하는 전문 그대로(토글 없음). 줄 수는 onTextLayout으로 측정한다. */}
         {hasDescription ? (
           <View style={{ gap: t.space.xs }}>
             <Text
               variant="body"
               color="onSurfaceSecondary"
-              numberOfLines={expanded ? undefined : COLLAPSED_LINES}
+              numberOfLines={expanded || !needsToggle ? undefined : COLLAPSED_LINES}
+              onTextLayout={(e) => {
+                if (!needsToggle && e.nativeEvent.lines.length > COLLAPSED_LINES) {
+                  setNeedsToggle(true);
+                }
+              }}
             >
               {description}
             </Text>
-            <Text
-              variant="caption"
-              weight="semibold"
-              color="accent"
-              accessibilityRole="button"
-              onPress={() => setExpanded((v) => !v)}
-            >
-              {expanded ? '접기' : '더보기'}
-            </Text>
+            {needsToggle ? (
+              <Text
+                variant="caption"
+                weight="semibold"
+                color="accent"
+                accessibilityRole="button"
+                onPress={() => setExpanded((v) => !v)}
+              >
+                {expanded ? '접기' : '더보기'}
+              </Text>
+            ) : null}
           </View>
         ) : null}
       </GlassCard>
