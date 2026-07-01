@@ -25,14 +25,18 @@
  *  - 컬럼 변경(회전/split) → FlatList key={`grid-${cols}`} remount + columnWrapper는 cols>1만.
  *  - onEndReached     → hasNextPage && !isFetchingNextPage 가드(중복 페이지 차단).
  */
-import { Suspense, useCallback, useState } from 'react';
+import { Suspense, useCallback, useEffect, useState } from 'react';
 import { FlatList, View } from 'react-native';
+import { useRouter } from 'expo-router';
+import { useQuery } from '@tanstack/react-query';
 
+import { getUnreadCount } from '@/api/endpoints/notifications';
 import type { DayOfWeek, SeriesSummary } from '@/api/types';
 import { FeatureErrorBoundary } from '@/components/feedback';
 import { useSeriesList } from '@/features/series/hooks';
 import { WeekdayTabs, todayDay } from '@/features/series/components/WeekdayTabs';
 import { TypeChips } from '@/features/creativity/TypeChips';
+import { DiscoverRails } from '@/features/creativity/DiscoverRails';
 import {
   SeriesGridCard,
   SeriesGridCardSkeleton,
@@ -48,30 +52,52 @@ import {
   NotificationAction,
   Screen,
   SearchAction,
+  useAmbient,
   useResponsive,
   useTheme,
 } from '@/ui';
-
-// 검색/알림 라우트는 아직 없다(typedRoutes에 미존재). ScreenHeader 액션은
-// onPress 필수이므로, 라우트가 생기기 전까지 의도적 no-op 스텁으로 둔다.
-// (라우트 파일을 새로 만들지 않는다 — typedRoutes 깨짐 방지.)
-const noopSearch = () => {};
-const noopNotifications = () => {};
+import { mediaColor } from '@/ui/tokens';
 
 export default function SeriesHomeScreen() {
+  const router = useRouter();
+
+  // 창작 타입은 헤더(로고 아래 매체색 헤어라인)와 본문(타입 칩·그리드/레일)이 함께 쓰므로
+  // Suspense 경계 위인 이 컴포넌트가 소유하고 본문으로 내린다. 기본 = '전체'(매체별 레일).
+  const [contentType, setContentType] = useState('ALL');
+
+  // 헤더 벨 미읽음 배지 — 폴링(가벼운 카운트). 알림함에서 읽으면 invalidate로 갱신된다.
+  const { data: unread } = useQuery({
+    queryKey: ['notifications', 'unread-count'],
+    queryFn: getUnreadCount,
+  });
+
+  // §12.3 영속 ambient — 현재 창작 타입의 매체색으로 루트 배경을 cross-fade.
+  const { setAmbient } = useAmbient();
+  useEffect(() => {
+    setAmbient(mediaColor(contentType.toLowerCase()));
+  }, [contentType, setAmbient]);
+
   return (
     <Screen
       edges={['top']}
-      // 홈 ROOT 헤더: solid, back 없음. 헤더가 top inset을 소유하므로 body
-      // topPad=0 → WeekdayTabs 밴드가 헤더 바로 아래에 flush로 붙는다.
+      // 투명 surface → (app)/_layout의 영속 CoverWall ambient가 비쳐 보인다.
+      surface="ambient"
+      // 홈 ROOT 헤더: ambient(투명) 밴드 — §12.3 루트 CoverWall이 헤더 뒤로 비친다.
+      // 브랜드 'Artiv'는 좌측 정렬(ambient 기본), 액션은 우측, 하단 헤어라인으로 본문과 구분.
+      // 헤더가 top inset을 소유 → body topPad=0, WeekdayTabs가 헤더 바로 아래 flush.
       header={{
-        variant: 'solid',
+        variant: 'ambient',
         back: false,
         title: 'Artiv',
+        // §12.2 로고 아래 매체색 헤어라인 — 지금 보고 있는 창작 타입을 신호(웹툰=amber…).
+        mediaColor: mediaColor(contentType.toLowerCase()),
         right: (
           <View style={{ flexDirection: 'row' }}>
-            <SearchAction onPress={noopSearch} />
-            <NotificationAction onPress={noopNotifications} />
+            <SearchAction onPress={() => router.push('/search')} />
+            <NotificationAction
+              onPress={() => router.push('/notifications')}
+              unreadCount={unread?.count}
+            />
           </View>
         ),
       }}
@@ -79,7 +105,7 @@ export default function SeriesHomeScreen() {
       <View style={{ flex: 1 }}>
         <FeatureErrorBoundary>
           <Suspense fallback={<HomeGridSkeleton />}>
-            <HomeContent />
+            <HomeContent contentType={contentType} onContentTypeChange={setContentType} />
           </Suspense>
         </FeatureErrorBoundary>
       </View>
@@ -88,17 +114,45 @@ export default function SeriesHomeScreen() {
 }
 
 /* -------------------------------------------------------------------------- */
-/*  HomeContent — owns the single `day` state + the grid.                     */
+/*  HomeContent — 타입 칩 + (전체=매체별 레일 | 단일 타입=그리드) 분기.          */
 /* -------------------------------------------------------------------------- */
 
-function HomeContent() {
+function HomeContent({
+  contentType,
+  onContentTypeChange,
+}: {
+  contentType: string;
+  onContentTypeChange: (key: string) => void;
+}) {
+  // '전체'(ALL)이면 매체별 레일 미리보기, 아니면 해당 타입 단일 그리드.
+  // 그리드 훅(useSeriesList — 'ALL'은 백엔드 ContentType이 아님)이 ALL에서 돌지 않도록
+  // 그리드 로직을 TypeGridView로 분리해 ALL일 땐 아예 마운트하지 않는다.
+  const isAll = contentType === 'ALL';
+
+  return (
+    <View style={{ flex: 1 }}>
+      {/* 타입 칩 — '전체' + 레지스트리 매체. 활성 칩은 매체색. */}
+      <TypeChips value={contentType} onChange={onContentTypeChange} />
+
+      {isAll ? (
+        <DiscoverRails onSeeAll={onContentTypeChange} />
+      ) : (
+        <TypeGridView contentType={contentType} />
+      )}
+    </View>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  TypeGridView — 단일 매체 타입 그리드(웹툰만 요일축). owns the `day` state.   */
+/* -------------------------------------------------------------------------- */
+
+function TypeGridView({ contentType }: { contentType: string }) {
   const t = useTheme();
   const r = useResponsive();
   const nav = useGuardedNavigation();
 
-  // 창작 타입(레지스트리 동적, 타입=데이터). 기본 = 웹툰(요일 그리드 유지).
   // 비웹툰 타입은 요일축이 없으므로 WeekdayTabs를 숨기고 최신 그리드만 보인다.
-  const [contentType, setContentType] = useState('WEBTOON');
   const isWebtoon = contentType === 'WEBTOON';
 
   // 유일한 day 출처(use-weekday-axis 금지). 시드 = 오늘(Mon-first).
@@ -144,6 +198,7 @@ function HomeContent() {
       <SeriesGridCard
         series={item}
         width={cellWidth}
+        coverUrl={item.coverUrl}
         onPress={() =>
           // 셀은 자체 push 안 함 — 네비게이션은 부모가 주입(typedRoutes 객체 형태 필수).
           nav.push({ pathname: '/series/[id]', params: { id: item.id! } })
@@ -154,10 +209,7 @@ function HomeContent() {
   );
 
   return (
-    <View style={{ flex: 1 }}>
-      {/* 타입 칩 — 레지스트리 동적(타입=데이터). 활성 칩은 매체색. */}
-      <TypeChips value={contentType} onChange={setContentType} />
-
+    <>
       {/* WeekdayTabs 밴드 — 웹툰일 때만(연재 요일축). FlatList 바깥(스티키). */}
       {isWebtoon ? <WeekdayTabs value={day} onChange={setDay} /> : null}
 
@@ -174,7 +226,7 @@ function HomeContent() {
         onEndReached={onEndReached}
         renderItem={renderItem}
       />
-    </View>
+    </>
   );
 }
 

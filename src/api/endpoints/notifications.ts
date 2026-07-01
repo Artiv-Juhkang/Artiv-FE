@@ -6,10 +6,15 @@
  */
 import { api } from '@/api/client';
 import { buildFixedSortParams } from '@/api/paging';
-import type { NotificationResponse, UnreadCountResponse } from '@/api/types';
+import type {
+  NotificationResponse,
+  NotificationType,
+  UnreadCountResponse,
+  UnreadSummaryResponse,
+} from '@/api/types';
 import type { PageResponse } from '@/lib/query/infinite';
 
-/** 미읽음 알림 수(배지 폴링). */
+/** 미읽음 알림 수(헤더 벨 배지 폴링). */
 export async function getUnreadCount(): Promise<{ count: number }> {
   const { data } = await api.get<UnreadCountResponse>(
     '/api/me/notifications/unread-count',
@@ -17,16 +22,30 @@ export async function getUnreadCount(): Promise<{ count: number }> {
   return { count: data.count ?? 0 };
 }
 
-/** 알림 목록(Page, 고정 정렬). */
+/** 미읽음 종류별 집계(알림함 그룹 칩 배지). */
+export async function getUnreadSummary(): Promise<UnreadSummaryResponse> {
+  const { data } = await api.get<UnreadSummaryResponse>(
+    '/api/me/notifications/unread-summary',
+  );
+  return data;
+}
+
+/** 알림 목록(Page, 고정 정렬). type 지정 시 해당 종류만(단일 종류 필터, 백엔드 지원). */
 export async function listNotifications(
   page: number,
+  type?: NotificationType,
   signal?: AbortSignal,
 ): Promise<PageResponse<NotificationResponse>> {
   const { data } = await api.get<PageResponse<NotificationResponse>>(
     '/api/me/notifications',
-    { params: buildFixedSortParams({ page }), signal },
+    { params: { ...buildFixedSortParams({ page }), type }, signal },
   );
   return data;
+}
+
+/** 모두 읽음 처리(PATCH read-all, 무바디 204). */
+export async function readAllNotifications(): Promise<void> {
+  await api.patch('/api/me/notifications/read-all');
 }
 
 /**

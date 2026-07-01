@@ -15,14 +15,28 @@
  */
 import { Stack } from 'expo-router';
 
+import { AmbientProvider } from '@/ui';
+
 export default function AppGroupLayout() {
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="(tabs)" />
-      <Stack.Screen name="series/[id]" options={{ headerShown: false }} />
-      {/* FUTURE SEAM (viewer): once src/app/(app)/series/[id]/[episodeNo].tsx
-          exists, register it here with the viewer surface + immersive options:
-          <Stack.Screen name="series/[id]/[episodeNo]" options={{ headerShown: false }} /> */}
-    </Stack>
+    // §12.3 영속 ambient — CoverWall 루트 레이어를 이 그룹 전체 뒤에 깔고 Stack은
+    // contentStyle 투명으로 올린다 → 페이지 이동에도 배경이 안 사라지고 화면만 전환.
+    // surface="ambient" 화면만 배경을 드러내고, 그 외(chrome)는 위에 불투명하게 덮는다.
+    <AmbientProvider>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle: { backgroundColor: 'transparent' },
+        }}
+      >
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="series/[id]" options={{ headerShown: false }} />
+        <Stack.Screen name="search" options={{ headerShown: false }} />
+        <Stack.Screen name="notifications" options={{ headerShown: false }} />
+        {/* FUTURE SEAM (viewer): once src/app/(app)/series/[id]/[episodeNo].tsx
+            exists, register it here with the viewer surface + immersive options:
+            <Stack.Screen name="series/[id]/[episodeNo]" options={{ headerShown: false }} /> */}
+      </Stack>
+    </AmbientProvider>
   );
 }

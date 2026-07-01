@@ -43,7 +43,7 @@ import { useResponsive } from '../responsive';
 import type { Space } from '../tokens';
 import { ScreenHeader, type HeaderConfig } from './ScreenHeader';
 
-export type ScreenSurface = 'chrome' | 'viewer' | 'glass';
+export type ScreenSurface = 'chrome' | 'viewer' | 'glass' | 'ambient';
 
 export type ScreenProps = ViewProps & {
   children: ReactNode;
@@ -154,11 +154,18 @@ export function Screen({
 
   const isViewer = surface === 'viewer';
   const isGlass = surface === 'glass';
+  // 'ambient' is fully TRANSPARENT so the persistent root <AmbientProvider>
+  // backdrop (§12.3) shows through — the screen paints nothing of its own.
+  const isAmbient = surface === 'ambient';
 
   // Base background. 'glass' paints the theme bg (a stable base behind the
   // full-screen `background` art layer — never transparent, so a 1px seam can
-  // never flash the navigator's white).
-  const backgroundColor = isViewer ? t.color.viewerBg : t.color.bg;
+  // never flash the navigator's white). 'ambient' paints transparent.
+  const backgroundColor = isViewer
+    ? t.color.viewerBg
+    : isAmbient
+      ? 'transparent'
+      : t.color.bg;
 
   const gutter = isViewer ? t.space.none : t.space[padding];
 
@@ -247,7 +254,7 @@ export function Screen({
           paddingLeft: gutter + insets.left,
           paddingRight: gutter + insets.right,
         },
-        isGlass || isViewer ? null : { backgroundColor },
+        isGlass || isViewer || isAmbient ? null : { backgroundColor },
       ]}
     >
       <View style={columnStyle}>{footer}</View>

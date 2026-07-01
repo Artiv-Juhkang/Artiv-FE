@@ -119,3 +119,5 @@ export {
 
 // Living wall of (blurred) cover art behind the glass — the login hero.
 export { CoverWall, type CoverWallProps } from './primitives/CoverWall';
+// Persistent, color-shifting backdrop for the authenticated area (§12.3).
+export { AmbientProvider, useAmbient } from './ambient';

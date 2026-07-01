@@ -30,7 +30,7 @@
  * inside `HeaderBackButton` (which imports `guardedBack` directly).
  */
 import type { ReactNode } from 'react';
-import { StyleSheet, View, type ViewStyle } from 'react-native';
+import { Platform, StyleSheet, View, type ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useTheme } from '../use-theme';
@@ -41,7 +41,7 @@ import {
   type HeaderTone,
 } from './header-actions';
 
-export type HeaderVariant = 'solid' | 'transparent' | 'large' | 'hidden';
+export type HeaderVariant = 'solid' | 'transparent' | 'large' | 'ambient' | 'hidden';
 export type HeaderTitleAlign = 'left' | 'center';
 
 /**
@@ -63,6 +63,14 @@ export type HeaderConfig = {
   variant?: HeaderVariant;
   /** @default 'center' (solid/transparent), 'left' (large) */
   titleAlign?: HeaderTitleAlign;
+  /**
+   * Media-color accent: a 3px hairline (left-aligned, ~60% width) UNDER the app
+   * bar that fades to transparent, quietly signalling the media you're viewing
+   * (웹툰=amber, 일러스트=rose, …). See frontend-design-system §12.2. In-flow
+   * bands only (solid/large); a transparent float over art has no band to
+   * underline. Omitted ⇒ no hairline. Pass `mediaColor(contentType.toLowerCase())`.
+   */
+  mediaColor?: string;
 };
 
 /** Content row height ABOVE insets.top; band minHeight = insets.top + this. */
@@ -81,6 +89,7 @@ export function ScreenHeader({
   right,
   variant = 'solid',
   titleAlign,
+  mediaColor,
   columnStyle,
 }: HeaderConfig & { columnStyle?: ViewStyle }) {
   const t = useTheme();
@@ -91,7 +100,11 @@ export function ScreenHeader({
   const tone = toneForVariant(variant);
   const isTransparent = variant === 'transparent';
   const isLarge = variant === 'large';
-  const align: HeaderTitleAlign = titleAlign ?? (isLarge ? 'left' : 'center');
+  // 'ambient' = an in-flow band identical to 'solid' (owns top inset, bottom
+  // hairline, themed ink, §12.2 media hairline) but TRANSPARENT so the §12.3
+  // root CoverWall shows through, with a left-aligned brand title by default.
+  const isAmbient = variant === 'ambient';
+  const align: HeaderTitleAlign = titleAlign ?? (isLarge || isAmbient ? 'left' : 'center');
 
   // Left precedence: custom left ?? (back ? back button : spacer). The fixed
   // 44pt zone keeps a centered title optically centered even with no back.
@@ -117,7 +130,16 @@ export function ScreenHeader({
         minHeight: HEADER_BAND_HEIGHT,
       }}
     >
-      <View style={{ width: zoneWidth, alignItems: 'flex-start', justifyContent: 'center' }}>
+      <View
+        style={{
+          // Collapse the 44pt back-spacer when there is no left control AND the
+          // title is left-aligned, so a brand title (ambient 'Artiv') sits flush
+          // to the gutter instead of indented by a phantom spacer.
+          width: leftNode || align === 'center' ? zoneWidth : 0,
+          alignItems: 'flex-start',
+          justifyContent: 'center',
+        }}
+      >
         {leftNode}
       </View>
 
@@ -162,12 +184,34 @@ export function ScreenHeader({
       </View>
     ) : null;
 
+  // §12.2 media hairline — a 3px accent UNDER the app bar that fades out,
+  // left-aligned 60%. The CSS gradient renders on native (New-Arch experimental
+  // background image, same path as CoverWall); web ignores that prop, so it
+  // falls back to a solid media-color line and the signal still reads. In-flow
+  // bands only (transparent floats over art carry no band to underline).
+  const mediaHairline =
+    mediaColor && !isTransparent ? (
+      <View
+        pointerEvents="none"
+        style={{
+          height: 3,
+          width: '60%',
+          borderRadius: 1.5,
+          marginTop: t.space.sm,
+          marginBottom: t.space.xs,
+          backgroundColor: Platform.OS === 'web' ? mediaColor : 'transparent',
+          experimental_backgroundImage: `linear-gradient(to right, ${mediaColor}, transparent)`,
+        }}
+      />
+    ) : null;
+
   // Inner content uses Screen's column (maxWidth + center) so the row aligns
   // with the body; horizontal gutter keeps controls off the screen edge.
   const inner = (
     <View style={[columnStyle, { paddingHorizontal: t.space.lg }]}>
       {compactRow}
       {largeTitleRow}
+      {mediaHairline}
     </View>
   );
 
@@ -198,13 +242,15 @@ export function ScreenHeader({
     );
   }
 
-  // solid / large: in-flow band. Owns the top inset; bottom hairline separates
-  // it from the body. Full-width bg; inner row capped by columnStyle.
+  // solid / large / ambient: in-flow band. Owns the top inset; bottom hairline
+  // separates it from the body. ambient is transparent so the root CoverWall
+  // (§12.3) shows through; the others paint the surface. Inner row capped by
+  // columnStyle.
   return (
     <View
       style={{
         paddingTop: insets.top,
-        backgroundColor: t.color.surface,
+        backgroundColor: isAmbient ? 'transparent' : t.color.surface,
         borderBottomWidth: StyleSheet.hairlineWidth,
         borderBottomColor: t.color.border,
         zIndex: t.zIndex.stickyHeader,

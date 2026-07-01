@@ -30,16 +30,21 @@ export async function listSeries(
     keyword?: string;
     day?: DayOfWeek;
     contentType?: string;
+    /** 태그 정확일치 필터(검색 #태그 모드). 백엔드 :tag member of s.tags. */
+    tag?: string;
+    /** Page size override (디스커버 레일은 매체당 소량만 미리보기). 기본 20. */
+    size?: number;
   },
   signal?: AbortSignal,
 ): Promise<PageResponse<SeriesSummary>> {
   const { data } = await api.get<PageResponse<SeriesSummary>>('/api/series', {
     params: {
-      ...buildPageParams({ page: params.page, sort: params.sort }),
+      ...buildPageParams({ page: params.page, size: params.size, sort: params.sort }),
       genre: params.genre,
       keyword: params.keyword,
       day: params.day,
       contentType: params.contentType,
+      tag: params.tag,
     },
     signal,
   });

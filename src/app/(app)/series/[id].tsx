@@ -43,7 +43,9 @@ import type { SeriesDetail } from '@/api/types';
 import { FeatureErrorBoundary } from '@/components/feedback';
 import { EpisodeList } from '@/features/series/components/EpisodeList';
 import { SeriesActionBar } from '@/features/series/components/SeriesActionBar';
+import { SeriesGallery } from '@/features/series/components/SeriesGallery';
 import { SeriesHero } from '@/features/series/components/SeriesHero';
+import { useContentTypes } from '@/features/creativity/hooks';
 import {
   useResumePoint,
   useSeriesDetail,
@@ -143,6 +145,10 @@ function DetailContent({ seriesId }: { seriesId: number }) {
   const { data, isLoading, isError, error, refetch } =
     useSeriesDetail(seriesId);
 
+  // 타입별 화면 분기 키 — registry의 serialized 플래그(타입=데이터: 백엔드에 ContentType
+  // 추가 시 FE 변경 0). 미해결/미지정 시 안전 기본값 = 연재(현 웹툰 회차 모델).
+  const { data: contentTypes } = useContentTypes();
+
   // Header heart = 관심 (the ONLY series-level personalization = subscription).
   // Controlled by the detail cache; it is the SOLE 관심 control — no body dup,
   // and no "구독" wording (작품 단위 관심). Author follow is a separate feature.
@@ -193,6 +199,10 @@ function DetailContent({ seriesId }: { seriesId: number }) {
 
   const series: SeriesDetail = data;
   const subscribed = series.isSubscribed ?? false;
+
+  // 연재(웹툰·소설) → 회차 모델; 비연재(일러스트·사진·디자인·손그림) → 스와이프 갤러리.
+  const serialized =
+    contentTypes?.find((ct) => ct.key === series.contentType)?.serialized ?? true;
 
   // CTA target episode. 이어보기 clamps lastRead+1 to the latest published
   // episode (read-history carries no latest — SeriesDetail.latestEpisodeNo
@@ -271,19 +281,26 @@ function DetailContent({ seriesId }: { seriesId: number }) {
 
         <SeriesActionBar seriesId={seriesId} />
 
-        <StatsRow episodeCount={episodeCount} latestEpisodeNo={latest} />
+        {serialized ? (
+          <>
+            <StatsRow episodeCount={episodeCount} latestEpisodeNo={latest} />
 
-        <Button
-          label={hasEpisodes ? ctaLabel : '공개된 회차가 없어요'}
-          variant="primary"
-          fullWidth
-          disabled={!hasEpisodes}
-          onPress={onPressCta}
-        />
+            <Button
+              label={hasEpisodes ? ctaLabel : '공개된 회차가 없어요'}
+              variant="primary"
+              fullWidth
+              disabled={!hasEpisodes}
+              onPress={onPressCta}
+            />
 
-        {/* Inline 회차 목록 (§5 module). Owns its own infinite query, clock, sort
-            toggle, read/bookmark mapping, and lock-safe navigation. */}
-        <EpisodeList seriesId={seriesId} />
+            {/* Inline 회차 목록 (§5 module). Owns its own infinite query, clock, sort
+                toggle, read/bookmark mapping, and lock-safe navigation. */}
+            <EpisodeList seriesId={seriesId} />
+          </>
+        ) : (
+          // 비연재 단일물 — 회차/정기후원 통계 대신 스와이프 이미지 갤러리.
+          <SeriesGallery seriesId={seriesId} />
+        )}
       </View>
     </DetailShell>
   );

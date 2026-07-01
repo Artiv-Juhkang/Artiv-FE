@@ -48,7 +48,7 @@ export type Genre =
   | 'HORROR'
   | 'ETC';
 
-export type SeriesSort = 'LATEST' | 'ADULT_FIRST';
+export type SeriesSort = 'LATEST' | 'UPDATED' | 'ADULT_FIRST';
 
 export type PostCategory = 'RECOMMEND' | 'FREE' | 'FANART' | 'QUESTION';
 

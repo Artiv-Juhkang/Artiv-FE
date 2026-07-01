@@ -37,6 +37,10 @@ export default function TabsLayout() {
         // Animation subset (cross-fade / none) — reduced-motion aware.
         ...tabsScreenOptions(reducedMotion),
         headerShown: false,
+        // §12.3: transparent scene container so a surface="ambient" tab (the
+        // home) reveals the persistent CoverWall backdrop owned by (app)/_layout.
+        // Opaque tabs (surface="chrome") still paint over it — no change there.
+        sceneStyle: { backgroundColor: 'transparent' },
         tabBarActiveTintColor: t.color.accent,
         tabBarInactiveTintColor: t.color.onSurfaceSecondary,
         tabBarStyle: {

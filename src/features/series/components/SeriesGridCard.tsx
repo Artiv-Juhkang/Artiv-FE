@@ -20,12 +20,11 @@
  *                          With a countdown we render the CountdownPill;
  *                          otherwise a bare lock Badge (자물쇠).
  *
- * COVER PLACEHOLDER: SeriesSummaryResponse has NO cover/thumbnail field
- * (verified against openapi.json). So we ALWAYS degrade to a tinted poster
- * — AppImage over a deterministic per-series tint (the same idea as
- * CoverWall's per-cell base color), so an artless slot reads as intentional
- * art, not a broken hole. The instant the API grows a cover field, pass
- * `coverUrl` and the real art shows through with zero layout change.
+ * COVER + TINT FALLBACK: when the parent passes `coverUrl` (SeriesSummary now
+ * carries one — the V25 cover_url seam), the real art shows through. When it's
+ * absent/null, AppImage falls back to a deterministic per-series tint (the same
+ * idea as CoverWall's per-cell base color), so an artless slot reads as
+ * intentional art, not a broken hole — zero layout change either way.
  *
  * RESPONSIVE: the cell width comes from the PARENT's column math — call
  * `seriesGridLayout(contentWidth, columns, gutter)` once for the grid and
@@ -126,9 +125,8 @@ export type SeriesGridCardProps = {
   onPress: () => void;
 
   /**
-   * Optional cover url. SeriesSummary has no cover field today, so this is a
-   * forward seam — pass it when the API grows one and the real art shows
-   * through the tint with no layout change. Absent ⇒ tinted placeholder.
+   * Cover url (SeriesSummary.coverUrl — the V25 cover_url seam). When present
+   * the real art shows through; absent/null ⇒ the deterministic tint shows.
    */
   coverUrl?: string | null;
 
@@ -235,7 +233,16 @@ export function SeriesGridCard({
       </View>
 
       {/* ── Text block (under the poster) ─────────────────────────────── */}
-      <View style={{ paddingTop: SERIES_GRID.textGap, gap: 2 }}>
+      {/* Poster stays full-bleed (Card padding="none"); the TEXT gets its own
+          inner inset so title/author never glue to the cell's left/bottom edges. */}
+      <View
+        style={{
+          paddingHorizontal: t.space.sm,
+          paddingTop: SERIES_GRID.textGap,
+          paddingBottom: t.space.sm,
+          gap: 2,
+        }}
+      >
         <Text variant="callout" weight="semibold" numberOfLines={2}>
           {title}
         </Text>
@@ -269,7 +276,14 @@ export function SeriesGridCardSkeleton({ width }: { width: number }) {
           backgroundColor: t.color.surfaceSunken,
         }}
       />
-      <View style={{ paddingTop: SERIES_GRID.textGap, gap: t.space.xs }}>
+      <View
+        style={{
+          paddingHorizontal: t.space.sm,
+          paddingTop: SERIES_GRID.textGap,
+          paddingBottom: t.space.sm,
+          gap: t.space.xs,
+        }}
+      >
         <View
           style={{
             width: '80%',
