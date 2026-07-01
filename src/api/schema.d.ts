@@ -1198,6 +1198,8 @@ export interface components {
         };
         CommentCreateRequest: {
             content: string;
+            /** Format: int64 */
+            parentId?: number;
         };
         ReportCreateRequest: {
             /** @enum {string} */
@@ -1532,10 +1534,16 @@ export interface components {
         CommentResponse: {
             /** Format: int64 */
             id?: number;
+            /** Format: int64 */
+            parentId?: number;
             content?: string;
             authorNickname?: string;
             /** Format: date-time */
             createdAt?: string;
+            /** Format: int64 */
+            likeCount?: number;
+            liked?: boolean;
+            replies?: components["schemas"]["CommentResponse"][];
         };
         PageResponseCommentResponse: {
             content?: components["schemas"]["CommentResponse"][];

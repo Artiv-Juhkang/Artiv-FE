@@ -114,6 +114,9 @@ export type EpisodeSummary = Schemas['EpisodeSummaryResponse'];
 export type EpisodeImage = Schemas['EpisodeImageResponse'];
 export type EpisodeNoResponse = Schemas['EpisodeNoResponse'];
 
+// 회차 댓글 (대댓글 replies 중첩 + likeCount/liked)
+export type EpisodeComment = Schemas['CommentResponse'];
+
 // 커뮤니티
 export type PostResponse = Schemas['PostResponse'];
 export type PostDetail = Schemas['PostDetailResponse'];

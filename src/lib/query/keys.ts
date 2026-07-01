@@ -47,6 +47,8 @@ export const keys = {
     list: (seriesId: number) => ['episodes', 'list', seriesId] as const,
     detail: (seriesId: number, no: number) =>
       ['episodes', 'detail', seriesId, no] as const,
+    comments: (seriesId: number, no: number) =>
+      ['episodes', 'comments', seriesId, no] as const,
   },
   authors: {
     all: ['authors'] as const,
