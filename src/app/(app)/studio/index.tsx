@@ -5,7 +5,7 @@
  * 바로 교체할 수 있다. 데이터는 GET /api/series/mine(keys.series.mine).
  */
 import { Redirect, useRouter, type Href } from 'expo-router';
-import { Alert, View } from 'react-native';
+import { View } from 'react-native';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { getMySeries, uploadCover } from '@/api/endpoints/series';
@@ -23,6 +23,7 @@ import {
   Skeleton,
   Text,
   useTheme,
+  useToast,
 } from '@/ui';
 
 export default function StudioIndexScreen() {
@@ -48,6 +49,7 @@ function StudioList() {
   const t = useTheme();
   const router = useRouter();
   const qc = useQueryClient();
+  const { show } = useToast();
   const { data: types } = useContentTypes();
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: keys.series.mine(),
@@ -63,9 +65,9 @@ function StudioList() {
       await uploadCover(seriesId, file);
       await qc.invalidateQueries({ queryKey: keys.series.mine() });
       await qc.invalidateQueries({ queryKey: keys.series.detail(seriesId) });
-      Alert.alert('커버 변경', '커버 이미지가 설정됐어요.');
+      show({ message: '커버 이미지가 설정됐어요.', tone: 'success' });
     } catch {
-      Alert.alert('커버 변경 실패', '이미지 업로드 중 문제가 생겼어요. 다시 시도해 주세요.');
+      show({ message: '커버 변경에 실패했어요. 다시 시도해 주세요.', tone: 'danger' });
     }
   };
 

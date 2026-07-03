@@ -20,17 +20,18 @@
  * success do NOTHING (the protected guard redirects — avoids expo #30700).
  */
 import { useCallback, useState } from 'react';
-import { Alert, TextInput, View } from 'react-native';
+import { TextInput, View } from 'react-native';
 
 import { SocialButtonRow } from '@/features/auth/SocialButtonRow';
 import { useAuth } from '@/features/auth';
 import { isAppError, normalizeError } from '@/lib/errors';
 import { applyAppErrorToForm } from '@/lib/forms/fieldErrors';
-import { Button, CoverWall, GlassCard, Screen, Text, useTheme } from '@/ui';
+import { Button, CoverWall, GlassCard, Screen, Text, useTheme, useToast } from '@/ui';
 
 export default function SignInScreen() {
   const t = useTheme();
   const { login } = useAuth();
+  const { show } = useToast();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -99,7 +100,7 @@ export default function SignInScreen() {
   // 회원가입 / 비밀번호 찾기 screens aren't built yet — surface a calm placeholder
   // rather than a dead tap or a typed-route to a nonexistent screen.
   const notReady = (label: string) =>
-    Alert.alert(label, '곧 제공될 예정이에요.', [{ text: '확인' }]);
+    show({ message: `${label}는 곧 제공될 예정이에요.`, tone: 'neutral' });
 
   return (
     // No `header` prop — INTENTIONAL. Auth-stack roots are header-less by

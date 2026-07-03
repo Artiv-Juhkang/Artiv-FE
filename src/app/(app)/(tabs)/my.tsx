@@ -12,7 +12,7 @@
  *   only open once per cooldown.
  */
 import { useRouter, type Href } from 'expo-router';
-import { Alert, View } from 'react-native';
+import { Alert, Platform, View } from 'react-native';
 
 import { resolveImageUrl } from '@/api/image';
 import type { Role } from '@/api/types';
@@ -38,6 +38,13 @@ export default function MyPageScreen() {
   const roleLabel = role ? ROLE_LABEL[role] : null;
 
   const confirmLogout = () => {
+    // react-native-web 에서 Alert.alert 은 no-op → 웹에선 window.confirm 으로 확인받는다.
+    if (Platform.OS === 'web') {
+      if (window.confirm('로그아웃하면 다시 로그인해야 해요. 로그아웃할까요?')) {
+        void logout();
+      }
+      return;
+    }
     Alert.alert('로그아웃', '로그아웃하면 다시 로그인해야 해요.', [
       { text: '취소', style: 'cancel' },
       {

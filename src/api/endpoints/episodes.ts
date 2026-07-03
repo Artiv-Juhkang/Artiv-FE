@@ -66,11 +66,18 @@ export async function markRead(seriesId: number, no: number): Promise<void> {
  */
 export async function uploadEpisode(
   seriesId: number,
-  args: { title: string; publishAt?: string; files: RNFilePart[]; onProgress?: (p: UploadProgress) => void },
+  args: {
+    title: string;
+    publishAt?: string;
+    files: RNFilePart[];
+    onProgress?: (p: UploadProgress) => void;
+    signal?: AbortSignal;
+  },
 ): Promise<EpisodeNoResponse> {
   return uploadMultipart<EpisodeNoResponse>(`/api/series/${seriesId}/episodes`, {
     query: { title: args.title, publishAt: args.publishAt },
     files: { images: args.files },
     onProgress: args.onProgress,
+    signal: args.signal,
   });
 }

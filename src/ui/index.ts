@@ -70,6 +70,7 @@ export { Card, type CardProps } from './primitives/Card';
 export { Badge, type BadgeProps, type BadgeVariant } from './primitives/Badge';
 export { Placard, type PlacardProps } from './primitives/Placard';
 export { Skeleton, type SkeletonProps } from './primitives/Skeleton';
+export { ProgressBar, type ProgressBarProps } from './primitives/ProgressBar';
 export { EmptyState, type EmptyStateProps } from './primitives/EmptyState';
 export { ErrorState, type ErrorStateProps, type ApiErrorCode } from './primitives/ErrorState';
 export {
