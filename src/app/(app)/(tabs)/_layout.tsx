@@ -67,16 +67,7 @@ export default function TabsLayout() {
             </Text>
           ),
           tabBarIcon: ({ color, size }) => (
-            <SymbolView
-              name="square.grid.2x2.fill"
-              size={size ?? 24}
-              tintColor={color}
-              fallback={
-                <Text variant="caption" style={{ color }}>
-                  창작물
-                </Text>
-              }
-            />
+            <SymbolView name="square.grid.2x2.fill" size={size ?? 24} tintColor={color} />
           ),
         }}
       />
@@ -90,16 +81,7 @@ export default function TabsLayout() {
             </Text>
           ),
           tabBarIcon: ({ color, size }) => (
-            <SymbolView
-              name="bubble.left.and.bubble.right.fill"
-              size={size ?? 24}
-              tintColor={color}
-              fallback={
-                <Text variant="caption" style={{ color }}>
-                  커뮤니티
-                </Text>
-              }
-            />
+            <SymbolView name="bubble.left.and.bubble.right.fill" size={size ?? 24} tintColor={color} />
           ),
         }}
       />
@@ -113,16 +95,7 @@ export default function TabsLayout() {
             </Text>
           ),
           tabBarIcon: ({ color, size }) => (
-            <SymbolView
-              name="paperplane.fill"
-              size={size ?? 24}
-              tintColor={color}
-              fallback={
-                <Text variant="caption" style={{ color }}>
-                  채팅
-                </Text>
-              }
-            />
+            <SymbolView name="paperplane.fill" size={size ?? 24} tintColor={color} />
           ),
         }}
       />
@@ -136,16 +109,7 @@ export default function TabsLayout() {
             </Text>
           ),
           tabBarIcon: ({ color, size }) => (
-            <SymbolView
-              name="books.vertical.fill"
-              size={size ?? 24}
-              tintColor={color}
-              fallback={
-                <Text variant="caption" style={{ color }}>
-                  서재
-                </Text>
-              }
-            />
+            <SymbolView name="books.vertical.fill" size={size ?? 24} tintColor={color} />
           ),
         }}
       />
@@ -159,16 +123,7 @@ export default function TabsLayout() {
             </Text>
           ),
           tabBarIcon: ({ color, size }) => (
-            <SymbolView
-              name="person.crop.circle.fill"
-              size={size ?? 24}
-              tintColor={color}
-              fallback={
-                <Text variant="caption" style={{ color }}>
-                  MY
-                </Text>
-              }
-            />
+            <SymbolView name="person.crop.circle.fill" size={size ?? 24} tintColor={color} />
           ),
         }}
       />

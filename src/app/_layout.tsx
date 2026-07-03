@@ -37,7 +37,13 @@
  *   - The root Stack applies chromeStackScreenOptions(reduced) for consistent,
  *     reduced-motion-aware horizontal pushes + gesture-back.
  */
-import { Stack, type ErrorBoundaryProps } from 'expo-router';
+import {
+  Stack,
+  ThemeProvider as NavThemeProvider,
+  DefaultTheme as NavDefaultTheme,
+  DarkTheme as NavDarkTheme,
+  type ErrorBoundaryProps,
+} from 'expo-router';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
@@ -163,6 +169,12 @@ function Gate() {
   const [fontsLoaded, fontError] = useFonts({});
   const { status } = useAuth();
   const { hasLoaded: themeReady } = useThemeMode();
+  // Sync react-navigation's theme to the app scheme with a TRANSPARENT scene
+  // background. expo-router's default nav theme paints an opaque background
+  // (light on web) that would otherwise cover the persistent ambient CoverWall
+  // (§12.3) — the home reads as a white void with white text. Transparent scenes
+  // let each Screen own its surface and reveal the aurora where ambient.
+  const { isDark } = useTheme();
   // Reduced-motion is read once here and baked into the navigator options: the
   // native stack can't consult a JS signal mid-transition, so the boolean must
   // be in the options at build time (see lib/navigation/transitions).
@@ -177,8 +189,14 @@ function Gate() {
 
   if (!ready) return null; // splash stays visible — no auth/stack/theme flash
 
+  const navBase = isDark ? NavDarkTheme : NavDefaultTheme;
+  const navTheme = {
+    ...navBase,
+    colors: { ...navBase.colors, background: 'transparent', card: 'transparent' },
+  };
+
   return (
-    <>
+    <NavThemeProvider value={navTheme}>
       <Stack
         screenOptions={{
           headerShown: false,
@@ -196,6 +214,6 @@ function Gate() {
         <Stack.Screen name="+not-found" />
       </Stack>
       <OfflineBanner />
-    </>
+    </NavThemeProvider>
   );
 }

@@ -6,7 +6,8 @@
  */
 import { useState } from 'react';
 import { Redirect, useRouter, type Href } from 'expo-router';
-import { Alert, View } from 'react-native';
+import { View } from 'react-native';
+import { Image } from 'expo-image';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { createSeries, uploadCover, type CreateSeriesBody } from '@/api/endpoints/series';
@@ -17,7 +18,7 @@ import { useRequireRole } from '@/features/auth';
 import { pickCover } from '@/features/studio/pickers';
 import { ChipMulti, ChipSelect, Field, type ChipOption } from '@/features/studio/components';
 import { keys } from '@/lib/query';
-import { Button, Screen, Text, useTheme } from '@/ui';
+import { Button, Screen, Text, useTheme, useToast } from '@/ui';
 
 const AGE_OPTIONS: ChipOption<AgeRating>[] = [
   { value: 'ALL', label: '전체' },
@@ -57,6 +58,7 @@ export default function NewSeriesScreen() {
   const t = useTheme();
   const router = useRouter();
   const qc = useQueryClient();
+  const { show } = useToast();
   const { data: types } = useContentTypes();
 
   const [title, setTitle] = useState('');
@@ -86,11 +88,11 @@ export default function NewSeriesScreen() {
   const onSubmit = async () => {
     if (submitting) return;
     if (!title.trim()) {
-      Alert.alert('작품 제목', '제목을 입력해 주세요.');
+      show({ message: '작품 제목을 입력해 주세요.', tone: 'danger' });
       return;
     }
     if (adultOnly && ageRating !== 'AGE_19') {
-      Alert.alert('성인 전용 작품', '성인 전용(19금)은 연령등급을 19세로 설정해야 해요.');
+      show({ message: '성인 전용(19금)은 연령등급을 19세로 설정해야 해요.', tone: 'danger' });
       return;
     }
     const tags = tagsText
@@ -123,7 +125,7 @@ export default function NewSeriesScreen() {
       await qc.invalidateQueries({ queryKey: keys.creativity.all });
       router.replace({ pathname: '/studio/[id]/upload', params: { id } } as unknown as Href);
     } catch {
-      Alert.alert('작품 생성 실패', '잠시 후 다시 시도해 주세요.');
+      show({ message: '작품 생성에 실패했어요. 잠시 후 다시 시도해 주세요.', tone: 'danger' });
       setSubmitting(false);
     }
   };
@@ -168,6 +170,18 @@ export default function NewSeriesScreen() {
           <Text variant="label" color="onSurfaceSecondary">
             커버 이미지 (선택)
           </Text>
+          {cover ? (
+            <Image
+              source={{ uri: cover.uri }}
+              contentFit="cover"
+              style={{
+                width: 120,
+                height: 160,
+                borderRadius: t.radius.md,
+                backgroundColor: t.color.surfaceSunken,
+              }}
+            />
+          ) : null}
           <Button label={cover ? '커버 선택됨 · 변경' : '커버 이미지 선택'} variant="secondary" onPress={onPickCover} />
         </View>
 

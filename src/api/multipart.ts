@@ -8,8 +8,12 @@
  */
 import { api } from './client';
 
-/** RN FormData 에 넣는 파일 파트(웹 표준 File 이 아님). */
-export type RNFilePart = { uri: string; name: string; type: string };
+/**
+ * 파일 파트. 네이티브(RN)는 { uri, name, type } 객체를 FormData 에 넣지만, 웹의
+ * FormData 는 브라우저 표준이라 실제 File/Blob 을 요구한다. expo picker 가 웹에서
+ * 넘겨주는 File 을 `file` 에 실어 두고, buildFormData 가 있으면 그걸 append 한다.
+ */
+export type RNFilePart = { uri: string; name: string; type: string; file?: File };
 
 /** 업로드 진행률. pct 는 0~100 정수. */
 export type UploadProgress = { loaded: number; total: number; pct: number };
@@ -19,12 +23,14 @@ export function makeRNFilePart(
   uri: string,
   name?: string,
   type?: string,
+  file?: File,
 ): RNFilePart {
   const ext = guessExtension(uri);
   return {
     uri,
     name: name ?? `upload.${ext}`,
     type: type ?? mimeForExtension(ext),
+    file,
   };
 }
 
@@ -63,9 +69,14 @@ export function buildFormData(
   for (const [field, value] of Object.entries(files)) {
     const parts = Array.isArray(value) ? value : [value];
     for (const part of parts) {
-      // RN 의 FormData 는 { uri, name, type } 객체를 받는다.
-      // 타입 시스템상 Blob 을 기대하므로 unknown 경유 캐스팅.
-      form.append(field, part as unknown as Blob);
+      if (part.file) {
+        // 웹: 브라우저 표준 FormData → 실제 File 을 append(파일명은 정규화한 name 사용).
+        form.append(field, part.file, part.name);
+      } else {
+        // 네이티브: RN 의 FormData 는 { uri, name, type } 객체를 받는다.
+        // 타입 시스템상 Blob 을 기대하므로 unknown 경유 캐스팅.
+        form.append(field, part as unknown as Blob);
+      }
     }
   }
   return form;

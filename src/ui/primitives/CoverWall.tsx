@@ -20,7 +20,7 @@
  * because the barrel re-exports this primitive (would be circular).
  */
 import { useMemo, type ReactNode } from 'react';
-import { StyleSheet, View, type ViewProps } from 'react-native';
+import { Platform, StyleSheet, View, type ViewProps } from 'react-native';
 
 import { AppImage } from '../AppImage';
 import { useResponsive } from '../responsive';
@@ -138,6 +138,20 @@ export function CoverWall({
             })}
           </View>
         </View>
+      ) : Platform.OS === 'web' ? (
+        // ── Web: experimental_backgroundImage is native-only, so paint the same
+        //    aurora via a real CSS backgroundImage on a DOM layer (react-native-web
+        //    runs on React DOM). Without this the backdrop collapses to a flat base
+        //    color and the ambient concept is lost on the web build.
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            pointerEvents: 'none',
+            backgroundColor: aurora.base,
+            backgroundImage: aurora.image,
+          }}
+        />
       ) : (
         // ── Soft aurora placeholder (no image, inherently blurred) ────────
         <View
@@ -150,10 +164,14 @@ export function CoverWall({
       )}
 
       {/* Gentle legibility wash (kept light so the color stays vivid). */}
-      <View
-        pointerEvents="none"
-        style={[StyleSheet.absoluteFill, { experimental_backgroundImage: scrim }]}
-      />
+      {Platform.OS === 'web' ? (
+        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', backgroundImage: scrim }} />
+      ) : (
+        <View
+          pointerEvents="none"
+          style={[StyleSheet.absoluteFill, { experimental_backgroundImage: scrim }]}
+        />
+      )}
 
       {children}
     </View>
