@@ -1264,6 +1264,8 @@ export interface components {
         PostCommentResponse: {
             /** Format: int64 */
             id?: number;
+            /** Format: int64 */
+            authorId?: number;
             authorNickname?: string;
             content?: string;
             /** Format: date-time */
@@ -1658,6 +1660,8 @@ export interface components {
         PostResponse: {
             /** Format: int64 */
             id?: number;
+            /** Format: int64 */
+            authorId?: number;
             /** @enum {string} */
             category?: "RECOMMEND" | "FREE" | "FANART" | "QUESTION";
             title?: string;
@@ -1670,6 +1674,8 @@ export interface components {
         PostDetailResponse: {
             /** Format: int64 */
             id?: number;
+            /** Format: int64 */
+            authorId?: number;
             /** @enum {string} */
             category?: "RECOMMEND" | "FREE" | "FANART" | "QUESTION";
             title?: string;
