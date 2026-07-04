@@ -71,6 +71,36 @@ export async function setPostLike(id: number, on: boolean): Promise<void> {
   }
 }
 
+/** 게시글 비추천 토글(멱등 무바디) — 서버가 추천과 상호배타를 강제한다. */
+export async function setPostDislike(id: number, on: boolean): Promise<void> {
+  const path = `/api/posts/${id}/dislike`;
+  if (on) {
+    await api.post(path);
+  } else {
+    await api.delete(path);
+  }
+}
+
+/** 게시글 댓글 좋아요 토글(멱등 무바디) — 싫어요와 상호배타. */
+export async function setPostCommentLike(postId: number, commentId: number, on: boolean): Promise<void> {
+  const path = `/api/posts/${postId}/comments/${commentId}/like`;
+  if (on) {
+    await api.post(path);
+  } else {
+    await api.delete(path);
+  }
+}
+
+/** 게시글 댓글 싫어요 토글(멱등 무바디) — 좋아요와 상호배타. */
+export async function setPostCommentDislike(postId: number, commentId: number, on: boolean): Promise<void> {
+  const path = `/api/posts/${postId}/comments/${commentId}/dislike`;
+  if (on) {
+    await api.post(path);
+  } else {
+    await api.delete(path);
+  }
+}
+
 /** 게시글 댓글 전체 목록(List — 대댓글은 replies로 중첩). */
 export async function listPostComments(
   postId: number,

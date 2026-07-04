@@ -1,17 +1,22 @@
 /**
- * 게시글 상세 — 본문(이미지 포함) + 추천 토글 + 댓글/대댓글 (C1).
+ * 게시글 상세 — 본문(이미지) + 추천/비추천 + 댓글/대댓글 좋아요·싫어요 + 소유자 수정/삭제.
+ * (C1 읽기 → C3 소유자 분기 → C4 수정 진입 → C5 반응 토글 누적. 신고는 C6.)
  *
  * 댓글은 백엔드가 전체 List로 내려주므로(회차 댓글과 달리 미페이징) 일반 쿼리 +
- * 공용 스레드 UI(features/comments)로 렌더한다. 게시글 댓글 좋아요/싫어요는 C5에서
- * 연결(D3 확정) — 지금은 onLike 미전달로 하트가 렌더되지 않는다.
- * 소유자(수정·삭제)·신고 UI는 C3·C6 슬라이스.
+ * 공용 스레드 UI(features/comments)로 렌더한다. 좋아요↔싫어요 상호배타는 서버가
+ * 강제하고 낙관 패치가 이를 미러한다(글: useToggleMutation apply, 댓글: patchReaction).
  */
 import { useState } from 'react';
 import { Alert, FlatList, KeyboardAvoidingView, Platform, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { deletePost, writePostComment } from '@/api/endpoints/posts';
+import {
+  deletePost,
+  setPostCommentDislike,
+  setPostCommentLike,
+  writePostComment,
+} from '@/api/endpoints/posts';
 import type { PostComment } from '@/api/types';
 import { useAuth } from '@/features/auth';
 import {
@@ -22,7 +27,12 @@ import {
   type ReplyTarget,
 } from '@/features/comments';
 import { POST_CATEGORY_LABEL } from '@/features/community/categories';
-import { usePost, usePostComments, usePostLikeToggle } from '@/features/community/hooks';
+import {
+  usePost,
+  usePostComments,
+  usePostDislikeToggle,
+  usePostLikeToggle,
+} from '@/features/community/hooks';
 import { useGuardedNavigation } from '@/lib/navigation/useGuardedNavigation';
 import { keys } from '@/lib/query';
 import { AppImage } from '@/ui/AppImage';
@@ -51,6 +61,43 @@ export default function PostDetailScreen() {
   const post = usePost(postId);
   const comments = usePostComments(postId);
   const likeMut = usePostLikeToggle(postId);
+  const dislikeMut = usePostDislikeToggle(postId);
+
+  // 댓글 좋아요/싫어요 — List 캐시 낙관 패치(상호배타를 서버와 동일하게 미러).
+  const commentsKey = keys.posts.comments(postId);
+  const reactMut = useMutation<
+    void,
+    Error,
+    { commentId: number; kind: 'like' | 'dislike'; on: boolean },
+    { prev?: PostComment[] }
+  >({
+    mutationFn: ({ commentId, kind, on }) =>
+      kind === 'like'
+        ? setPostCommentLike(postId, commentId, on)
+        : setPostCommentDislike(postId, commentId, on),
+    onMutate: async ({ commentId, kind, on }) => {
+      await qc.cancelQueries({ queryKey: commentsKey });
+      const prev = qc.getQueryData<PostComment[]>(commentsKey);
+      qc.setQueryData<PostComment[]>(commentsKey, (list) =>
+        list?.map((c) => patchReaction(c, commentId, kind, on)),
+      );
+      return { prev };
+    },
+    onError: (_e, _v, ctx) => {
+      if (ctx?.prev) qc.setQueryData(commentsKey, ctx.prev);
+      toast.show({ tone: 'danger', message: '잠시 후 다시 시도해 주세요.' });
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey: commentsKey }),
+  });
+
+  const onCommentLike = (c: PostComment) => {
+    if (typeof c.id !== 'number' || reactMut.isPending) return;
+    reactMut.mutate({ commentId: c.id, kind: 'like', on: !c.liked });
+  };
+  const onCommentDislike = (c: PostComment) => {
+    if (typeof c.id !== 'number' || reactMut.isPending) return;
+    reactMut.mutate({ commentId: c.id, kind: 'dislike', on: !c.disliked });
+  };
 
   const deleteMut = useMutation<void, Error, void>({
     mutationFn: () => deletePost(postId),
@@ -126,6 +173,7 @@ export default function PostDetailScreen() {
   const p = post.data;
   const label = p.category ? POST_CATEGORY_LABEL[p.category] : '';
   const liked = p.liked === true;
+  const disliked = p.disliked === true;
   const commentList = comments.data ?? [];
   // 소유자 분기 — C2가 노출한 authorId와 내 프로필 id 비교(관리자 삭제는 어드민 콘솔 소관).
   const isOwner = user?.id != null && p.authorId != null && user.id === p.authorId;
@@ -218,13 +266,26 @@ export default function PostDetailScreen() {
                 {p.content ?? ''}
               </Text>
 
-              {/* 추천 토글 — 낙관 patch(usePostLikeToggle), 무바디 멱등. */}
-              <View style={{ alignItems: 'center', paddingVertical: t.space.sm }}>
+              {/* 추천/비추천 토글 — 낙관 patch, 무바디 멱등, 서버 상호배타 미러. */}
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  gap: t.space.md,
+                  paddingVertical: t.space.sm,
+                }}
+              >
                 <Button
                   label={`${liked ? '♥' : '♡'} 추천 ${p.likeCount ?? 0}`}
                   variant={liked ? 'primary' : 'secondary'}
                   size="sm"
                   onPress={() => likeMut.mutate(!liked)}
+                />
+                <Button
+                  label={`${disliked ? '▼' : '▽'} 비추천 ${p.dislikeCount ?? 0}`}
+                  variant={disliked ? 'primary' : 'secondary'}
+                  size="sm"
+                  onPress={() => dislikeMut.mutate(!disliked)}
                 />
               </View>
 
@@ -234,7 +295,14 @@ export default function PostDetailScreen() {
               </Text>
             </View>
           }
-          renderItem={({ item }) => <CommentThread comment={item} onReply={onReply} />}
+          renderItem={({ item }) => (
+            <CommentThread
+              comment={item}
+              onLike={onCommentLike}
+              onDislike={onCommentDislike}
+              onReply={onReply}
+            />
+          )}
           ListEmptyComponent={
             comments.isLoading ? (
               <CommentsSkeleton />
@@ -262,4 +330,37 @@ export default function PostDetailScreen() {
 /** 대댓글 포함 총 댓글 수. */
 function countComments(list: PostComment[]): number {
   return list.reduce((acc, c) => acc + 1 + (c.replies?.length ?? 0), 0);
+}
+
+/** 댓글 트리에서 해당 댓글의 좋아요/싫어요를 낙관적으로 뒤집는다(상호배타 미러). */
+function patchReaction(
+  c: PostComment,
+  commentId: number,
+  kind: 'like' | 'dislike',
+  on: boolean,
+): PostComment {
+  if (c.id === commentId) {
+    const like = c.likeCount ?? 0;
+    const dislike = c.dislikeCount ?? 0;
+    if (kind === 'like') {
+      return {
+        ...c,
+        liked: on,
+        likeCount: Math.max(0, like + (on ? 1 : -1)),
+        disliked: on ? false : c.disliked,
+        dislikeCount: on && c.disliked ? Math.max(0, dislike - 1) : c.dislikeCount,
+      };
+    }
+    return {
+      ...c,
+      disliked: on,
+      dislikeCount: Math.max(0, dislike + (on ? 1 : -1)),
+      liked: on ? false : c.liked,
+      likeCount: on && c.liked ? Math.max(0, like - 1) : c.likeCount,
+    };
+  }
+  if (c.replies?.length) {
+    return { ...c, replies: c.replies.map((r) => patchReaction(r, commentId, kind, on)) };
+  }
+  return c;
 }

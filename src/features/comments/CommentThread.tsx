@@ -4,8 +4,9 @@
  * 회차 댓글 화면에서 추출(사용처가 2곳이 되는 시점의 공용화 — design-2026-07-04 §5).
  * 데이터 레이어(쿼리·낙관 패치)는 각 화면이 소유하고, 여기는 표시만 담당한다.
  *
- * 좋아요 버튼은 onLike가 주어질 때만 렌더 — 회차 댓글은 좋아요 사용,
- * 게시글 댓글은 C5(좋아요/싫어요)에서 핸들러가 연결된다(D3 확정: showDislike 스위치도 C5).
+ * 반응 버튼은 핸들러가 주어질 때만 렌더 — 회차 댓글은 onLike(좋아요)만,
+ * 게시글 댓글은 onLike+onDislike(좋아요/싫어요, D3 확정)를 전달한다.
+ * 싫어요는 ▼/▽(Placard의 ▲추천과 대칭 글리프), 활성 시 danger 톤.
  */
 import { Pressable, View } from 'react-native';
 
@@ -21,13 +22,17 @@ export type CommentShape = {
   createdAt?: string | null;
   liked?: boolean | null;
   likeCount?: number | null;
+  disliked?: boolean | null;
+  dislikeCount?: number | null;
   replies?: CommentShape[] | null;
 };
 
 export type CommentThreadProps<T extends CommentShape> = {
   comment: T;
-  /** 주어지면 ♥ 좋아요 버튼 렌더(회차 댓글). 게시글 댓글은 C5에서 연결. */
+  /** 주어지면 ♥ 좋아요 버튼 렌더(회차·게시글 댓글). */
   onLike?: (c: T) => void;
+  /** 주어지면 ▼ 싫어요 버튼 렌더(게시글 댓글 전용 — 회차 댓글은 미전달). */
+  onDislike?: (c: T) => void;
   onReply: (c: T) => void;
 };
 
@@ -35,6 +40,7 @@ export type CommentThreadProps<T extends CommentShape> = {
 export function CommentThread<T extends CommentShape>({
   comment,
   onLike,
+  onDislike,
   onReply,
 }: CommentThreadProps<T>) {
   const t = useTheme();
@@ -42,7 +48,7 @@ export function CommentThread<T extends CommentShape>({
   const replies = (comment.replies ?? []) as T[];
   return (
     <View style={{ paddingHorizontal: t.space.lg, paddingVertical: t.space.sm }}>
-      <CommentRow comment={comment} onLike={onLike} onReply={onReply} />
+      <CommentRow comment={comment} onLike={onLike} onDislike={onDislike} onReply={onReply} />
       {replies.length > 0 ? (
         <View
           style={{
@@ -55,7 +61,7 @@ export function CommentThread<T extends CommentShape>({
           }}
         >
           {replies.map((r) => (
-            <CommentRow key={r.id} comment={r} onLike={onLike} onReply={onReply} />
+            <CommentRow key={r.id} comment={r} onLike={onLike} onDislike={onDislike} onReply={onReply} />
           ))}
         </View>
       ) : null}
@@ -66,11 +72,14 @@ export function CommentThread<T extends CommentShape>({
 export function CommentRow<T extends CommentShape>({
   comment,
   onLike,
+  onDislike,
   onReply,
 }: CommentThreadProps<T>) {
   const t = useTheme();
   const liked = comment.liked === true;
   const likeCount = comment.likeCount ?? 0;
+  const disliked = comment.disliked === true;
+  const dislikeCount = comment.dislikeCount ?? 0;
   return (
     <View style={{ gap: 4 }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: t.space.sm }}>
@@ -103,6 +112,26 @@ export function CommentRow<T extends CommentShape>({
               style={{ color: liked ? t.color.accent : t.color.onSurfaceMuted }}
             >
               {likeCount}
+            </Text>
+          </Pressable>
+        ) : null}
+
+        {onDislike ? (
+          <Pressable
+            onPress={() => onDislike(comment)}
+            accessibilityRole="button"
+            accessibilityLabel={disliked ? '싫어요 취소' : '싫어요'}
+            hitSlop={8}
+            style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}
+          >
+            <Text variant="caption" style={{ color: disliked ? t.color.danger : t.color.onSurfaceMuted }}>
+              {disliked ? '▼' : '▽'}
+            </Text>
+            <Text
+              variant="caption"
+              style={{ color: disliked ? t.color.danger : t.color.onSurfaceMuted }}
+            >
+              {dislikeCount}
             </Text>
           </Pressable>
         ) : null}

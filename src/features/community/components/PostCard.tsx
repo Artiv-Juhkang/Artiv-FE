@@ -47,6 +47,9 @@ export function PostCard({ post, onPress }: { post: PostResponse; onPress: () =>
             <Text variant="caption" color="onSurfaceMuted">
               ♥ {post.likeCount ?? 0}
             </Text>
+            <Text variant="caption" color="onSurfaceMuted">
+              ▽ {post.dislikeCount ?? 0}
+            </Text>
           </View>
         </View>
       </GlassCard>

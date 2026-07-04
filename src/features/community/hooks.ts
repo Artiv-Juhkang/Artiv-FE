@@ -8,7 +8,13 @@
  */
 import { useQuery } from '@tanstack/react-query';
 
-import { getPost, listPostComments, listPosts, setPostLike } from '@/api/endpoints/posts';
+import {
+  getPost,
+  listPostComments,
+  listPosts,
+  setPostDislike,
+  setPostLike,
+} from '@/api/endpoints/posts';
 import type { PostCategory, PostComment, PostDetail, PostSort } from '@/api/types';
 import { createPageInfiniteQuery, keys, useToggleMutation } from '@/lib/query';
 
@@ -46,8 +52,8 @@ export function usePostComments(id: number) {
 
 /**
  * 게시글 추천 토글 — 멱등 POST/DELETE 무바디.
- * 상세 캐시에 liked/likeCount 낙관 patch, 정착 후 피드 목록도 invalidate
- * (BEST 정렬·목록 likeCount가 서버 진실과 재동기).
+ * 상세 캐시에 liked/likeCount 낙관 patch(비추천 중이었다면 서버 상호배타를 미러해
+ * disliked도 함께 해제), 정착 후 피드 목록도 invalidate.
  */
 export function usePostLikeToggle(postId: number) {
   return useToggleMutation<PostDetail>({
@@ -59,6 +65,30 @@ export function usePostLikeToggle(postId: number) {
             ...prev,
             liked: next,
             likeCount: Math.max(0, (prev.likeCount ?? 0) + (next ? 1 : -1)),
+            // 추천 켜짐 → 서버가 비추천을 자동 해제(상호배타) — 낙관 patch도 미러.
+            disliked: next ? false : prev.disliked,
+            dislikeCount:
+              next && prev.disliked ? Math.max(0, (prev.dislikeCount ?? 0) - 1) : prev.dislikeCount,
+          }
+        : prev,
+    invalidate: [keys.posts.all],
+  });
+}
+
+/** 게시글 비추천 토글 — 추천 토글과 대칭(상호배타 미러). */
+export function usePostDislikeToggle(postId: number) {
+  return useToggleMutation<PostDetail>({
+    targetKey: keys.posts.detail(postId),
+    mutationFn: (next: boolean) => setPostDislike(postId, next),
+    apply: (prev, next) =>
+      prev
+        ? {
+            ...prev,
+            disliked: next,
+            dislikeCount: Math.max(0, (prev.dislikeCount ?? 0) + (next ? 1 : -1)),
+            liked: next ? false : prev.liked,
+            likeCount:
+              next && prev.liked ? Math.max(0, (prev.likeCount ?? 0) - 1) : prev.likeCount,
           }
         : prev,
     invalidate: [keys.posts.all],
