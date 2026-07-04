@@ -33,6 +33,8 @@ export type CommentThreadProps<T extends CommentShape> = {
   onLike?: (c: T) => void;
   /** 주어지면 ▼ 싫어요 버튼 렌더(게시글 댓글 전용 — 회차 댓글은 미전달). */
   onDislike?: (c: T) => void;
+  /** 주어지면 행 롱프레스로 신고 시트를 연다(게시글 댓글 전용). */
+  onReport?: (c: T) => void;
   onReply: (c: T) => void;
 };
 
@@ -41,6 +43,7 @@ export function CommentThread<T extends CommentShape>({
   comment,
   onLike,
   onDislike,
+  onReport,
   onReply,
 }: CommentThreadProps<T>) {
   const t = useTheme();
@@ -48,7 +51,7 @@ export function CommentThread<T extends CommentShape>({
   const replies = (comment.replies ?? []) as T[];
   return (
     <View style={{ paddingHorizontal: t.space.lg, paddingVertical: t.space.sm }}>
-      <CommentRow comment={comment} onLike={onLike} onDislike={onDislike} onReply={onReply} />
+      <CommentRow comment={comment} onLike={onLike} onDislike={onDislike} onReport={onReport} onReply={onReply} />
       {replies.length > 0 ? (
         <View
           style={{
@@ -61,7 +64,7 @@ export function CommentThread<T extends CommentShape>({
           }}
         >
           {replies.map((r) => (
-            <CommentRow key={r.id} comment={r} onLike={onLike} onDislike={onDislike} onReply={onReply} />
+            <CommentRow key={r.id} comment={r} onLike={onLike} onDislike={onDislike} onReport={onReport} onReply={onReply} />
           ))}
         </View>
       ) : null}
@@ -73,6 +76,7 @@ export function CommentRow<T extends CommentShape>({
   comment,
   onLike,
   onDislike,
+  onReport,
   onReply,
 }: CommentThreadProps<T>) {
   const t = useTheme();
@@ -81,7 +85,12 @@ export function CommentRow<T extends CommentShape>({
   const disliked = comment.disliked === true;
   const dislikeCount = comment.dislikeCount ?? 0;
   return (
-    <View style={{ gap: 4 }}>
+    // onReport가 있으면 롱프레스로 신고 — 탭 제스처는 내부 버튼(좋아요·답글)이 그대로 소유.
+    <Pressable
+      onLongPress={onReport ? () => onReport(comment) : undefined}
+      accessibilityLabel={onReport ? '길게 눌러 신고' : undefined}
+      style={{ gap: 4 }}
+    >
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: t.space.sm }}>
         <Text variant="caption" weight="semibold" numberOfLines={1}>
           {comment.authorNickname ?? '익명'}
@@ -147,7 +156,7 @@ export function CommentRow<T extends CommentShape>({
           </Text>
         </Pressable>
       </View>
-    </View>
+    </Pressable>
   );
 }
 

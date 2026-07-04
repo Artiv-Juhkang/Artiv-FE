@@ -1,6 +1,6 @@
 /**
  * 게시글 상세 — 본문(이미지) + 추천/비추천 + 댓글/대댓글 좋아요·싫어요 + 소유자 수정/삭제.
- * (C1 읽기 → C3 소유자 분기 → C4 수정 진입 → C5 반응 토글 누적. 신고는 C6.)
+ * (C1 읽기 → C3 소유자 분기 → C4 수정 → C5 반응 토글 → C6 신고 누적.)
  *
  * 댓글은 백엔드가 전체 List로 내려주므로(회차 댓글과 달리 미페이징) 일반 쿼리 +
  * 공용 스레드 UI(features/comments)로 렌더한다. 좋아요↔싫어요 상호배타는 서버가
@@ -27,6 +27,7 @@ import {
   type ReplyTarget,
 } from '@/features/comments';
 import { POST_CATEGORY_LABEL } from '@/features/community/categories';
+import { ReportSheet } from '@/features/report/ReportSheet';
 import {
   usePost,
   usePostComments,
@@ -124,6 +125,8 @@ export default function PostDetailScreen() {
 
   const [text, setText] = useState('');
   const [replyTo, setReplyTo] = useState<ReplyTarget | null>(null);
+  // 신고 대상(글/댓글) — null이면 시트 닫힘. 본인 콘텐츠는 열지 않는다.
+  const [reportTarget, setReportTarget] = useState<{ type: 'POST' | 'COMMENT'; id: number } | null>(null);
 
   const writeMut = useMutation<PostComment, Error, { content: string; parentId?: number }>({
     mutationFn: ({ content, parentId }) => writePostComment(postId, content, parentId),
@@ -200,7 +203,14 @@ export default function PostDetailScreen() {
               onPress={confirmDelete}
             />
           </View>
-        ) : undefined,
+        ) : (
+          <HeaderIconButton
+            name="exclamationmark.bubble"
+            fallback="🚨"
+            accessibilityLabel="글 신고"
+            onPress={() => setReportTarget({ type: 'POST', id: postId })}
+          />
+        ),
       }}
       disableKeyboardAvoiding
     >
@@ -300,6 +310,12 @@ export default function PostDetailScreen() {
               comment={item}
               onLike={onCommentLike}
               onDislike={onCommentDislike}
+              onReport={(c) => {
+                // 본인 댓글은 신고 대상에서 제외.
+                if (typeof c.id === 'number' && c.authorId !== user?.id) {
+                  setReportTarget({ type: 'COMMENT', id: c.id });
+                }
+              }}
               onReply={onReply}
             />
           )}
@@ -321,6 +337,13 @@ export default function PostDetailScreen() {
           sending={writeMut.isPending}
           replyTo={replyTo}
           onCancelReply={() => setReplyTo(null)}
+        />
+
+        <ReportSheet
+          visible={reportTarget != null}
+          targetType={reportTarget?.type ?? 'POST'}
+          targetId={reportTarget?.id ?? null}
+          onClose={() => setReportTarget(null)}
         />
       </KeyboardAvoidingView>
     </Screen>
