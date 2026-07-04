@@ -138,12 +138,20 @@ export default function PostDetailScreen() {
         back: true,
         title: '게시글',
         right: isOwner ? (
-          <HeaderIconButton
-            name="trash"
-            fallback="🗑"
-            accessibilityLabel="글 삭제"
-            onPress={confirmDelete}
-          />
+          <View style={{ flexDirection: 'row' }}>
+            <HeaderIconButton
+              name="square.and.pencil"
+              fallback="✏️"
+              accessibilityLabel="글 수정"
+              onPress={() => nav.push({ pathname: '/posts/[id]/edit', params: { id: postId } })}
+            />
+            <HeaderIconButton
+              name="trash"
+              fallback="🗑"
+              accessibilityLabel="글 삭제"
+              onPress={confirmDelete}
+            />
+          </View>
         ) : undefined,
       }}
       disableKeyboardAvoiding

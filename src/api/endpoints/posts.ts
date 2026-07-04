@@ -45,6 +45,14 @@ export async function createPost(params: {
   });
 }
 
+/** 글 수정(작성자 전용, 텍스트 필드만 — 이미지 교체는 범위 밖. 204). */
+export async function updatePost(
+  id: number,
+  params: { category: PostCategory; title: string; content: string },
+): Promise<void> {
+  await api.patch(`/api/posts/${id}`, params);
+}
+
 /** 글 삭제(작성자∥ADMIN, 204). */
 export async function deletePost(id: number): Promise<void> {
   await api.delete(`/api/posts/${id}`);

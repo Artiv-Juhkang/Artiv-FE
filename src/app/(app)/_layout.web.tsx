@@ -30,6 +30,7 @@ export default function AppGroupLayoutWeb() {
           <Stack.Screen name="authors/[id]" options={{ headerShown: false }} />
           <Stack.Screen name="posts/[id]" options={{ headerShown: false }} />
           <Stack.Screen name="posts/new" options={{ headerShown: false }} />
+          <Stack.Screen name="posts/[id]/edit" options={{ headerShown: false }} />
           <Stack.Screen name="search" options={{ headerShown: false }} />
           <Stack.Screen name="notifications" options={{ headerShown: false }} />
           <Stack.Screen name="studio/index" options={{ headerShown: false }} />

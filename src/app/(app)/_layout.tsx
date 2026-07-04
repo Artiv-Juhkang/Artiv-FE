@@ -38,6 +38,7 @@ export default function AppGroupLayout() {
         {/* 커뮤니티 게시글 상세·작성 — 피드에서 진입. */}
         <Stack.Screen name="posts/[id]" options={{ headerShown: false }} />
         <Stack.Screen name="posts/new" options={{ headerShown: false }} />
+        <Stack.Screen name="posts/[id]/edit" options={{ headerShown: false }} />
         <Stack.Screen name="search" options={{ headerShown: false }} />
         <Stack.Screen name="notifications" options={{ headerShown: false }} />
         {/* 작가 스튜디오(작품 생성·회차 업로드) + 작가 전환 신청 — my 탭에서 진입. */}
