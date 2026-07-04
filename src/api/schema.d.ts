@@ -420,6 +420,22 @@ export interface paths {
         patch: operations["updateGenreTags"];
         trace?: never;
     };
+    "/api/posts/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["detail"];
+        put?: never;
+        post?: never;
+        delete: operations["delete"];
+        options?: never;
+        head?: never;
+        patch: operations["update_1"];
+        trace?: never;
+    };
     "/api/me/notifications/{notificationId}/read": {
         parameters: {
             query?: never;
@@ -715,7 +731,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["detail"];
+        get: operations["detail_1"];
         put?: never;
         post?: never;
         delete?: never;
@@ -731,7 +747,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["detail_1"];
+        get: operations["detail_2"];
         put?: never;
         post?: never;
         delete?: never;
@@ -751,22 +767,6 @@ export interface paths {
         put?: never;
         post?: never;
         delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/posts/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["detail_2"];
-        put?: never;
-        post?: never;
-        delete: operations["delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -1340,6 +1340,12 @@ export interface components {
             /** @enum {string} */
             genre?: "ROMANCE" | "FANTASY" | "ACTION" | "DRAMA" | "DAILY" | "COMEDY" | "THRILLER" | "SPORTS" | "HORROR" | "ETC";
             tags?: string[];
+        };
+        PostUpdateRequest: {
+            /** @enum {string} */
+            category?: "RECOMMEND" | "FREE" | "FANART" | "QUESTION";
+            title?: string;
+            content?: string;
         };
         NotificationResponse: {
             /** Format: int64 */
@@ -2965,6 +2971,72 @@ export interface operations {
             };
         };
     };
+    detail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PostDetailResponse"];
+                };
+            };
+        };
+    };
+    delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    update_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     read_1: {
         parameters: {
             query?: never;
@@ -3383,7 +3455,7 @@ export interface operations {
             };
         };
     };
-    detail: {
+    detail_1: {
         parameters: {
             query?: never;
             header?: never;
@@ -3406,7 +3478,7 @@ export interface operations {
             };
         };
     };
-    detail_1: {
+    detail_2: {
         parameters: {
             query?: never;
             header?: never;
@@ -3445,48 +3517,6 @@ export interface operations {
                 content: {
                     "*/*": components["schemas"]["SeriesSummaryResponse"][];
                 };
-            };
-        };
-    };
-    detail_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["PostDetailResponse"];
-                };
-            };
-        };
-    };
-    delete: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No Content */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
             };
         };
     };
