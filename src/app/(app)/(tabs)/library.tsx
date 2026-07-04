@@ -4,9 +4,9 @@
  *   - 열람  = READ-HISTORY (자동 기록, /api/me/read-history). 마지막 본 화.
  * 회차 단위 북마크는 모델 밖이라 서재에 두지 않는다. "구독" 단어도 쓰지 않는다.
  *
- * Frame: <Screen header={{ variant:'solid', back:false, title:'서재' }}> — a tab
- * ROOT, so no back button (ScreenLayout convention). The segmented control is
- * fixed above each tab's own infinite list (FlatList owns the scroll).
+ * Frame: <Screen surface="ambient" header={{ variant:'ambient', back:false, title:'서재' }}>
+ * — a tab ROOT, so no back button (ScreenLayout convention). The segmented control
+ * is fixed above each tab's own infinite list (FlatList owns the scroll).
  */
 import { useCallback, useState, type ReactElement } from 'react';
 import { FlatList, View } from 'react-native';
@@ -24,7 +24,7 @@ type LibraryTab = 'interest' | 'history';
 export default function LibraryScreen() {
   const [tab, setTab] = useState<LibraryTab>('interest');
   return (
-    <Screen header={{ variant: 'solid', back: false, title: '서재' }}>
+    <Screen surface="ambient" header={{ variant: 'ambient', back: false, title: '서재' }}>
       <View style={{ flex: 1 }}>
         <SegTabs value={tab} onChange={setTab} />
         {/* Only the active tab's query runs; React Query keeps both caches warm

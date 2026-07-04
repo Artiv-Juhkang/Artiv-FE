@@ -59,9 +59,9 @@ export default function MyPageScreen() {
   };
 
   return (
-    // 내정보 ROOT 헤더: solid, back 없음. 헤더가 top inset을 소유 → scroll
-    // content는 헤더 밴드 바로 아래에서 flush로 시작한다(body 미변경).
-    <Screen scroll header={{ variant: 'solid', back: false, title: '내 정보' }}>
+    // 내정보 ROOT 헤더: ambient(투명 밴드+헤어라인), back 없음. 헤더가 top inset을
+    // 소유 → scroll content는 헤더 밴드 바로 아래에서 flush로 시작한다(body 미변경).
+    <Screen scroll surface="ambient" header={{ variant: 'ambient', back: false, title: '내 정보' }}>
       <View style={{ gap: t.space.xl, paddingVertical: t.space.lg }}>
         {/* Profile header */}
         <Card padding="xl">

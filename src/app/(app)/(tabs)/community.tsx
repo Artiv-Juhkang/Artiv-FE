@@ -14,7 +14,7 @@ export default function CommunityScreen() {
   const t = useTheme();
 
   return (
-    <Screen center header={{ variant: 'solid', back: false, title: '커뮤니티' }}>
+    <Screen center surface="ambient" header={{ variant: 'ambient', back: false, title: '커뮤니티' }}>
       <View
         style={{
           gap: t.space.md,

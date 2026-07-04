@@ -13,7 +13,7 @@ export default function ChatScreen() {
   const t = useTheme();
 
   return (
-    <Screen center header={{ variant: 'solid', back: false, title: '채팅' }}>
+    <Screen center surface="ambient" header={{ variant: 'ambient', back: false, title: '채팅' }}>
       <View
         style={{
           gap: t.space.md,
