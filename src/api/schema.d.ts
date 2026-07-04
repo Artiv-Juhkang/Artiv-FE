@@ -244,7 +244,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/posts/{id}/like": {
+    "/api/posts/{postId}/comments/{commentId}/like": {
         parameters: {
             query?: never;
             header?: never;
@@ -255,6 +255,54 @@ export interface paths {
         put?: never;
         post: operations["like_2"];
         delete: operations["unlike_2"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/posts/{postId}/comments/{commentId}/dislike": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["dislike"];
+        delete: operations["undislike"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/posts/{id}/like": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["like_3"];
+        delete: operations["unlike_3"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/posts/{id}/dislike": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["dislike_1"];
+        delete: operations["undislike_1"];
         options?: never;
         head?: never;
         patch?: never;
@@ -1268,6 +1316,12 @@ export interface components {
             authorId?: number;
             authorNickname?: string;
             content?: string;
+            /** Format: int32 */
+            likeCount?: number;
+            liked?: boolean;
+            /** Format: int32 */
+            dislikeCount?: number;
+            disliked?: boolean;
             /** Format: date-time */
             createdAt?: string;
             replies?: components["schemas"]["PostCommentResponse"][];
@@ -1674,6 +1728,8 @@ export interface components {
             authorNickname?: string;
             /** Format: int32 */
             likeCount?: number;
+            /** Format: int32 */
+            dislikeCount?: number;
             /** Format: date-time */
             createdAt?: string;
         };
@@ -1690,6 +1746,9 @@ export interface components {
             /** Format: int32 */
             likeCount?: number;
             liked?: boolean;
+            /** Format: int32 */
+            dislikeCount?: number;
+            disliked?: boolean;
             images?: components["schemas"]["PostImageResponse"][];
             /** Format: date-time */
             createdAt?: string;
@@ -2646,7 +2705,8 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                id: number;
+                postId: number;
+                commentId: number;
             };
             cookie?: never;
         };
@@ -2662,6 +2722,129 @@ export interface operations {
         };
     };
     unlike_2: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                postId: number;
+                commentId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    dislike: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                postId: number;
+                commentId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    undislike: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                postId: number;
+                commentId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    like_3: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    unlike_3: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    dislike_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    undislike_1: {
         parameters: {
             query?: never;
             header?: never;
