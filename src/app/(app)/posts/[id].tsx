@@ -7,12 +7,13 @@
  * 소유자(수정·삭제)·신고 UI는 C3·C6 슬라이스.
  */
 import { useState } from 'react';
-import { FlatList, KeyboardAvoidingView, Platform, View } from 'react-native';
+import { Alert, FlatList, KeyboardAvoidingView, Platform, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { writePostComment } from '@/api/endpoints/posts';
+import { deletePost, writePostComment } from '@/api/endpoints/posts';
 import type { PostComment } from '@/api/types';
+import { useAuth } from '@/features/auth';
 import {
   CommentThread,
   CommentsSkeleton,
@@ -22,6 +23,7 @@ import {
 } from '@/features/comments';
 import { POST_CATEGORY_LABEL } from '@/features/community/categories';
 import { usePost, usePostComments, usePostLikeToggle } from '@/features/community/hooks';
+import { useGuardedNavigation } from '@/lib/navigation/useGuardedNavigation';
 import { keys } from '@/lib/query';
 import { AppImage } from '@/ui/AppImage';
 import {
@@ -29,6 +31,7 @@ import {
   Divider,
   EmptyState,
   ErrorState,
+  HeaderIconButton,
   Screen,
   Skeleton,
   Text,
@@ -40,12 +43,37 @@ export default function PostDetailScreen() {
   const t = useTheme();
   const toast = useToast();
   const qc = useQueryClient();
+  const nav = useGuardedNavigation();
+  const { user } = useAuth();
   const { id } = useLocalSearchParams<{ id: string }>();
   const postId = Number(id);
 
   const post = usePost(postId);
   const comments = usePostComments(postId);
   const likeMut = usePostLikeToggle(postId);
+
+  const deleteMut = useMutation<void, Error, void>({
+    mutationFn: () => deletePost(postId),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: keys.posts.all });
+      toast.show({ message: '글을 삭제했어요.' });
+      nav.back();
+    },
+    onError: () => toast.show({ tone: 'danger', message: '삭제에 실패했어요. 잠시 후 다시 시도해 주세요.' }),
+  });
+
+  // react-native-web 에서 Alert.alert 은 no-op → 웹에선 window.confirm 분기(my.tsx 로그아웃과 동일).
+  const confirmDelete = () => {
+    if (deleteMut.isPending) return;
+    if (Platform.OS === 'web') {
+      if (window.confirm('이 글을 삭제할까요? 되돌릴 수 없어요.')) deleteMut.mutate();
+      return;
+    }
+    Alert.alert('글 삭제', '이 글을 삭제할까요? 되돌릴 수 없어요.', [
+      { text: '취소', style: 'cancel' },
+      { text: '삭제', style: 'destructive', onPress: () => deleteMut.mutate() },
+    ]);
+  };
 
   const [text, setText] = useState('');
   const [replyTo, setReplyTo] = useState<ReplyTarget | null>(null);
@@ -99,11 +127,25 @@ export default function PostDetailScreen() {
   const label = p.category ? POST_CATEGORY_LABEL[p.category] : '';
   const liked = p.liked === true;
   const commentList = comments.data ?? [];
+  // 소유자 분기 — C2가 노출한 authorId와 내 프로필 id 비교(관리자 삭제는 어드민 콘솔 소관).
+  const isOwner = user?.id != null && p.authorId != null && user.id === p.authorId;
 
   return (
     <Screen
       surface="ambient"
-      header={{ variant: 'ambient', back: true, title: '게시글' }}
+      header={{
+        variant: 'ambient',
+        back: true,
+        title: '게시글',
+        right: isOwner ? (
+          <HeaderIconButton
+            name="trash"
+            fallback="🗑"
+            accessibilityLabel="글 삭제"
+            onPress={confirmDelete}
+          />
+        ) : undefined,
+      }}
       disableKeyboardAvoiding
     >
       <KeyboardAvoidingView

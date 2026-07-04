@@ -6,6 +6,7 @@
  * 댓글 목록은 Page가 아닌 전체 List(회차 댓글과 달리 백엔드가 페이징하지 않음).
  */
 import { api } from '@/api/client';
+import { uploadMultipart, type RNFilePart } from '@/api/multipart';
 import { buildPageParams } from '@/api/paging';
 import type { PostCategory, PostComment, PostDetail, PostResponse, PostSort } from '@/api/types';
 import type { PageResponse } from '@/lib/query/infinite';
@@ -29,6 +30,24 @@ export async function listPosts(
 export async function getPost(id: number): Promise<PostDetail> {
   const { data } = await api.get<PostDetail>(`/api/posts/${id}`);
   return data;
+}
+
+/** 글 작성(멀티파트 — 스칼라는 query, 이미지는 parts ≤5장 jpeg/png). 201 + {id}. */
+export async function createPost(params: {
+  category: PostCategory;
+  title: string;
+  content: string;
+  images?: RNFilePart[];
+}): Promise<{ id: number }> {
+  return uploadMultipart<{ id: number }>('/api/posts', {
+    query: { category: params.category, title: params.title, content: params.content },
+    files: params.images?.length ? { images: params.images } : {},
+  });
+}
+
+/** 글 삭제(작성자∥ADMIN, 204). */
+export async function deletePost(id: number): Promise<void> {
+  await api.delete(`/api/posts/${id}`);
 }
 
 /**

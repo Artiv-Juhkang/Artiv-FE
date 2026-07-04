@@ -14,16 +14,32 @@ import { PostCard } from '@/features/community/components/PostCard';
 import { usePostsInfinite } from '@/features/community/hooks';
 import { useGuardedNavigation } from '@/lib/navigation/useGuardedNavigation';
 import { flattenInfinite, useInfiniteQuery } from '@/lib/query';
-import { EmptyState, ErrorState, Screen, Skeleton, Text, useTheme } from '@/ui';
+import { EmptyState, ErrorState, HeaderIconButton, Screen, Skeleton, Text, useTheme } from '@/ui';
 
 type CategoryFilter = PostCategory | 'ALL';
 
 export default function CommunityScreen() {
+  const nav = useGuardedNavigation();
   const [category, setCategory] = useState<CategoryFilter>('ALL');
   const [sort, setSort] = useState<PostSort>('LATEST');
 
   return (
-    <Screen surface="ambient" header={{ variant: 'ambient', back: false, title: '커뮤니티' }}>
+    <Screen
+      surface="ambient"
+      header={{
+        variant: 'ambient',
+        back: false,
+        title: '커뮤니티',
+        right: (
+          <HeaderIconButton
+            name="square.and.pencil"
+            fallback="✏️"
+            accessibilityLabel="글쓰기"
+            onPress={() => nav.push({ pathname: '/posts/new' })}
+          />
+        ),
+      }}
+    >
       <View style={{ flex: 1 }}>
         <CategoryChips value={category} onChange={setCategory} />
         <SortSeg value={sort} onChange={setSort} />
