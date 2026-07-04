@@ -202,7 +202,7 @@
           "schema" : {
             "type" : "string",
             "default" : "LATEST",
-            "enum" : [ "LATEST", "ADULT_FIRST" ]
+            "enum" : [ "LATEST", "UPDATED", "ADULT_FIRST" ]
           }
         }, {
           "name" : "pageable",
@@ -550,6 +550,44 @@
         }
       }
     },
+    "/api/series/{seriesId}/episodes/{episodeNo}/comments/{commentId}/like" : {
+      "post" : {
+        "tags" : [ "comment-controller" ],
+        "operationId" : "like_1",
+        "parameters" : [ {
+          "name" : "commentId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "Created"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "comment-controller" ],
+        "operationId" : "unlike_1",
+        "parameters" : [ {
+          "name" : "commentId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          }
+        }
+      }
+    },
     "/api/series/{seriesId}/episodes/{episodeNo}/bookmark" : {
       "post" : {
         "tags" : [ "personalization-controller" ],
@@ -600,6 +638,49 @@
         "responses" : {
           "204" : {
             "description" : "No Content"
+          }
+        }
+      }
+    },
+    "/api/series/{id}/cover" : {
+      "post" : {
+        "tags" : [ "series-controller" ],
+        "operationId" : "setCover",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "cover" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  }
+                },
+                "required" : [ "cover" ]
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SeriesCoverResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -793,7 +874,7 @@
     "/api/posts/{id}/like" : {
       "post" : {
         "tags" : [ "post-controller" ],
-        "operationId" : "like_1",
+        "operationId" : "like_2",
         "parameters" : [ {
           "name" : "id",
           "in" : "path",
@@ -811,7 +892,7 @@
       },
       "delete" : {
         "tags" : [ "post-controller" ],
-        "operationId" : "unlike_1",
+        "operationId" : "unlike_2",
         "parameters" : [ {
           "name" : "id",
           "in" : "path",
@@ -1850,16 +1931,21 @@
       "get" : {
         "tags" : [ "personalization-controller" ],
         "operationId" : "mySubscriptions",
+        "parameters" : [ {
+          "name" : "pageable",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/Pageable"
+          }
+        } ],
         "responses" : {
           "200" : {
             "description" : "OK",
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/SubscriptionResponse"
-                  }
+                  "$ref" : "#/components/schemas/PageResponseSubscriptionResponse"
                 }
               }
             }
@@ -2090,16 +2176,21 @@
       "get" : {
         "tags" : [ "personalization-controller" ],
         "operationId" : "myBookmarks",
+        "parameters" : [ {
+          "name" : "pageable",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/Pageable"
+          }
+        } ],
         "responses" : {
           "200" : {
             "description" : "OK",
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/BookmarkResponse"
-                  }
+                  "$ref" : "#/components/schemas/PageResponseBookmarkResponse"
                 }
               }
             }
@@ -2167,6 +2258,36 @@
                   "type" : "array",
                   "items" : {
                     "$ref" : "#/components/schemas/ContentTypeResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/authors/{authorId}/series" : {
+      "get" : {
+        "tags" : [ "author-controller" ],
+        "operationId" : "authorSeries",
+        "parameters" : [ {
+          "name" : "authorId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/SeriesSummaryResponse"
                   }
                 }
               }
@@ -2750,9 +2871,21 @@
             "type" : "string",
             "maxLength" : 1000,
             "minLength" : 0
+          },
+          "parentId" : {
+            "type" : "integer",
+            "format" : "int64"
           }
         },
         "required" : [ "content" ]
+      },
+      "SeriesCoverResponse" : {
+        "type" : "object",
+        "properties" : {
+          "coverUrl" : {
+            "type" : "string"
+          }
+        }
       },
       "ReportCreateRequest" : {
         "type" : "object",
@@ -3452,6 +3585,10 @@
           },
           "coverUrl" : {
             "type" : "string"
+          },
+          "lastPublishedAt" : {
+            "type" : "string",
+            "format" : "date-time"
           }
         }
       },
@@ -3543,6 +3680,10 @@
           "liked" : {
             "type" : "boolean"
           },
+          "commentCount" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
           "locked" : {
             "type" : "boolean"
           },
@@ -3594,6 +3735,10 @@
             "type" : "integer",
             "format" : "int64"
           },
+          "parentId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
           "content" : {
             "type" : "string"
           },
@@ -3603,6 +3748,19 @@
           "createdAt" : {
             "type" : "string",
             "format" : "date-time"
+          },
+          "likeCount" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "liked" : {
+            "type" : "boolean"
+          },
+          "replies" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/CommentResponse"
+            }
           }
         }
       },
@@ -3648,6 +3806,10 @@
           },
           "description" : {
             "type" : "string"
+          },
+          "authorId" : {
+            "type" : "integer",
+            "format" : "int64"
           },
           "authorNickname" : {
             "type" : "string"
@@ -3830,6 +3992,36 @@
           "sortOrder" : {
             "type" : "integer",
             "format" : "int32"
+          }
+        }
+      },
+      "PageResponseSubscriptionResponse" : {
+        "type" : "object",
+        "properties" : {
+          "content" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SubscriptionResponse"
+            }
+          },
+          "page" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "size" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "totalElements" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalPages" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "last" : {
+            "type" : "boolean"
           }
         }
       },
@@ -4191,6 +4383,36 @@
           "createdAt" : {
             "type" : "string",
             "format" : "date-time"
+          }
+        }
+      },
+      "PageResponseBookmarkResponse" : {
+        "type" : "object",
+        "properties" : {
+          "content" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/BookmarkResponse"
+            }
+          },
+          "page" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "size" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "totalElements" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalPages" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "last" : {
+            "type" : "boolean"
           }
         }
       },

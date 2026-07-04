@@ -148,6 +148,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/series/{seriesId}/episodes/{episodeNo}/comments/{commentId}/like": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["like_1"];
+        delete: operations["unlike_1"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/series/{seriesId}/episodes/{episodeNo}/bookmark": {
         parameters: {
             query?: never;
@@ -159,6 +175,22 @@ export interface paths {
         put?: never;
         post: operations["bookmark"];
         delete: operations["unbookmark"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/series/{id}/cover": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["setCover"];
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -221,8 +253,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["like_1"];
-        delete: operations["unlike_1"];
+        post: operations["like_2"];
+        delete: operations["unlike_2"];
         options?: never;
         head?: never;
         patch?: never;
@@ -948,6 +980,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/authors/{authorId}/series": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["authorSeries"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/authors/{authorId}/posts": {
         parameters: {
             query?: never;
@@ -1200,6 +1248,9 @@ export interface components {
             content: string;
             /** Format: int64 */
             parentId?: number;
+        };
+        SeriesCoverResponse: {
+            coverUrl?: string;
         };
         ReportCreateRequest: {
             /** @enum {string} */
@@ -1640,6 +1691,18 @@ export interface components {
             /** Format: int32 */
             sortOrder?: number;
         };
+        PageResponseSubscriptionResponse: {
+            content?: components["schemas"]["SubscriptionResponse"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            totalElements?: number;
+            /** Format: int32 */
+            totalPages?: number;
+            last?: boolean;
+        };
         SubscriptionResponse: {
             /** Format: int64 */
             seriesId?: number;
@@ -1790,6 +1853,18 @@ export interface components {
             episodeTitle?: string;
             /** Format: date-time */
             createdAt?: string;
+        };
+        PageResponseBookmarkResponse: {
+            content?: components["schemas"]["BookmarkResponse"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            totalElements?: number;
+            /** Format: int32 */
+            totalPages?: number;
+            last?: boolean;
         };
         ContentTypeResponse: {
             key?: string;
@@ -2065,7 +2140,7 @@ export interface operations {
                 keyword?: string;
                 adultOnly?: boolean;
                 tag?: string;
-                sort?: "LATEST" | "ADULT_FIRST";
+                sort?: "LATEST" | "UPDATED" | "ADULT_FIRST";
                 pageable: components["schemas"]["Pageable"];
             };
             header?: never;
@@ -2319,6 +2394,46 @@ export interface operations {
             };
         };
     };
+    like_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                commentId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    unlike_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                commentId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     bookmark: {
         parameters: {
             query?: never;
@@ -2358,6 +2473,35 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    setCover: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": {
+                    /** Format: binary */
+                    cover: string;
+                };
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["SeriesCoverResponse"];
+                };
             };
         };
     };
@@ -2485,7 +2629,7 @@ export interface operations {
             };
         };
     };
-    like_1: {
+    like_2: {
         parameters: {
             query?: never;
             header?: never;
@@ -2505,7 +2649,7 @@ export interface operations {
             };
         };
     };
-    unlike_1: {
+    unlike_2: {
         parameters: {
             query?: never;
             header?: never;
@@ -3342,7 +3486,9 @@ export interface operations {
     };
     mySubscriptions: {
         parameters: {
-            query?: never;
+            query: {
+                pageable: components["schemas"]["Pageable"];
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -3355,7 +3501,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["SubscriptionResponse"][];
+                    "*/*": components["schemas"]["PageResponseSubscriptionResponse"];
                 };
             };
         };
@@ -3555,7 +3701,9 @@ export interface operations {
     };
     myBookmarks: {
         parameters: {
-            query?: never;
+            query: {
+                pageable: components["schemas"]["Pageable"];
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -3568,7 +3716,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["BookmarkResponse"][];
+                    "*/*": components["schemas"]["PageResponseBookmarkResponse"];
                 };
             };
         };
@@ -3633,6 +3781,28 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ContentTypeResponse"][];
+                };
+            };
+        };
+    };
+    authorSeries: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                authorId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["SeriesSummaryResponse"][];
                 };
             };
         };
