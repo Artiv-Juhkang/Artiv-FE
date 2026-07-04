@@ -5,19 +5,12 @@
  * 목록은 최상위 댓글 Page 무한쿼리, 각 댓글에 대댓글(replies)이 중첩돼 내려온다.
  * 좋아요는 낙관적 캐시 패치(댓글/대댓글 모두), 답글은 부모 지정 후 작성(서버가 1-depth로 평탄화).
  *
+ * 스레드/입력바 UI는 features/comments 공용 컴포넌트를 사용한다(게시글 댓글과 공유).
  * 삭제 UI는 이번 범위 밖 — CommentResponse에 소유자 식별자가 없어 '내 댓글만 삭제' 표시를
  * 신뢰성 있게 못 한다(후속: DTO에 소유 플래그 추가). 백엔드 삭제 API는 이미 있음.
  */
 import { useMemo, useState } from 'react';
-import {
-  FlatList,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  TextInput,
-  View,
-} from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { FlatList, KeyboardAvoidingView, Platform, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import {
   useMutation,
@@ -39,17 +32,13 @@ import {
   type PageResponse,
 } from '@/lib/query/infinite';
 import {
-  Button,
-  EmptyState,
-  ErrorState,
-  Screen,
-  Skeleton,
-  Text,
-  useTheme,
-  useToast,
-} from '@/ui';
+  CommentThread,
+  CommentsSkeleton,
+  ComposeBar,
+  type ReplyTarget,
+} from '@/features/comments';
+import { EmptyState, ErrorState, Screen, Text, useTheme, useToast } from '@/ui';
 
-type ReplyTarget = { id: number; nickname: string };
 type CommentsData = InfiniteData<PageResponse<EpisodeComment>, number>;
 
 /** 낙관적 좋아요 패치 — 최상위/대댓글 어디에 있든 해당 댓글의 liked/likeCount 를 뒤집는다. */
@@ -201,219 +190,4 @@ export default function EpisodeCommentsScreen() {
       </KeyboardAvoidingView>
     </Screen>
   );
-}
-
-/* -------------------------------------------------------------------------- */
-/*  한 스레드: 최상위 댓글 + 대댓글(들여쓰기).                                    */
-/* -------------------------------------------------------------------------- */
-
-function CommentThread({
-  comment,
-  onLike,
-  onReply,
-}: {
-  comment: EpisodeComment;
-  onLike: (c: EpisodeComment) => void;
-  onReply: (c: EpisodeComment) => void;
-}) {
-  const t = useTheme();
-  const replies = comment.replies ?? [];
-  return (
-    <View style={{ paddingHorizontal: t.space.lg, paddingVertical: t.space.sm }}>
-      <CommentRow comment={comment} onLike={onLike} onReply={onReply} />
-      {replies.length > 0 ? (
-        <View
-          style={{
-            marginTop: t.space.sm,
-            marginLeft: t.space.lg,
-            gap: t.space.sm,
-            borderLeftWidth: 2,
-            borderLeftColor: t.color.border,
-            paddingLeft: t.space.md,
-          }}
-        >
-          {replies.map((r) => (
-            <CommentRow key={r.id} comment={r} onLike={onLike} onReply={onReply} />
-          ))}
-        </View>
-      ) : null}
-    </View>
-  );
-}
-
-function CommentRow({
-  comment,
-  onLike,
-  onReply,
-}: {
-  comment: EpisodeComment;
-  onLike: (c: EpisodeComment) => void;
-  onReply: (c: EpisodeComment) => void;
-}) {
-  const t = useTheme();
-  const liked = comment.liked === true;
-  const likeCount = comment.likeCount ?? 0;
-  return (
-    <View style={{ gap: 4 }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: t.space.sm }}>
-        <Text variant="caption" weight="semibold" numberOfLines={1}>
-          {comment.authorNickname ?? '익명'}
-        </Text>
-        <Text variant="micro" color="onSurfaceMuted">
-          {relativeTime(comment.createdAt)}
-        </Text>
-      </View>
-
-      <Text variant="body" color="onSurface">
-        {comment.content ?? ''}
-      </Text>
-
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: t.space.lg }}>
-        <Pressable
-          onPress={() => onLike(comment)}
-          accessibilityRole="button"
-          accessibilityLabel={liked ? '추천 취소' : '추천'}
-          hitSlop={8}
-          style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}
-        >
-          <Text variant="caption" style={{ color: liked ? t.color.accent : t.color.onSurfaceMuted }}>
-            {liked ? '♥' : '♡'}
-          </Text>
-          <Text
-            variant="caption"
-            style={{ color: liked ? t.color.accent : t.color.onSurfaceMuted }}
-          >
-            {likeCount}
-          </Text>
-        </Pressable>
-
-        <Pressable
-          onPress={() => onReply(comment)}
-          accessibilityRole="button"
-          accessibilityLabel="답글 달기"
-          hitSlop={8}
-        >
-          <Text variant="caption" color="onSurfaceMuted">
-            답글
-          </Text>
-        </Pressable>
-      </View>
-    </View>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/*  하단 입력 바 (답글 대상 칩 + 입력 + 전송).                                    */
-/* -------------------------------------------------------------------------- */
-
-function ComposeBar({
-  text,
-  onChangeText,
-  onSend,
-  sending,
-  replyTo,
-  onCancelReply,
-}: {
-  text: string;
-  onChangeText: (v: string) => void;
-  onSend: () => void;
-  sending: boolean;
-  replyTo: ReplyTarget | null;
-  onCancelReply: () => void;
-}) {
-  const t = useTheme();
-  const insets = useSafeAreaInsets();
-  return (
-    <View
-      style={{
-        borderTopWidth: 1,
-        borderTopColor: t.color.border,
-        paddingHorizontal: t.space.lg,
-        paddingTop: t.space.sm,
-        // 하단 홈 인디케이터/내비바 회피(없는 기기는 space.sm 바닥).
-        paddingBottom: Math.max(insets.bottom, t.space.sm),
-        gap: t.space.xs,
-        backgroundColor: t.color.surface,
-      }}
-    >
-      {replyTo ? (
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: t.space.sm }}>
-          <Text variant="caption" color="onSurfaceSecondary" style={{ flex: 1 }} numberOfLines={1}>
-            {replyTo.nickname}님에게 답글
-          </Text>
-          <Pressable onPress={onCancelReply} accessibilityRole="button" accessibilityLabel="답글 취소" hitSlop={8}>
-            <Text variant="caption" color="accent" weight="semibold">
-              취소
-            </Text>
-          </Pressable>
-        </View>
-      ) : null}
-
-      <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: t.space.sm }}>
-        <TextInput
-          value={text}
-          onChangeText={onChangeText}
-          placeholder={replyTo ? '답글을 입력하세요' : '댓글을 입력하세요'}
-          placeholderTextColor={t.color.onSurfaceMuted}
-          multiline
-          maxLength={1000}
-          style={{
-            flex: 1,
-            minHeight: 40,
-            maxHeight: 120,
-            borderRadius: t.radius.md,
-            backgroundColor: t.color.surfaceSunken,
-            paddingHorizontal: t.space.md,
-            paddingVertical: t.space.sm,
-            color: t.color.onSurface,
-            fontSize: t.typography.fontSize.body,
-          }}
-        />
-        <Button
-          label="등록"
-          variant="primary"
-          size="sm"
-          loading={sending}
-          disabled={text.trim().length === 0}
-          onPress={onSend}
-        />
-      </View>
-    </View>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-
-function CommentsSkeleton() {
-  const t = useTheme();
-  return (
-    <View style={{ gap: t.space.lg, padding: t.space.lg }}>
-      {Array.from({ length: 5 }).map((_, i) => (
-        <View key={i} style={{ gap: t.space.xs }}>
-          <Skeleton width="30%" height={12} />
-          <Skeleton width="90%" height={16} />
-        </View>
-      ))}
-    </View>
-  );
-}
-
-/** 짧은 한국어 상대시간('방금 전' / 'N분 전' / 'N시간 전' / 'N일 전' / 'YYYY.MM.DD'). */
-function relativeTime(iso: string | null | undefined): string {
-  if (!iso) return '';
-  const then = new Date(iso).getTime();
-  if (!Number.isFinite(then)) return '';
-  const diff = Date.now() - then;
-  if (diff < 0) return '';
-  const sec = Math.floor(diff / 1000);
-  if (sec < 60) return '방금 전';
-  const min = Math.floor(sec / 60);
-  if (min < 60) return `${min}분 전`;
-  const hour = Math.floor(min / 60);
-  if (hour < 24) return `${hour}시간 전`;
-  const day = Math.floor(hour / 24);
-  if (day < 30) return `${day}일 전`;
-  const d = new Date(then);
-  const pad = (x: number) => String(x).padStart(2, '0');
-  return `${d.getFullYear()}.${pad(d.getMonth() + 1)}.${pad(d.getDate())}`;
 }

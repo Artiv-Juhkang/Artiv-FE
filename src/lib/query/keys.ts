@@ -59,6 +59,7 @@ export const keys = {
     list: (params?: Record<string, unknown>) =>
       ['posts', 'list', normalizeParams(params)] as const,
     detail: (id: number) => ['posts', 'detail', id] as const,
+    comments: (id: number) => ['posts', 'comments', id] as const,
   },
   notifications: {
     all: ['notifications'] as const,

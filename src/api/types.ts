@@ -121,6 +121,7 @@ export type EpisodeComment = Schemas['CommentResponse'];
 export type PostResponse = Schemas['PostResponse'];
 export type PostDetail = Schemas['PostDetailResponse'];
 export type PostImage = Schemas['PostImageResponse'];
+export type PostComment = Schemas['PostCommentResponse'];
 
 // 개인화 / 서재
 export type SubscriptionResponse = Schemas['SubscriptionResponse'];

@@ -1,12 +1,13 @@
 /**
- * 커뮤니티 게시글/좋아요.
+ * 커뮤니티 게시글/댓글/좋아요.
  *
  * listPosts 는 정렬 가능(category/sort) → buildPageParams.
- * setPostLike 는 200 + PostDetail 바디 반환 → 훅 onSuccess 에서 liked/likeCount reconcile.
+ * setPostLike 는 멱등 무바디(200) — 낙관 토글은 useToggleMutation으로(회차 좋아요와 동일).
+ * 댓글 목록은 Page가 아닌 전체 List(회차 댓글과 달리 백엔드가 페이징하지 않음).
  */
 import { api } from '@/api/client';
 import { buildPageParams } from '@/api/paging';
-import type { PostCategory, PostDetail, PostResponse, PostSort } from '@/api/types';
+import type { PostCategory, PostComment, PostDetail, PostResponse, PostSort } from '@/api/types';
 import type { PageResponse } from '@/lib/query/infinite';
 
 /** 게시글 목록(Page, 정렬 가능). 목록 PostResponse 엔 liked 없음(상세에만). */
@@ -31,13 +32,36 @@ export async function getPost(id: number): Promise<PostDetail> {
 }
 
 /**
- * 게시글 좋아요 토글(멱등). on=true POST / false DELETE.
- * 200 + 갱신된 PostDetail 반환 → 호출부에서 liked/likeCount 정합.
+ * 게시글 좋아요 토글(멱등, 무바디 200). on=true POST / false DELETE.
+ * (기존 'PostDetail 바디 반환' 기대는 백엔드 계약과 불일치했던 휴면 오류 — F9 정정.)
  */
-export async function setPostLike(id: number, on: boolean): Promise<PostDetail> {
+export async function setPostLike(id: number, on: boolean): Promise<void> {
   const path = `/api/posts/${id}/like`;
-  const { data } = on
-    ? await api.post<PostDetail>(path)
-    : await api.delete<PostDetail>(path);
+  if (on) {
+    await api.post(path);
+  } else {
+    await api.delete(path);
+  }
+}
+
+/** 게시글 댓글 전체 목록(List — 대댓글은 replies로 중첩). */
+export async function listPostComments(
+  postId: number,
+  signal?: AbortSignal,
+): Promise<PostComment[]> {
+  const { data } = await api.get<PostComment[]>(`/api/posts/${postId}/comments`, { signal });
+  return data;
+}
+
+/** 게시글 댓글/대댓글 작성(201 + 생성 댓글 반환). parentId 지정 시 서버가 1-depth로 평탄화. */
+export async function writePostComment(
+  postId: number,
+  content: string,
+  parentId?: number,
+): Promise<PostComment> {
+  const { data } = await api.post<PostComment>(`/api/posts/${postId}/comments`, {
+    content,
+    parentId,
+  });
   return data;
 }
