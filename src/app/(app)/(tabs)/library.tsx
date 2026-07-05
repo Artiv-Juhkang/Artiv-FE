@@ -1,8 +1,9 @@
 /**
- * 서재 (Library) — tab root. Two segments matching the confirmed reader model:
- *   - 관심  = SUBSCRIPTION list (작품 단위 관심, /api/me/subscriptions). UP + 이어보기.
- *   - 열람  = READ-HISTORY (자동 기록, /api/me/read-history). 마지막 본 화.
- * 회차 단위 북마크는 모델 밖이라 서재에 두지 않는다. "구독" 단어도 쓰지 않는다.
+ * 서재 (Library) — tab root. 2계층 IA (improvement §3, L1):
+ *   1차: 창작물 | 커뮤니티 (분류 우선순위 1)
+ *   2차(창작물): 관심(SUBSCRIPTION) / 열람(READ-HISTORY) / 팔로우(FOLLOWING — 작가 축)
+ *   2차(커뮤니티): 내 글/내 댓글/추천 — L2에서 배선(지금은 안내 EmptyState)
+ * 회차 단위 북마크는 모델 밖. "구독" 단어는 쓰지 않는다. 친구(상호팔로우)는 탭3 소관.
  *
  * Frame: <Screen surface="ambient" header={{ variant:'ambient', back:false, title:'서재' }}>
  * — a tab ROOT, so no back button (ScreenLayout convention). The segmented control
@@ -12,39 +13,79 @@ import { useCallback, useState, type ReactElement } from 'react';
 import { FlatList, View } from 'react-native';
 
 import type { ReadHistoryResponse, SubscriptionResponse } from '@/api/types';
+import { FollowRow } from '@/features/library/components/FollowRow';
 import { LibraryRow } from '@/features/library/components/LibraryRow';
-import { useReadHistory, useSubscriptions } from '@/features/library/hooks';
+import { useMyFollowing, useReadHistory, useSubscriptions } from '@/features/library/hooks';
 import { isAppError } from '@/lib/errors';
 import { useGuardedNavigation } from '@/lib/navigation/useGuardedNavigation';
 import { flattenInfinite, useInfiniteQuery } from '@/lib/query';
 import { EmptyState, ErrorState, Screen, Skeleton, Text, useTheme } from '@/ui';
 
-type LibraryTab = 'interest' | 'history';
+type LibraryGroup = 'creation' | 'community';
+type CreationTab = 'interest' | 'history' | 'follow';
 
 export default function LibraryScreen() {
-  const [tab, setTab] = useState<LibraryTab>('interest');
+  const [group, setGroup] = useState<LibraryGroup>('creation');
+  const [creationTab, setCreationTab] = useState<CreationTab>('interest');
   return (
     <Screen surface="ambient" header={{ variant: 'ambient', back: false, title: '서재' }}>
       <View style={{ flex: 1 }}>
-        <SegTabs value={tab} onChange={setTab} />
-        {/* Only the active tab's query runs; React Query keeps both caches warm
-            across switches (the inactive list unmounts but its data persists). */}
-        {tab === 'interest' ? <InterestList /> : <HistoryList />}
+        {/* 1차: 창작물 | 커뮤니티 — 그룹 전환 시 2차 세그는 그룹별 상태를 유지한다. */}
+        <SegTabs<LibraryGroup>
+          items={[
+            ['creation', '창작물'],
+            ['community', '커뮤니티'],
+          ]}
+          value={group}
+          onChange={setGroup}
+        />
+        {group === 'creation' ? (
+          <>
+            <SegTabs<CreationTab>
+              items={[
+                ['interest', '관심'],
+                ['history', '열람'],
+                ['follow', '팔로우'],
+              ]}
+              value={creationTab}
+              onChange={setCreationTab}
+            />
+            {/* Only the active tab's query runs; React Query keeps caches warm
+                across switches (the inactive list unmounts but its data persists). */}
+            {creationTab === 'interest' ? (
+              <InterestList />
+            ) : creationTab === 'history' ? (
+              <HistoryList />
+            ) : (
+              <FollowList />
+            )}
+          </>
+        ) : (
+          // 커뮤니티 그룹 — L2(내 글/내 댓글/추천)에서 배선. 죽은 세그를 미리 만들지 않는다.
+          <EmptyState
+            title="커뮤니티 활동 기록이 곧 여기 모여요"
+            description="내가 쓴 글, 댓글, 추천한 글을 한곳에서 볼 수 있게 준비하고 있어요."
+          />
+        )}
       </View>
     </Screen>
   );
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Segmented control (관심 / 열람)                                            */
+/*  Segmented control — 1차(그룹)·2차(그룹 내 탭)가 같은 문법을 공유(제네릭).      */
 /* -------------------------------------------------------------------------- */
 
-function SegTabs({ value, onChange }: { value: LibraryTab; onChange: (v: LibraryTab) => void }) {
+function SegTabs<T extends string>({
+  items,
+  value,
+  onChange,
+}: {
+  items: readonly (readonly [T, string])[];
+  value: T;
+  onChange: (v: T) => void;
+}) {
   const t = useTheme();
-  const items: readonly [LibraryTab, string][] = [
-    ['interest', '관심'],
-    ['history', '열람'],
-  ];
   return (
     <View
       accessibilityRole="tablist"
@@ -157,6 +198,58 @@ function HistoryList() {
           title={h.seriesTitle ?? '제목 없음'}
           meta={typeof h.lastReadEpisodeNo === 'number' ? `마지막으로 본 ${h.lastReadEpisodeNo}화` : ''}
           onPress={() => nav.push({ pathname: '/series/[id]', params: { id: h.seriesId! } })}
+        />
+      )}
+    />
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  팔로우 (following) list — 비페이지 List(무한스크롤 없음).                     */
+/* -------------------------------------------------------------------------- */
+
+function FollowList() {
+  const t = useTheme();
+  const nav = useGuardedNavigation();
+  const q = useMyFollowing();
+
+  if (q.isLoading) return <LibraryListSkeleton />;
+  if (q.isError) {
+    return (
+      <ErrorState
+        code={isAppError(q.error) ? (q.error.code === 'ENTITY_NOT_FOUND' ? 'ENTITY_NOT_FOUND' : 'UNKNOWN') : 'UNKNOWN'}
+        message={isAppError(q.error) ? q.error.message : undefined}
+        onRetry={() => void q.refetch()}
+      />
+    );
+  }
+  const users = q.data ?? [];
+  if (users.length === 0) {
+    return (
+      <EmptyState
+        title="아직 팔로우한 작가가 없어요"
+        description="마음에 드는 작가를 팔로우하면 여기에 모여요."
+      />
+    );
+  }
+  return (
+    <FlatList
+      data={users}
+      keyExtractor={(u) => String(u.userId)}
+      contentContainerStyle={{ paddingTop: t.space.xs, paddingBottom: t.space.xl }}
+      showsVerticalScrollIndicator={false}
+      refreshing={q.isRefetching}
+      onRefresh={() => void q.refetch()}
+      renderItem={({ item }) => (
+        <FollowRow
+          user={item}
+          // CH1(공개 프로필) 도착 전까지는 기존 작가 작품 그리드로 진입(§5 크로스컷).
+          onPress={() =>
+            nav.push({
+              pathname: '/authors/[id]',
+              params: { id: item.userId!, nickname: item.nickname ?? '' },
+            })
+          }
         />
       )}
     />

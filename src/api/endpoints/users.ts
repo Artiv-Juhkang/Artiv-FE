@@ -4,7 +4,7 @@
  * 본인 팔로우는 UI 에서 차단(여기선 막지 않음).
  */
 import { api } from '@/api/client';
-import type { FollowStatsResponse } from '@/api/types';
+import type { FollowStatsResponse, FollowUserResponse } from '@/api/types';
 
 /** 특정 사용자 팔로우 통계(팔로워/팔로잉 수 + 내 팔로우 여부). */
 export async function getFollowStats(
@@ -13,6 +13,12 @@ export async function getFollowStats(
   const { data } = await api.get<FollowStatsResponse>(
     `/api/users/${userId}/follow-stats`,
   );
+  return data;
+}
+
+/** 내가 팔로우한 사용자 목록(비페이지 List — MVP 규모 허용, 임계 시 BE 페이지화). */
+export async function getMyFollowing(signal?: AbortSignal): Promise<FollowUserResponse[]> {
+  const { data } = await api.get<FollowUserResponse[]>('/api/users/me/following', { signal });
   return data;
 }
 

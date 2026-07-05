@@ -70,6 +70,7 @@ export const keys = {
     all: ['me'] as const,
     profile: () => ['me', 'profile'] as const,
     subscriptions: () => ['me', 'subscriptions'] as const,
+    following: () => ['me', 'following'] as const,
     bookmarks: () => ['me', 'bookmarks'] as const,
     readHistory: () => ['me', 'readHistory'] as const,
   },
