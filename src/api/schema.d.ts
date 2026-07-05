@@ -372,6 +372,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/users/me/profile-visibility": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["changeProfileVisibility"];
+        trace?: never;
+    };
     "/api/users/me/password": {
         parameters: {
             query?: never;
@@ -706,6 +722,22 @@ export interface paths {
         options?: never;
         head?: never;
         patch: operations["approve"];
+        trace?: never;
+    };
+    "/api/users/{userId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["profile"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/users/{targetId}/follow-stats": {
@@ -1266,6 +1298,7 @@ export interface components {
             avatarUrl?: string;
             /** Format: date */
             birthDate?: string;
+            profilePublic?: boolean;
             /** Format: date-time */
             createdAt?: string;
         };
@@ -1347,6 +1380,9 @@ export interface components {
         LoginRequest: {
             email: string;
             password: string;
+        };
+        ProfileVisibilityRequest: {
+            profilePublic?: boolean;
         };
         PasswordChangeRequest: {
             currentPassword: string;
@@ -1537,12 +1573,26 @@ export interface components {
             /** Format: date-time */
             reviewedAt?: string;
         };
+        UserProfileResponse: {
+            /** Format: int64 */
+            id?: number;
+            nickname?: string;
+            avatarUrl?: string;
+            /** @enum {string} */
+            role?: "READER" | "CREATOR" | "ADMIN";
+            profilePublic?: boolean;
+            bio?: string;
+            /** Format: date-time */
+            createdAt?: string;
+        };
         FollowStatsResponse: {
             /** Format: int64 */
             followerCount?: number;
             /** Format: int64 */
             followingCount?: number;
             isFollowing?: boolean;
+            isFollowedBy?: boolean;
+            isMutual?: boolean;
         };
         FollowUserResponse: {
             /** Format: int64 */
@@ -2988,6 +3038,30 @@ export interface operations {
             };
         };
     };
+    changeProfileVisibility: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProfileVisibilityRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["MyProfileResponse"];
+                };
+            };
+        };
+    };
     changePassword: {
         parameters: {
             query?: never;
@@ -3552,6 +3626,28 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["CreatorRequestAdminResponse"];
+                };
+            };
+        };
+    };
+    profile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                userId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["UserProfileResponse"];
                 };
             };
         };
