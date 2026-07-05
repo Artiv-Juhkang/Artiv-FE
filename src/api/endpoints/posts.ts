@@ -7,8 +7,16 @@
  */
 import { api } from '@/api/client';
 import { uploadMultipart, type RNFilePart } from '@/api/multipart';
-import { buildPageParams } from '@/api/paging';
-import type { PostCategory, PostComment, PostDetail, PostResponse, PostSort } from '@/api/types';
+import { buildFixedSortParams, buildPageParams } from '@/api/paging';
+import type {
+  MyCommentResponse,
+  MyPostResponse,
+  PostCategory,
+  PostComment,
+  PostDetail,
+  PostResponse,
+  PostSort,
+} from '@/api/types';
 import type { PageResponse } from '@/lib/query/infinite';
 
 /** 게시글 목록(Page, 정렬 가능). 목록 PostResponse 엔 liked 없음(상세에만). */
@@ -29,6 +37,42 @@ export async function listPosts(
 /** 게시글 상세(liked/likeCount/images 포함). */
 export async function getPost(id: number): Promise<PostDetail> {
   const { data } = await api.get<PostDetail>(`/api/posts/${id}`);
+  return data;
+}
+
+/** 내가 쓴 글(Page, 고정 정렬 — 블라인드 포함 blinded 플래그). */
+export async function getMyPosts(
+  page: number,
+  signal?: AbortSignal,
+): Promise<PageResponse<MyPostResponse>> {
+  const { data } = await api.get<PageResponse<MyPostResponse>>('/api/me/posts', {
+    params: buildFixedSortParams({ page }),
+    signal,
+  });
+  return data;
+}
+
+/** 내가 쓴 댓글(Page, 고정 정렬 — 원글 제목·블라인드 메타 동봉). */
+export async function getMyPostComments(
+  page: number,
+  signal?: AbortSignal,
+): Promise<PageResponse<MyCommentResponse>> {
+  const { data } = await api.get<PageResponse<MyCommentResponse>>('/api/me/post-comments', {
+    params: buildFixedSortParams({ page }),
+    signal,
+  });
+  return data;
+}
+
+/** 내가 추천한 글(Page, 고정 정렬 — 블라인드/삭제 글은 서버가 content에서 제외). */
+export async function getMyLikedPosts(
+  page: number,
+  signal?: AbortSignal,
+): Promise<PageResponse<PostResponse>> {
+  const { data } = await api.get<PageResponse<PostResponse>>('/api/me/liked-posts', {
+    params: buildFixedSortParams({ page }),
+    signal,
+  });
   return data;
 }
 

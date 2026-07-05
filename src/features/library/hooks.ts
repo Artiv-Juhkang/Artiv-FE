@@ -15,8 +15,15 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { getSubscriptions } from '@/api/endpoints/personalization';
+import { getMyLikedPosts, getMyPostComments, getMyPosts } from '@/api/endpoints/posts';
 import { getMyFollowing } from '@/api/endpoints/users';
-import type { FollowUserResponse, SubscriptionResponse } from '@/api/types';
+import type {
+  FollowUserResponse,
+  MyCommentResponse,
+  MyPostResponse,
+  PostResponse,
+  SubscriptionResponse,
+} from '@/api/types';
 import { createPageInfiniteQuery, keys } from '@/lib/query';
 
 // 열람 탭은 read-history와 동일 캐시를 쓰므로 시리즈 쪽 정본을 재노출(중복 키 금지).
@@ -45,5 +52,29 @@ export function useMyFollowing() {
   return useQuery<FollowUserResponse[]>({
     queryKey: keys.me.following(),
     queryFn: ({ signal }) => getMyFollowing(signal),
+  });
+}
+
+/** 내가 쓴 글 — fixed-sort Page 무한쿼리 OPTIONS (L2). */
+export function useMyPosts() {
+  return createPageInfiniteQuery<MyPostResponse>({
+    queryKey: keys.me.posts(),
+    fetchPage: getMyPosts,
+  });
+}
+
+/** 내가 쓴 댓글 — fixed-sort Page 무한쿼리 OPTIONS (L2). */
+export function useMyPostComments() {
+  return createPageInfiniteQuery<MyCommentResponse>({
+    queryKey: keys.me.postComments(),
+    fetchPage: getMyPostComments,
+  });
+}
+
+/** 내가 추천한 글 — fixed-sort Page 무한쿼리 OPTIONS (L2). */
+export function useMyLikedPosts() {
+  return createPageInfiniteQuery<PostResponse>({
+    queryKey: keys.me.likedPosts(),
+    fetchPage: getMyLikedPosts,
   });
 }

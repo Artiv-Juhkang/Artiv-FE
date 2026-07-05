@@ -2,7 +2,7 @@
  * 서재 (Library) — tab root. 2계층 IA (improvement §3, L1):
  *   1차: 창작물 | 커뮤니티 (분류 우선순위 1)
  *   2차(창작물): 관심(SUBSCRIPTION) / 열람(READ-HISTORY) / 팔로우(FOLLOWING — 작가 축)
- *   2차(커뮤니티): 내 글/내 댓글/추천 — L2에서 배선(지금은 안내 EmptyState)
+ *   2차(커뮤니티): 내 글 / 내 댓글 / 추천 — 게시글 상세(/posts/[id])로 라우팅 (L2)
  * 회차 단위 북마크는 모델 밖. "구독" 단어는 쓰지 않는다. 친구(상호팔로우)는 탭3 소관.
  *
  * Frame: <Screen surface="ambient" header={{ variant:'ambient', back:false, title:'서재' }}>
@@ -12,10 +12,24 @@
 import { useCallback, useState, type ReactElement } from 'react';
 import { FlatList, View } from 'react-native';
 
-import type { ReadHistoryResponse, SubscriptionResponse } from '@/api/types';
+import type {
+  MyCommentResponse,
+  MyPostResponse,
+  PostResponse,
+  ReadHistoryResponse,
+  SubscriptionResponse,
+} from '@/api/types';
 import { FollowRow } from '@/features/library/components/FollowRow';
 import { LibraryRow } from '@/features/library/components/LibraryRow';
-import { useMyFollowing, useReadHistory, useSubscriptions } from '@/features/library/hooks';
+import { MyCommentRow, MyPostRow } from '@/features/library/components/PostRow';
+import {
+  useMyFollowing,
+  useMyLikedPosts,
+  useMyPostComments,
+  useMyPosts,
+  useReadHistory,
+  useSubscriptions,
+} from '@/features/library/hooks';
 import { isAppError } from '@/lib/errors';
 import { useGuardedNavigation } from '@/lib/navigation/useGuardedNavigation';
 import { flattenInfinite, useInfiniteQuery } from '@/lib/query';
@@ -23,10 +37,12 @@ import { EmptyState, ErrorState, Screen, Skeleton, Text, useTheme } from '@/ui';
 
 type LibraryGroup = 'creation' | 'community';
 type CreationTab = 'interest' | 'history' | 'follow';
+type CommunityTab = 'posts' | 'comments' | 'liked';
 
 export default function LibraryScreen() {
   const [group, setGroup] = useState<LibraryGroup>('creation');
   const [creationTab, setCreationTab] = useState<CreationTab>('interest');
+  const [communityTab, setCommunityTab] = useState<CommunityTab>('posts');
   return (
     <Screen surface="ambient" header={{ variant: 'ambient', back: false, title: '서재' }}>
       <View style={{ flex: 1 }}>
@@ -61,11 +77,24 @@ export default function LibraryScreen() {
             )}
           </>
         ) : (
-          // 커뮤니티 그룹 — L2(내 글/내 댓글/추천)에서 배선. 죽은 세그를 미리 만들지 않는다.
-          <EmptyState
-            title="커뮤니티 활동 기록이 곧 여기 모여요"
-            description="내가 쓴 글, 댓글, 추천한 글을 한곳에서 볼 수 있게 준비하고 있어요."
-          />
+          <>
+            <SegTabs<CommunityTab>
+              items={[
+                ['posts', '내 글'],
+                ['comments', '내 댓글'],
+                ['liked', '추천'],
+              ]}
+              value={communityTab}
+              onChange={setCommunityTab}
+            />
+            {communityTab === 'posts' ? (
+              <MyPostsList />
+            ) : communityTab === 'comments' ? (
+              <MyCommentsList />
+            ) : (
+              <MyLikedList />
+            )}
+          </>
         )}
       </View>
     </Screen>
@@ -250,6 +279,101 @@ function FollowList() {
               params: { id: item.userId!, nickname: item.nickname ?? '' },
             })
           }
+        />
+      )}
+    />
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  커뮤니티 그룹 (L2) — 내 글 / 내 댓글 / 추천 (fixed-sort Page 무한쿼리).       */
+/* -------------------------------------------------------------------------- */
+
+function MyPostsList() {
+  const nav = useGuardedNavigation();
+  const q = useInfiniteQuery(useMyPosts());
+  const items = flattenInfinite<MyPostResponse>(q.data, (m) => m.id ?? -1);
+  return (
+    <LibraryListBody
+      items={items}
+      isLoading={q.isLoading}
+      isError={q.isError}
+      error={q.error}
+      onRetry={() => void q.refetch()}
+      isRefetching={q.isRefetching}
+      hasNextPage={q.hasNextPage}
+      isFetchingNextPage={q.isFetchingNextPage}
+      onEndReached={() => {
+        if (q.hasNextPage && !q.isFetchingNextPage) void q.fetchNextPage();
+      }}
+      keyOf={(m) => String(m.id)}
+      emptyTitle="아직 쓴 글이 없어요"
+      emptyDescription="커뮤니티 탭에서 첫 이야기를 시작해 보세요."
+      renderItem={(m) => (
+        <MyPostRow
+          post={m}
+          onPress={() => nav.push({ pathname: '/posts/[id]', params: { id: m.id! } })}
+        />
+      )}
+    />
+  );
+}
+
+function MyCommentsList() {
+  const nav = useGuardedNavigation();
+  const q = useInfiniteQuery(useMyPostComments());
+  const items = flattenInfinite<MyCommentResponse>(q.data, (c) => c.id ?? -1);
+  return (
+    <LibraryListBody
+      items={items}
+      isLoading={q.isLoading}
+      isError={q.isError}
+      error={q.error}
+      onRetry={() => void q.refetch()}
+      isRefetching={q.isRefetching}
+      hasNextPage={q.hasNextPage}
+      isFetchingNextPage={q.isFetchingNextPage}
+      onEndReached={() => {
+        if (q.hasNextPage && !q.isFetchingNextPage) void q.fetchNextPage();
+      }}
+      keyOf={(c) => String(c.id)}
+      emptyTitle="아직 쓴 댓글이 없어요"
+      emptyDescription="마음에 닿은 글에 첫 댓글을 남겨보세요."
+      renderItem={(c) => (
+        <MyCommentRow
+          comment={c}
+          // 원글로 라우팅 — 블라인드/삭제 원글은 상세의 404 ErrorState로 안착(§3 엣지).
+          onPress={() => nav.push({ pathname: '/posts/[id]', params: { id: c.postId! } })}
+        />
+      )}
+    />
+  );
+}
+
+function MyLikedList() {
+  const nav = useGuardedNavigation();
+  const q = useInfiniteQuery(useMyLikedPosts());
+  const items = flattenInfinite<PostResponse>(q.data, (m) => m.id ?? -1);
+  return (
+    <LibraryListBody
+      items={items}
+      isLoading={q.isLoading}
+      isError={q.isError}
+      error={q.error}
+      onRetry={() => void q.refetch()}
+      isRefetching={q.isRefetching}
+      hasNextPage={q.hasNextPage}
+      isFetchingNextPage={q.isFetchingNextPage}
+      onEndReached={() => {
+        if (q.hasNextPage && !q.isFetchingNextPage) void q.fetchNextPage();
+      }}
+      keyOf={(m) => String(m.id)}
+      emptyTitle="아직 추천한 글이 없어요"
+      emptyDescription="게시글 상세에서 ♥ 추천을 누르면 여기에 모여요."
+      renderItem={(m) => (
+        <MyPostRow
+          post={m}
+          onPress={() => nav.push({ pathname: '/posts/[id]', params: { id: m.id! } })}
         />
       )}
     />

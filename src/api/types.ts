@@ -122,6 +122,8 @@ export type PostResponse = Schemas['PostResponse'];
 export type PostDetail = Schemas['PostDetailResponse'];
 export type PostImage = Schemas['PostImageResponse'];
 export type PostComment = Schemas['PostCommentResponse'];
+export type MyPostResponse = Schemas['MyPostResponse'];
+export type MyCommentResponse = Schemas['MyCommentResponse'];
 
 // 개인화 / 서재
 export type SubscriptionResponse = Schemas['SubscriptionResponse'];
