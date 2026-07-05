@@ -79,6 +79,7 @@ export const keys = {
   },
   users: {
     all: ['users'] as const,
+    profile: (id: number) => ['users', 'profile', id] as const,
     followStats: (id: number) => ['users', 'followStats', id] as const,
   },
 } as const;

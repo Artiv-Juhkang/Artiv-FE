@@ -250,9 +250,23 @@ export default function PostDetailScreen() {
                 <Text variant="title" weight="bold">
                   {p.title ?? ''}
                 </Text>
-                <Text variant="caption" color="onSurfaceSecondary">
-                  {p.authorNickname ?? '(탈퇴)'}
-                </Text>
+                {/* 작성자 → 공개 프로필 허브(CH1). 탈퇴 작성자는 진입 없음. */}
+                {typeof p.authorId === 'number' && p.authorNickname ? (
+                  <Text
+                    variant="caption"
+                    color="onSurfaceSecondary"
+                    onPress={() => nav.push({ pathname: '/users/[id]', params: { id: p.authorId! } })}
+                    accessibilityRole="button"
+                    accessibilityLabel={`${p.authorNickname} 프로필 보기`}
+                    style={{ textDecorationLine: 'underline', alignSelf: 'flex-start' }}
+                  >
+                    {p.authorNickname}
+                  </Text>
+                ) : (
+                  <Text variant="caption" color="onSurfaceSecondary">
+                    {p.authorNickname ?? '(탈퇴)'}
+                  </Text>
+                )}
               </View>
 
               {(p.images ?? []).map((im) => {

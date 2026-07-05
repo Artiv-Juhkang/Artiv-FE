@@ -269,16 +269,13 @@ function DetailContent({ seriesId }: { seriesId: number }) {
     </>
   );
 
-  // 작가 이름 탭 → 작가 작품 모아보기. authorId 가 있어야 정확 링크(없으면 비탭).
+  // 작가 이름 탭 → 공개 프로필 허브(CH1 — 작품 모아보기는 프로필 안에서 진입).
   const onAuthorPress =
     typeof series.authorId === 'number'
       ? () =>
           nav.push({
-            pathname: '/authors/[id]',
-            params: {
-              id: String(series.authorId),
-              nickname: series.authorNickname ?? '',
-            },
+            pathname: '/users/[id]',
+            params: { id: String(series.authorId) },
           })
       : undefined;
 

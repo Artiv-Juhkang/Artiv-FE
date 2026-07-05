@@ -4,7 +4,26 @@
  * 본인 팔로우는 UI 에서 차단(여기선 막지 않음).
  */
 import { api } from '@/api/client';
-import type { FollowStatsResponse, FollowUserResponse } from '@/api/types';
+import type {
+  FollowStatsResponse,
+  FollowUserResponse,
+  MyProfileResponse,
+  UserProfileResponse,
+} from '@/api/types';
+
+/** 공개 프로필(타인 열람) — 비공개면 bio·가입일이 null로 온다(닉네임·아바타·역할은 항상 공개). */
+export async function getUserProfile(userId: number): Promise<UserProfileResponse> {
+  const { data } = await api.get<UserProfileResponse>(`/api/users/${userId}`);
+  return data;
+}
+
+/** 내 프로필 공개 설정 변경 — 갱신된 내 프로필 반환. */
+export async function setProfileVisibility(profilePublic: boolean): Promise<MyProfileResponse> {
+  const { data } = await api.patch<MyProfileResponse>('/api/users/me/profile-visibility', {
+    profilePublic,
+  });
+  return data;
+}
 
 /** 특정 사용자 팔로우 통계(팔로워/팔로잉 수 + 내 팔로우 여부). */
 export async function getFollowStats(

@@ -272,13 +272,7 @@ function FollowList() {
       renderItem={({ item }) => (
         <FollowRow
           user={item}
-          // CH1(공개 프로필) 도착 전까지는 기존 작가 작품 그리드로 진입(§5 크로스컷).
-          onPress={() =>
-            nav.push({
-              pathname: '/authors/[id]',
-              params: { id: item.userId!, nickname: item.nickname ?? '' },
-            })
-          }
+          onPress={() => nav.push({ pathname: '/users/[id]', params: { id: item.userId! } })}
         />
       )}
     />

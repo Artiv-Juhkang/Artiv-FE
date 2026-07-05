@@ -1,7 +1,6 @@
 /**
  * FollowRow — 서재 '팔로우' 세그의 사용자 행 (아바타 + 닉네임).
- * 탭 → 작가 작품 모아보기(/authors/[id] — 기존 라우트 재사용).
- * CH1(공개 프로필 /users/[id]) 도착 시 목적지를 프로필 허브로 교체한다(§5 크로스컷).
+ * 탭 → 공개 프로필 허브(/users/[id], CH1). 작품 모아보기는 프로필 안에서 진입.
  */
 import { Pressable, View } from 'react-native';
 
@@ -16,7 +15,7 @@ export function FollowRow({ user, onPress }: { user: FollowUserResponse; onPress
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
-      accessibilityLabel={`${nickname} 작품 보기`}
+      accessibilityLabel={`${nickname} 프로필 보기`}
       style={{
         flexDirection: 'row',
         alignItems: 'center',
@@ -31,7 +30,7 @@ export function FollowRow({ user, onPress }: { user: FollowUserResponse; onPress
         </Text>
       </View>
       <Text variant="caption" color="onSurfaceMuted">
-        작품 보기 ›
+        프로필 ›
       </Text>
     </Pressable>
   );

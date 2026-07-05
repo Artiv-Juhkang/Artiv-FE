@@ -12,13 +12,15 @@
  *   only open once per cooldown.
  */
 import { useRouter, type Href } from 'expo-router';
-import { Alert, Platform, View } from 'react-native';
+import { Alert, Platform, Switch, View } from 'react-native';
+import { useMutation } from '@tanstack/react-query';
 
+import { setProfileVisibility } from '@/api/endpoints/users';
 import { resolveImageUrl } from '@/api/image';
 import type { Role } from '@/api/types';
 import { useAuth, isCreator } from '@/features/auth';
 import { ThemeModeToggle } from '@/features/settings/ThemeModeToggle';
-import { Avatar, Button, Card, Divider, Screen, Text, useTheme } from '@/ui';
+import { Avatar, Button, Card, Divider, Screen, Text, useTheme, useToast } from '@/ui';
 
 const ROLE_LABEL: Record<Role, string> = {
   READER: '독자',
@@ -28,8 +30,17 @@ const ROLE_LABEL: Record<Role, string> = {
 
 export default function MyPageScreen() {
   const t = useTheme();
+  const toast = useToast();
   const router = useRouter();
-  const { user, role, logout } = useAuth();
+  const { user, role, logout, refreshUser } = useAuth();
+
+  // 프로필 공개 토글(CH1) — 서버 반영 후 AuthContext 프로필 재조회로 스위치 상태 동기.
+  const visibilityMut = useMutation<unknown, Error, boolean>({
+    mutationFn: (next) => setProfileVisibility(next),
+    onSuccess: () => void refreshUser(),
+    onError: () => toast.show({ tone: 'danger', message: '설정 변경에 실패했어요. 잠시 후 다시 시도해 주세요.' }),
+  });
+  const profilePublic = user?.profilePublic !== false; // 하이드레이션 전엔 공개(디폴트)로 표시
 
   // user is set for any authenticated session (this tab lives under the (app)
   // protected group), but stay defensive in case the profile is still hydrating.
@@ -149,6 +160,28 @@ export default function MyPageScreen() {
           <Text variant="caption" weight="semibold" color="onSurfaceMuted" caps>
             계정
           </Text>
+          {/* 프로필 공개 — 내장 햅틱이 있는 RN Switch(디폴트 공개, D-확3). */}
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              minHeight: t.layout.minHitTarget,
+            }}
+          >
+            <View style={{ flex: 1, paddingRight: t.space.md }}>
+              <Text variant="body">프로필 공개</Text>
+              <Text variant="caption" color="onSurfaceMuted">
+                끄면 다른 사용자에게 소개와 가입일이 보이지 않아요.
+              </Text>
+            </View>
+            <Switch
+              value={profilePublic}
+              disabled={visibilityMut.isPending}
+              onValueChange={(next) => visibilityMut.mutate(next)}
+              accessibilityLabel="프로필 공개"
+            />
+          </View>
           <Button label="로그아웃" variant="secondary" fullWidth onPress={confirmLogout} />
         </View>
       </View>

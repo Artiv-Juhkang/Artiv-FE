@@ -139,6 +139,7 @@ export type UnreadSummaryResponse = Schemas['UnreadSummaryResponse'];
 export type UserResponse = Schemas['UserResponse'];
 export type FollowStatsResponse = Schemas['FollowStatsResponse'];
 export type FollowUserResponse = Schemas['FollowUserResponse'];
+export type UserProfileResponse = Schemas['UserProfileResponse'];
 
 // 동의
 export type ConsentResponse = Schemas['ConsentResponse'];

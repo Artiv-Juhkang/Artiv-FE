@@ -35,6 +35,8 @@ export default function AppGroupLayout() {
         <Stack.Screen name="series/[id]/[episodeNo]/comments" options={{ headerShown: false }} />
         {/* 작가 작품 모아보기 — 창작물 상세의 작가 이름 탭으로 진입. */}
         <Stack.Screen name="authors/[id]" options={{ headerShown: false }} />
+        {/* 공개 프로필 허브 — 작가명·팔로우 행·게시글 작성자에서 진입 (CH1). */}
+        <Stack.Screen name="users/[id]" options={{ headerShown: false }} />
         {/* 커뮤니티 게시글 상세·작성 — 피드에서 진입. */}
         <Stack.Screen name="posts/[id]" options={{ headerShown: false }} />
         <Stack.Screen name="posts/new" options={{ headerShown: false }} />
