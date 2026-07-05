@@ -11,7 +11,7 @@
  * hooks.ts 패턴 미러: 무한쿼리는 OPTIONS 빌더만 반환(조건부 훅 호출 방지, react-compiler 안전).
  * useReadState 만 파생값을 직접 반환(셀렉터).
  */
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import {
   getReadHistory,
@@ -27,6 +27,7 @@ import {
   createPageInfiniteQuery,
   createSliceInfiniteQuery,
   keys,
+  useInfiniteQuery,
   useToggleMutation,
 } from '@/lib/query';
 
@@ -117,19 +118,24 @@ export interface ReadState {
 /**
  * 회차 행 읽음/이어보기 셀렉터 — read-history 페이지 0 에서 seriesId 의 lastReadEpisodeNo 셀렉트.
  *
- * useResumePoint 와 동일 캐시(keys.me.readHistory(), 페이지 0)를 읽는다.
+ * useResumePoint 와 동일 캐시(keys.me.readHistory())를 서재와 **같은 InfiniteData 형태**로
+ * 읽는다(F2 수정: plain useQuery 가 같은 키에 PageResponse 를 심어 서재 무한쿼리와 캐시
+ * 형태가 충돌 — 순서에 따라 열람 탭 크래시/이어보기 소실). 페이지 0만 필요하므로
+ * fetchNextPage 는 호출하지 않는다.
  *  - isRead   = (episodeNo <= lastReadEpisodeNo)
  *  - continue = lastReadEpisodeNo + 1 경계 행
  * read-history 비었음/이 시리즈 미존재 → lastReadEpisodeNo undefined(읽음 표시 없음).
  */
 export function useReadState(seriesId: number): ReadState {
-  const { data } = useQuery({
-    queryKey: keys.me.readHistory(),
-    queryFn: ({ signal }) => getReadHistory(0, signal),
-    enabled: Number.isFinite(seriesId) && seriesId > 0,
-  });
+  const { data } = useInfiniteQuery(
+    createPageInfiniteQuery<ReadHistoryResponse>({
+      queryKey: keys.me.readHistory(),
+      fetchPage: getReadHistory,
+      enabled: Number.isFinite(seriesId) && seriesId > 0,
+    }),
+  );
 
-  const entry = data?.content.find(
+  const entry = data?.pages[0]?.content.find(
     (h: ReadHistoryResponse) => h.seriesId === seriesId,
   );
   return { lastReadEpisodeNo: entry?.lastReadEpisodeNo ?? undefined };

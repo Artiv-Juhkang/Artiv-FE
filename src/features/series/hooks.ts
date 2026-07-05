@@ -19,7 +19,12 @@ import type {
   SeriesDetail,
   SeriesSort,
 } from '@/api/types';
-import { createPageInfiniteQuery, keys, useToggleMutation } from '@/lib/query';
+import {
+  createPageInfiniteQuery,
+  keys,
+  useInfiniteQuery,
+  useToggleMutation,
+} from '@/lib/query';
 
 /** 목록 필터 파라미터. 모두 선택적 — 미지정 시 서버 기본(LATEST, 전체 장르, 요일 무관). */
 export interface SeriesListParams {
@@ -95,7 +100,8 @@ export interface ResumePoint {
  * 첫화 보기 / 이어보기 CTA 셀렉터 — read-history 기반.
  *
  * 정본은 read-history(서재와 동일 캐시 keys.me.readHistory() — 새 쿼리키 추가 금지).
- * 페이지 0만 조회해 seriesId 항목을 찾는다:
+ * 서재와 같은 InfiniteData 형태로 읽는다(F2: plain useQuery 의 PageResponse 가 같은 키에서
+ * 서재 무한쿼리와 충돌하던 것을 통일). 페이지 0만 조회해 seriesId 항목을 찾는다:
  *  - lastReadEpisodeNo 있음 → mode:'resume', episodeNo: lastReadEpisodeNo + 1 (다음 화).
  *  - 없음/로딩 중/이 시리즈가 페이지 0 밖 → mode:'first', episodeNo: 1 (안전 기본, 블로킹 없음).
  *
@@ -104,13 +110,15 @@ export interface ResumePoint {
  * lastReadEpisodeNo)도 호출부 선택 사항이다.
  */
 export function useResumePoint(seriesId: number): ResumePoint {
-  const { data } = useQuery({
-    queryKey: keys.me.readHistory(),
-    queryFn: ({ signal }) => getReadHistory(0, signal),
-    enabled: Number.isFinite(seriesId) && seriesId > 0,
-  });
+  const { data } = useInfiniteQuery(
+    createPageInfiniteQuery<ReadHistoryResponse>({
+      queryKey: keys.me.readHistory(),
+      fetchPage: getReadHistory,
+      enabled: Number.isFinite(seriesId) && seriesId > 0,
+    }),
+  );
 
-  const entry = data?.content.find(
+  const entry = data?.pages[0]?.content.find(
     (h: ReadHistoryResponse) => h.seriesId === seriesId,
   );
   const lastRead = entry?.lastReadEpisodeNo;
