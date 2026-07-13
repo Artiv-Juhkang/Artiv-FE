@@ -66,6 +66,13 @@ export const keys = {
     list: () => ['notifications', 'list'] as const,
     unreadCount: () => ['notifications', 'unreadCount'] as const,
   },
+  conversations: {
+    all: ['conversations'] as const,
+    list: () => ['conversations', 'list'] as const,
+    requests: () => ['conversations', 'requests'] as const,
+    messages: (id: number) => ['conversations', 'messages', id] as const,
+    unreadCount: () => ['conversations', 'unreadCount'] as const,
+  },
   me: {
     all: ['me'] as const,
     profile: () => ['me', 'profile'] as const,

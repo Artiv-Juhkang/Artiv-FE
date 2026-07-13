@@ -16,6 +16,8 @@ export function ComposeBar({
   sending,
   replyTo,
   onCancelReply,
+  placeholder = '댓글을 입력하세요',
+  sendLabel = '등록',
 }: {
   text: string;
   onChangeText: (v: string) => void;
@@ -23,6 +25,9 @@ export function ComposeBar({
   sending: boolean;
   replyTo: ReplyTarget | null;
   onCancelReply: () => void;
+  /** 도메인별 문구(댓글/메시지) — 기본은 댓글. */
+  placeholder?: string;
+  sendLabel?: string;
 }) {
   const t = useTheme();
   const insets = useSafeAreaInsets();
@@ -56,7 +61,7 @@ export function ComposeBar({
         <TextInput
           value={text}
           onChangeText={onChangeText}
-          placeholder={replyTo ? '답글을 입력하세요' : '댓글을 입력하세요'}
+          placeholder={replyTo ? '답글을 입력하세요' : placeholder}
           placeholderTextColor={t.color.onSurfaceMuted}
           multiline
           maxLength={1000}
@@ -73,7 +78,7 @@ export function ComposeBar({
           }}
         />
         <Button
-          label="등록"
+          label={sendLabel}
           variant="primary"
           size="sm"
           loading={sending}

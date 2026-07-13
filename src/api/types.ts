@@ -60,7 +60,8 @@ export type NotificationType =
   | 'POST_COMMENT'
   | 'COMMENT_REPLY'
   | 'FOLLOWED'
-  | 'POST_MENTIONED';
+  | 'POST_MENTIONED'
+  | 'DM_REQUEST';
 
 export type NotificationTargetType =
   | 'SERIES'
@@ -68,7 +69,8 @@ export type NotificationTargetType =
   | 'INQUIRY'
   | 'POST'
   | 'COMMENT'
-  | 'USER';
+  | 'USER'
+  | 'CONVERSATION';
 
 export type ReleasePolicy = 'FREE_ALL' | 'WAIT_FREE';
 
@@ -140,6 +142,14 @@ export type UserResponse = Schemas['UserResponse'];
 export type FollowStatsResponse = Schemas['FollowStatsResponse'];
 export type FollowUserResponse = Schemas['FollowUserResponse'];
 export type UserProfileResponse = Schemas['UserProfileResponse'];
+
+// 채팅 (CH2)
+export type ConversationType = 'DIRECT' | 'GROUP';
+export type ConversationStatus = 'PENDING' | 'ACCEPTED' | 'DECLINED';
+export type ConversationResponse = Schemas['ConversationResponse'];
+export type ConversationSummary = Schemas['ConversationSummaryResponse'];
+export type ChatMessage = Schemas['MessageResponse'];
+export type ChatUnreadCountResponse = Schemas['ChatUnreadCountResponse'];
 
 // 동의
 export type ConsentResponse = Schemas['ConsentResponse'];

@@ -38,6 +38,7 @@ const GROUPS: Group[] = [
   { key: 'CREATIVITY', label: '창작물', types: ['EPISODE_PUBLISHED'] },
   { key: 'COMMUNITY', label: '커뮤니티', types: ['POST_COMMENT', 'COMMENT_REPLY', 'POST_MENTIONED'] },
   { key: 'NEWS', label: '소식', types: ['FOLLOWED'] },
+  { key: 'CHAT', label: '채팅', types: ['DM_REQUEST'] },
   { key: 'INQUIRY', label: '문의', types: ['INQUIRY_ANSWERED'] },
 ];
 
@@ -66,10 +67,17 @@ export default function NotificationsScreen() {
     mutationFn: (id: number) => readNotification(id),
     onSuccess: (updated) => {
       refreshAll();
-      if (updated.targetType === 'SERIES' && updated.targetId) {
+      if (!updated.targetId) return;
+      if (updated.targetType === 'SERIES') {
         nav.push({ pathname: '/series/[id]', params: { id: updated.targetId } });
+      } else if (updated.targetType === 'POST') {
+        nav.push({ pathname: '/posts/[id]', params: { id: updated.targetId } });
+      } else if (updated.targetType === 'USER') {
+        nav.push({ pathname: '/users/[id]', params: { id: updated.targetId } });
+      } else if (updated.targetType === 'CONVERSATION') {
+        nav.push({ pathname: '/chat/[id]', params: { id: updated.targetId } });
       }
-      // 그 외 targetType(POST·COMMENT·USER·INQUIRY)은 목적지 화면이 아직 없어 읽음 처리만.
+      // COMMENT는 원글 id를 모르므로 읽음 처리만(후속: targetId에 postId 동봉 검토). INQUIRY는 M2.
     },
   });
 

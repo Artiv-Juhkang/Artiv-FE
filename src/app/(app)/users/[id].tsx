@@ -6,13 +6,14 @@
  *
  * 디자인: 로그인 화면과 수미상관 — 영속 ambient 위에 GlassCard 명함 하나(시그니처는
  * 이 카드 한 곳, 나머지는 조용하게). 비공개 프로필은 bio·가입일 자리에 담담한 안내 한 줄.
- * '메시지' 진입은 CH3(채팅 FE)에서 이 카드에 얹는다 — 죽은 버튼을 미리 두지 않는다.
+ * '메시지' 버튼(CH3)은 방을 멱등 개설(친구=즉시 대화, 비친구=요청)하고 대화방으로 이동한다.
  */
 import { View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 
 import { resolveImageUrl } from '@/api/image';
 import { useAuth } from '@/features/auth';
+import { useStartDirectChat } from '@/features/chat/hooks';
 import { useFollowStats, useFollowToggle, useUserProfile } from '@/features/users/hooks';
 import { useGuardedNavigation } from '@/lib/navigation/useGuardedNavigation';
 import {
@@ -36,6 +37,7 @@ export default function UserProfileScreen() {
   const profile = useUserProfile(userId);
   const stats = useFollowStats(userId);
   const followMut = useFollowToggle(userId);
+  const startChat = useStartDirectChat();
 
   const isMe = me?.id != null && me.id === userId;
 
@@ -148,12 +150,34 @@ export default function UserProfileScreen() {
 
             {!isMe ? (
               <View style={{ width: '100%', gap: t.space.sm, marginTop: t.space.md }}>
-                <Button
-                  label={following ? '팔로잉' : '팔로우'}
-                  variant={following ? 'secondary' : 'primary'}
-                  fullWidth
-                  onPress={() => followMut.mutate(!following)}
-                />
+                <View style={{ flexDirection: 'row', gap: t.space.sm }}>
+                  <View style={{ flex: 1 }}>
+                    <Button
+                      label={following ? '팔로잉' : '팔로우'}
+                      variant={following ? 'secondary' : 'primary'}
+                      fullWidth
+                      onPress={() => followMut.mutate(!following)}
+                    />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    {/* 친구(상호)면 바로 대화, 아니면 메시지 요청이 만들어진다(멱등). */}
+                    <Button
+                      label="메시지"
+                      variant="secondary"
+                      fullWidth
+                      loading={startChat.isPending}
+                      onPress={() =>
+                        startChat.mutate(userId, {
+                          onSuccess: (conv) =>
+                            nav.push({
+                              pathname: '/chat/[id]',
+                              params: { id: conv.id!, name: nickname },
+                            }),
+                        })
+                      }
+                    />
+                  </View>
+                </View>
                 {s?.isMutual ? (
                   <Text variant="micro" style={{ color: t.color.accent, textAlign: 'center' }}>
                     서로 팔로우하는 사이예요

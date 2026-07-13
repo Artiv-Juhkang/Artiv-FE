@@ -324,6 +324,70 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/conversations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["create_3"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/conversations/{conversationId}/messages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["messages"];
+        put?: never;
+        post: operations["send"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/conversations/{conversationId}/decline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["decline"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/conversations/{conversationId}/accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["accept"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/auth/signup": {
         parameters: {
             query?: never;
@@ -530,6 +594,22 @@ export interface paths {
         options?: never;
         head?: never;
         patch: operations["readAll"];
+        trace?: never;
+    };
+    "/api/conversations/{conversationId}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["read_2"];
         trace?: never;
     };
     "/api/admin/users/{userId}/role": {
@@ -996,6 +1076,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/me/conversations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["inbox"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/conversations/unread-count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["unreadCount_1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/conversations/requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["requests"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/me/bookmarks": {
         parameters: {
             query?: never;
@@ -1359,6 +1487,33 @@ export interface components {
             createdAt?: string;
             replies?: components["schemas"]["PostCommentResponse"][];
         };
+        ConversationCreateRequest: {
+            /** @enum {string} */
+            type?: "DIRECT" | "GROUP";
+            /** Format: int64 */
+            targetUserId?: number;
+        };
+        ConversationResponse: {
+            /** Format: int64 */
+            id?: number;
+            /** @enum {string} */
+            type?: "DIRECT" | "GROUP";
+            /** @enum {string} */
+            status?: "PENDING" | "ACCEPTED" | "DECLINED";
+        };
+        MessageCreateRequest: {
+            content?: string;
+        };
+        MessageResponse: {
+            /** Format: int64 */
+            id?: number;
+            /** Format: int64 */
+            senderId?: number;
+            senderNickname?: string;
+            content?: string;
+            /** Format: date-time */
+            createdAt?: string;
+        };
         SignupRequest: {
             /** Format: email */
             email: string;
@@ -1441,9 +1596,9 @@ export interface components {
             /** Format: int64 */
             id?: number;
             /** @enum {string} */
-            type?: "EPISODE_PUBLISHED" | "INQUIRY_ANSWERED" | "POST_COMMENT" | "COMMENT_REPLY" | "FOLLOWED" | "POST_MENTIONED";
+            type?: "EPISODE_PUBLISHED" | "INQUIRY_ANSWERED" | "POST_COMMENT" | "COMMENT_REPLY" | "FOLLOWED" | "POST_MENTIONED" | "DM_REQUEST";
             /** @enum {string} */
-            targetType?: "SERIES" | "EPISODE" | "INQUIRY" | "POST" | "COMMENT" | "USER";
+            targetType?: "SERIES" | "EPISODE" | "INQUIRY" | "POST" | "COMMENT" | "USER" | "CONVERSATION";
             /** Format: int64 */
             targetId?: number;
             /** Format: int64 */
@@ -1453,6 +1608,10 @@ export interface components {
             read?: boolean;
             /** Format: date-time */
             createdAt?: string;
+        };
+        ReadUpToRequest: {
+            /** Format: int64 */
+            lastReadMessageId?: number;
         };
         RoleUpdateRequest: {
             /** @enum {string} */
@@ -1965,6 +2124,27 @@ export interface components {
             updatedAt?: string;
             images?: components["schemas"]["InquiryImageResponse"][];
         };
+        ConversationSummaryResponse: {
+            /** Format: int64 */
+            id?: number;
+            /** @enum {string} */
+            type?: "DIRECT" | "GROUP";
+            /** @enum {string} */
+            status?: "PENDING" | "ACCEPTED" | "DECLINED";
+            displayName?: string;
+            /** Format: int64 */
+            partnerId?: number;
+            partnerAvatarUrl?: string;
+            lastMessage?: string;
+            /** Format: date-time */
+            lastMessageAt?: string;
+            /** Format: int64 */
+            unreadCount?: number;
+        };
+        ChatUnreadCountResponse: {
+            /** Format: int64 */
+            count?: number;
+        };
         BookmarkResponse: {
             /** Format: int64 */
             seriesId?: number;
@@ -1992,6 +2172,18 @@ export interface components {
             label?: string;
             serialized?: boolean;
             assetKinds?: ("IMAGE" | "AUDIO" | "TEXT")[];
+        };
+        PageResponseMessageResponse: {
+            content?: components["schemas"]["MessageResponse"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            totalElements?: number;
+            /** Format: int32 */
+            totalPages?: number;
+            last?: boolean;
         };
         PageResponseUserResponse: {
             content?: components["schemas"]["UserResponse"][];
@@ -2966,6 +3158,124 @@ export interface operations {
             };
         };
     };
+    create_3: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConversationCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ConversationResponse"];
+                };
+            };
+        };
+    };
+    messages: {
+        parameters: {
+            query: {
+                pageable: components["schemas"]["Pageable"];
+            };
+            header?: never;
+            path: {
+                conversationId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PageResponseMessageResponse"];
+                };
+            };
+        };
+    };
+    send: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                conversationId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MessageCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["MessageResponse"];
+                };
+            };
+        };
+    };
+    decline: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                conversationId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ConversationResponse"];
+                };
+            };
+        };
+    };
+    accept: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                conversationId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ConversationResponse"];
+                };
+            };
+        };
+    };
     signup: {
         parameters: {
             query?: never;
@@ -3324,6 +3634,30 @@ export interface operations {
             cookie?: never;
         };
         requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    read_2: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                conversationId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReadUpToRequest"];
+            };
+        };
         responses: {
             /** @description No Content */
             204: {
@@ -3890,7 +4224,7 @@ export interface operations {
     mine_2: {
         parameters: {
             query: {
-                type?: "EPISODE_PUBLISHED" | "INQUIRY_ANSWERED" | "POST_COMMENT" | "COMMENT_REPLY" | "FOLLOWED" | "POST_MENTIONED";
+                type?: "EPISODE_PUBLISHED" | "INQUIRY_ANSWERED" | "POST_COMMENT" | "COMMENT_REPLY" | "FOLLOWED" | "POST_MENTIONED" | "DM_REQUEST";
                 pageable: components["schemas"]["Pageable"];
             };
             header?: never;
@@ -4011,6 +4345,66 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    inbox: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ConversationSummaryResponse"][];
+                };
+            };
+        };
+    };
+    unreadCount_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ChatUnreadCountResponse"];
+                };
+            };
+        };
+    };
+    requests: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ConversationSummaryResponse"][];
+                };
             };
         };
     };

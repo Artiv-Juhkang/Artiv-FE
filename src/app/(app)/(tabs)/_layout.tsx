@@ -1,6 +1,6 @@
 /**
- * Tabs layout. Five tabs — 창작물 (요일별 그리드) · 커뮤니티 (플레이스홀더) · 채팅
- * (플레이스홀더) · 서재 (관심/열람) · 내 정보 (프로필 + 테마 + 로그아웃). Colors come from
+ * Tabs layout. Five tabs — 창작물 (요일별 그리드) · 커뮤니티 (피드) · 채팅
+ * (인박스·요청함 + 미읽음 뱃지) · 서재 (2계층) · 내 정보 (프로필 + 테마 + 로그아웃). Colors come from
  * the design tokens via useTheme so the bar matches the chrome surface in both
  * light and dark.
  *
@@ -19,6 +19,7 @@ import { SymbolView } from 'expo-symbols';
 import { useReducedMotion } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { useChatUnreadCount } from '@/features/chat/hooks';
 import { tabsScreenOptions } from '@/lib/navigation/transitions';
 import { Text, useTheme } from '@/ui';
 
@@ -30,6 +31,8 @@ export default function TabsLayout() {
   const t = useTheme();
   const insets = useSafeAreaInsets();
   const reducedMotion = useReducedMotion();
+  // 채팅 탭 뱃지 — 알림 벨과 분리된 카운트(30s 폴링, SSOT).
+  const chatUnread = useChatUnreadCount().data?.count ?? 0;
 
   return (
     <Tabs
@@ -89,6 +92,8 @@ export default function TabsLayout() {
         name="chat"
         options={{
           title: '채팅',
+          // 채팅 미읽음 뱃지 — 알림 벨과 별도 카운트(30s 폴링, 훅이 담당).
+          tabBarBadge: chatUnread > 0 ? (chatUnread > 99 ? '99+' : chatUnread) : undefined,
           tabBarLabel: ({ color }) => (
             <Text variant="micro" weight="medium" style={{ color }}>
               채팅
