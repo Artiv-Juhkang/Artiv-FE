@@ -8,13 +8,13 @@
  * 이 카드 한 곳, 나머지는 조용하게). 비공개 프로필은 bio·가입일 자리에 담담한 안내 한 줄.
  * '메시지' 버튼(CH3)은 방을 멱등 개설(친구=즉시 대화, 비친구=요청)하고 대화방으로 이동한다.
  */
-import { View } from 'react-native';
+import { Alert, Platform, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 
 import { resolveImageUrl } from '@/api/image';
 import { useAuth } from '@/features/auth';
 import { useStartDirectChat } from '@/features/chat/hooks';
-import { useFollowStats, useFollowToggle, useUserProfile } from '@/features/users/hooks';
+import { useBlockToggle, useFollowStats, useFollowToggle, useMyBlocks, useUserProfile } from '@/features/users/hooks';
 import { useGuardedNavigation } from '@/lib/navigation/useGuardedNavigation';
 import {
   Avatar,
@@ -25,10 +25,12 @@ import {
   Skeleton,
   Text,
   useTheme,
+  useToast,
 } from '@/ui';
 
 export default function UserProfileScreen() {
   const t = useTheme();
+  const toast = useToast();
   const nav = useGuardedNavigation();
   const { user: me } = useAuth();
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -38,6 +40,9 @@ export default function UserProfileScreen() {
   const stats = useFollowStats(userId);
   const followMut = useFollowToggle(userId);
   const startChat = useStartDirectChat();
+  const blocks = useMyBlocks();
+  const blockMut = useBlockToggle();
+  const isBlocked = blocks.data?.some((b) => b.userId === userId) ?? false;
 
   const isMe = me?.id != null && me.id === userId;
 
@@ -173,6 +178,8 @@ export default function UserProfileScreen() {
                               pathname: '/chat/[id]',
                               params: { id: conv.id!, name: nickname, type: 'DIRECT' },
                             }),
+                          onError: () =>
+                            toast.show({ tone: 'danger', message: '메시지를 보낼 수 없어요.' }),
                         })
                       }
                     />
@@ -183,6 +190,30 @@ export default function UserProfileScreen() {
                     서로 팔로우하는 사이예요
                   </Text>
                 ) : null}
+                <Text
+                  variant="micro"
+                  color="danger"
+                  onPress={() => {
+                    if (blockMut.isPending) return;
+                    const run = () => blockMut.mutate({ userId, on: !isBlocked });
+                    const message = isBlocked
+                      ? '차단을 해제할까요?'
+                      : '차단하면 서로 메시지를 주고받을 수 없어요. 차단할까요?';
+                    if (Platform.OS === 'web') {
+                      if (window.confirm(message)) run();
+                      return;
+                    }
+                    Alert.alert(isBlocked ? '차단 해제' : '사용자 차단', message, [
+                      { text: '취소', style: 'cancel' },
+                      { text: isBlocked ? '해제' : '차단', style: 'destructive', onPress: run },
+                    ]);
+                  }}
+                  accessibilityRole="button"
+                  accessibilityLabel={isBlocked ? '차단 해제' : '사용자 차단'}
+                  style={{ textAlign: 'center' }}
+                >
+                  {isBlocked ? '차단 해제' : '차단하기'}
+                </Text>
               </View>
             ) : null}
 

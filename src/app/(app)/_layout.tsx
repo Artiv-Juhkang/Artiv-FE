@@ -58,6 +58,8 @@ export default function AppGroupLayout() {
         <Stack.Screen name="faq" options={{ headerShown: false }} />
         {/* 회원 탈퇴 (M5). my 탭 계정 섹션에서 진입. */}
         <Stack.Screen name="withdraw" options={{ headerShown: false }} />
+        {/* 차단 목록 (CB). my 탭 계정 섹션에서 진입. */}
+        <Stack.Screen name="blocked-users" options={{ headerShown: false }} />
       </Stack>
     </AmbientProvider>
   );

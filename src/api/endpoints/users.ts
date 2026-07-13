@@ -5,6 +5,7 @@
  */
 import { api } from '@/api/client';
 import type {
+  BlockedUserResponse,
   FollowStatsResponse,
   FollowUserResponse,
   MyProfileResponse,
@@ -60,4 +61,20 @@ export async function setFollow(userId: number, on: boolean): Promise<void> {
 /** 회원 탈퇴(M5) — 비번 확인 204. 실패(400=비번 불일치)면 세션 그대로 유지. */
 export async function withdrawAccount(password: string): Promise<void> {
   await api.delete('/api/users/me', { data: { password } });
+}
+
+/** 내가 차단한 사용자 목록(CB). */
+export async function getMyBlocks(signal?: AbortSignal): Promise<BlockedUserResponse[]> {
+  const { data } = await api.get<BlockedUserResponse[]>('/api/users/me/blocks', { signal });
+  return data;
+}
+
+/** 차단 토글(멱등). on=true POST / false DELETE. 무바디. 효과: DM 생성/요청 양방향 차단. */
+export async function setBlock(userId: number, on: boolean): Promise<void> {
+  const path = `/api/users/${userId}/block`;
+  if (on) {
+    await api.post(path);
+  } else {
+    await api.delete(path);
+  }
 }

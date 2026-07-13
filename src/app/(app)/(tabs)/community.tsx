@@ -12,6 +12,7 @@ import type { PostCategory, PostSort } from '@/api/types';
 import { POST_CATEGORIES, POST_CATEGORY_LABEL } from '@/features/community/categories';
 import { PostCard } from '@/features/community/components/PostCard';
 import { usePostsInfinite } from '@/features/community/hooks';
+import { useMyBlocks } from '@/features/users/hooks';
 import { useGuardedNavigation } from '@/lib/navigation/useGuardedNavigation';
 import { flattenInfinite, useInfiniteQuery } from '@/lib/query';
 import { EmptyState, ErrorState, HeaderIconButton, Screen, Skeleton, Text, useTheme } from '@/ui';
@@ -162,7 +163,9 @@ function Feed({ category, sort }: { category?: PostCategory; sort: PostSort }) {
   const t = useTheme();
   const nav = useGuardedNavigation();
   const q = useInfiniteQuery(usePostsInfinite({ category, sort }));
-  const posts = flattenInfinite(q.data, (p) => p.id ?? -1);
+  const blocks = useMyBlocks();
+  const blockedIds = new Set(blocks.data?.map((b) => b.userId));
+  const posts = flattenInfinite(q.data, (p) => p.id ?? -1).filter((p) => !blockedIds.has(p.authorId));
 
   if (q.isLoading) {
     return (

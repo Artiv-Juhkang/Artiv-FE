@@ -45,6 +45,7 @@ export default function AppGroupLayoutWeb() {
           <Stack.Screen name="inquiries/[id]" options={{ headerShown: false }} />
           <Stack.Screen name="faq" options={{ headerShown: false }} />
           <Stack.Screen name="withdraw" options={{ headerShown: false }} />
+          <Stack.Screen name="blocked-users" options={{ headerShown: false }} />
         </Stack>
       </WebShell>
     </AmbientProvider>

@@ -158,5 +158,8 @@ export type InquiryResponse = Schemas['InquiryResponse'];
 export type InquiryDetailResponse = Schemas['InquiryDetailResponse'];
 export type InquiryImageResponse = Schemas['InquiryImageResponse'];
 
+// 차단 (CB)
+export type BlockedUserResponse = Schemas['BlockedUserResponse'];
+
 // 동의
 export type ConsentResponse = Schemas['ConsentResponse'];

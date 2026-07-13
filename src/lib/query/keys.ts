@@ -89,6 +89,7 @@ export const keys = {
     likedPosts: () => ['me', 'likedPosts'] as const,
     bookmarks: () => ['me', 'bookmarks'] as const,
     readHistory: () => ['me', 'readHistory'] as const,
+    blocks: () => ['me', 'blocks'] as const,
   },
   users: {
     all: ['users'] as const,

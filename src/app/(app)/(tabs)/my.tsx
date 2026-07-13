@@ -203,6 +203,12 @@ export default function MyPageScreen() {
               accessibilityLabel="프로필 공개"
             />
           </View>
+          <Button
+            label="차단 목록"
+            variant="secondary"
+            fullWidth
+            onPress={() => router.push('/blocked-users' as Href)}
+          />
           <Button label="로그아웃" variant="secondary" fullWidth onPress={confirmLogout} />
           <Button
             label="회원 탈퇴"

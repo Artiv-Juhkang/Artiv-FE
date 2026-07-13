@@ -5,10 +5,10 @@
  *  - useFollowStats: 팔로워/팔로잉 수 + 나와의 관계(isFollowing/isFollowedBy/isMutual).
  *  - useFollowToggle: 멱등 무바디 토글 — stats 캐시 낙관 patch + 서재 팔로우 목록 재동기.
  */
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { getFollowStats, getUserProfile, setFollow } from '@/api/endpoints/users';
-import type { FollowStatsResponse, UserProfileResponse } from '@/api/types';
+import { getFollowStats, getMyBlocks, getUserProfile, setBlock, setFollow } from '@/api/endpoints/users';
+import type { BlockedUserResponse, FollowStatsResponse, UserProfileResponse } from '@/api/types';
 import { keys, useToggleMutation } from '@/lib/query';
 
 export function useUserProfile(userId: number) {
@@ -45,5 +45,22 @@ export function useFollowToggle(userId: number) {
           }
         : prev,
     invalidate: [keys.me.following()],
+  });
+}
+
+/** 내가 차단한 사용자 목록(CB) — 프로필의 차단 여부는 이 목록 멤버십으로 판단(별도 stats 필드 없음). */
+export function useMyBlocks() {
+  return useQuery<BlockedUserResponse[]>({
+    queryKey: keys.me.blocks(),
+    queryFn: ({ signal }) => getMyBlocks(signal),
+  });
+}
+
+/** 차단 토글 — 성공 시 차단 목록만 재동기(팔로우처럼 낙관 patch할 stats가 없다). */
+export function useBlockToggle() {
+  const qc = useQueryClient();
+  return useMutation<void, Error, { userId: number; on: boolean }>({
+    mutationFn: ({ userId, on }) => setBlock(userId, on),
+    onSuccess: () => qc.invalidateQueries({ queryKey: keys.me.blocks() }),
   });
 }

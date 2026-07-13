@@ -94,11 +94,16 @@ export function useRespondToRequest() {
   });
 }
 
-/** 프로필 '메시지' 버튼 — 방 개설(멱등) 후 대화방으로 이동은 호출부가 담당. */
+/**
+ * 프로필 '메시지' 버튼 — 방 개설(멱등) 후 대화방으로 이동은 호출부가 담당.
+ * throwOnError: false — 차단 관계면 서버가 403(kind='blocked', fatal)을 주는데, 이건
+ * 호출부가 토스트로 인라인 처리할 사용자 액션이지 ErrorBoundary로 보낼 화면 붕괴가 아니다.
+ */
 export function useStartDirectChat() {
   const qc = useQueryClient();
   return useMutation<ConversationResponse, Error, number>({
     mutationFn: (targetUserId) => createDirectConversation(targetUserId),
+    throwOnError: false,
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: keys.conversations.list() });
     },

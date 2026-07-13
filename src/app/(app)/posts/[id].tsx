@@ -34,6 +34,7 @@ import {
   usePostDislikeToggle,
   usePostLikeToggle,
 } from '@/features/community/hooks';
+import { useMyBlocks } from '@/features/users/hooks';
 import { useGuardedNavigation } from '@/lib/navigation/useGuardedNavigation';
 import { keys } from '@/lib/query';
 import { AppImage } from '@/ui/AppImage';
@@ -61,6 +62,7 @@ export default function PostDetailScreen() {
 
   const post = usePost(postId);
   const comments = usePostComments(postId);
+  const blocks = useMyBlocks();
   const likeMut = usePostLikeToggle(postId);
   const dislikeMut = usePostDislikeToggle(postId);
 
@@ -177,7 +179,8 @@ export default function PostDetailScreen() {
   const label = p.category ? POST_CATEGORY_LABEL[p.category] : '';
   const liked = p.liked === true;
   const disliked = p.disliked === true;
-  const commentList = comments.data ?? [];
+  const blockedIds = new Set(blocks.data?.map((b) => b.userId));
+  const commentList = excludeBlocked(comments.data ?? [], blockedIds);
   // 소유자 분기 — C2가 노출한 authorId와 내 프로필 id 비교(관리자 삭제는 어드민 콘솔 소관).
   const isOwner = user?.id != null && p.authorId != null && user.id === p.authorId;
 
@@ -367,6 +370,13 @@ export default function PostDetailScreen() {
 /** 대댓글 포함 총 댓글 수. */
 function countComments(list: PostComment[]): number {
   return list.reduce((acc, c) => acc + 1 + (c.replies?.length ?? 0), 0);
+}
+
+/** 차단한 작성자의 댓글/대댓글을 트리에서 재귀적으로 걷어낸다(CB, FE 숨김). */
+function excludeBlocked(list: PostComment[], blockedIds: Set<number | undefined>): PostComment[] {
+  return list
+    .filter((c) => !blockedIds.has(c.authorId))
+    .map((c) => (c.replies ? { ...c, replies: excludeBlocked(c.replies, blockedIds) } : c));
 }
 
 /** 댓글 트리에서 해당 댓글의 좋아요/싫어요를 낙관적으로 뒤집는다(상호배타 미러). */
