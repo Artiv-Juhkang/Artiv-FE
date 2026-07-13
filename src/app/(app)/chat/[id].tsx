@@ -6,7 +6,7 @@
  * inverted FlatList(최신이 바닥) + 공용 ComposeBar. 새 메시지가 보이면 읽음 포인터를 전진.
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { FlatList, KeyboardAvoidingView, Platform, View } from 'react-native';
+import { FlatList, KeyboardAvoidingView, Platform, Pressable, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 
 import { readConversation } from '@/api/endpoints/chat';
@@ -14,6 +14,7 @@ import type { ChatMessage } from '@/api/types';
 import { useAuth } from '@/features/auth';
 import { ComposeBar } from '@/features/comments';
 import { ROOM_POLL_MS, useMessagesInfinite, useSendMessage } from '@/features/chat/hooks';
+import { ReportSheet } from '@/features/report/ReportSheet';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { isAppError } from '@/lib/errors';
@@ -41,6 +42,7 @@ export default function ChatRoomScreen() {
 
   const sendMut = useSendMessage(conversationId);
   const [text, setText] = useState('');
+  const [reportTarget, setReportTarget] = useState<number | null>(null);
 
   // 읽음 포인터 전진 — 보이는 최신 메시지 id가 바뀔 때마다(본인 발신 포함 무해: 서버가 max 유지).
   const latestId = messages[0]?.id;
@@ -105,7 +107,12 @@ export default function ChatRoomScreen() {
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingVertical: t.space.md, gap: t.space.xs }}
             renderItem={({ item }) => (
-              <Bubble message={item} mine={item.senderId === me?.id} showSender={isGroup} />
+              <Bubble
+                message={item}
+                mine={item.senderId === me?.id}
+                showSender={isGroup}
+                onReport={item.senderId === me?.id ? undefined : () => setReportTarget(item.id ?? null)}
+              />
             )}
             onEndReachedThreshold={0.4}
             onEndReached={() => {
@@ -135,6 +142,12 @@ export default function ChatRoomScreen() {
           maxLength={2000}
         />
       </KeyboardAvoidingView>
+      <ReportSheet
+        visible={reportTarget != null}
+        targetType="MESSAGE"
+        targetId={reportTarget}
+        onClose={() => setReportTarget(null)}
+      />
     </Screen>
   );
 }
@@ -144,16 +157,19 @@ export default function ChatRoomScreen() {
 /**
  * 말풍선 — 방향은 모서리 하나로 신호(내 말: 우하단 각짐 / 상대: 좌하단 각짐).
  * showSender(단체방)면 상대 말풍선 위에 발신자 닉네임을 붙인다 — DIRECT는 헤더 제목이
- * 이미 상대를 나타내므로 반복하지 않는다.
+ * 이미 상대를 나타내므로 반복하지 않는다. onReport가 있으면(상대 메시지만) 길게 눌러
+ * 신고 — 댓글 스레드(features/comments)와 동일한 롱프레스 관례.
  */
 function Bubble({
   message,
   mine,
   showSender,
+  onReport,
 }: {
   message: ChatMessage;
   mine: boolean;
   showSender: boolean;
+  onReport?: () => void;
 }) {
   const t = useTheme();
   return (
@@ -172,7 +188,9 @@ function Bubble({
         }}
       >
         {mine ? <Time at={message.createdAt} /> : null}
-        <View
+        <Pressable
+          onLongPress={onReport}
+          accessibilityLabel={onReport ? '길게 눌러 메시지 신고' : undefined}
           style={{
             maxWidth: '76%',
             paddingHorizontal: t.space.md,
@@ -187,7 +205,7 @@ function Bubble({
           <Text variant="body" color="onSurface">
             {message.content ?? ''}
           </Text>
-        </View>
+        </Pressable>
       </View>
       {mine ? null : <Time at={message.createdAt} />}
     </View>

@@ -5,7 +5,7 @@
  * 친구가 아예 없으면 만들 수 없다는 걸 빈 상태로 먼저 알린다(체크박스 없는 빈 화면 대신).
  */
 import { useState } from 'react';
-import { Pressable, View } from 'react-native';
+import { Pressable, Switch, View } from 'react-native';
 
 import { resolveImageUrl } from '@/api/image';
 import type { FollowUserResponse } from '@/api/types';
@@ -35,6 +35,7 @@ export default function NewGroupChatScreen() {
 
   const [title, setTitle] = useState('');
   const [selected, setSelected] = useState<Set<number>>(new Set());
+  const [anonymous, setAnonymous] = useState(false);
 
   const toggle = (userId: number) => {
     setSelected((prev) => {
@@ -50,7 +51,7 @@ export default function NewGroupChatScreen() {
   const onSubmit = () => {
     if (!canSubmit) return;
     createGroup.mutate(
-      { title: title.trim(), memberIds: Array.from(selected) },
+      { title: title.trim(), memberIds: Array.from(selected), anonymous },
       {
         onSuccess: (conv) => {
           nav.replace({ pathname: '/chat/[id]', params: { id: conv.id!, name: title.trim(), type: 'GROUP' } });
@@ -65,6 +66,25 @@ export default function NewGroupChatScreen() {
     <Screen scroll surface="ambient" header={{ variant: 'ambient', back: true, title: '단체방 만들기' }}>
       <View style={{ gap: t.space.lg, paddingVertical: t.space.md }}>
         <Field label="방 이름" value={title} onChangeText={setTitle} placeholder="예: 웹툰 덕질방" />
+
+        {/* 익명 모드(CH5) — 메시지 발신자 표기가 '익명1/익명2…'로 마스킹된다. 서버는 실제
+            발신자를 알고 있어 신고 시 식별 가능(신고·어드민 대응 여지 유지). */}
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            minHeight: t.layout.minHitTarget,
+          }}
+        >
+          <View style={{ flex: 1, paddingRight: t.space.md }}>
+            <Text variant="body">익명 모드</Text>
+            <Text variant="caption" color="onSurfaceMuted">
+              켜면 메시지에 실명 대신 '익명1'처럼 표시돼요.
+            </Text>
+          </View>
+          <Switch value={anonymous} onValueChange={setAnonymous} accessibilityLabel="익명 모드" />
+        </View>
 
         <View style={{ gap: t.space.sm }}>
           <Text variant="label" color="onSurfaceSecondary">

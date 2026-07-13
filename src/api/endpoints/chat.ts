@@ -21,15 +21,20 @@ export async function createDirectConversation(targetUserId: number): Promise<Co
   return data;
 }
 
-/** 단체방 생성 — 멤버 전원이 친구(상호 팔로우)여야 하며 요청 없이 즉시 열린다. */
+/**
+ * 단체방 생성 — 멤버 전원이 친구(상호 팔로우)여야 하며 요청 없이 즉시 열린다.
+ * anonymous(CH5)면 메시지의 발신자 표기가 '익명N'으로 마스킹된다(서버는 실제 발신자를 안다).
+ */
 export async function createGroupConversation(
   title: string,
   memberIds: number[],
+  anonymous: boolean,
 ): Promise<ConversationResponse> {
   const { data } = await api.post<ConversationResponse>('/api/conversations', {
     type: 'GROUP',
     title,
     memberIds,
+    anonymous,
   });
   return data;
 }

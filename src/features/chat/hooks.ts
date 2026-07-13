@@ -121,8 +121,8 @@ export function useFriends() {
 /** 단체방 생성 — 성공 시 대화방으로 이동은 호출부가 담당. */
 export function useCreateGroup() {
   const qc = useQueryClient();
-  return useMutation<ConversationResponse, Error, { title: string; memberIds: number[] }>({
-    mutationFn: ({ title, memberIds }) => createGroupConversation(title, memberIds),
+  return useMutation<ConversationResponse, Error, { title: string; memberIds: number[]; anonymous: boolean }>({
+    mutationFn: ({ title, memberIds, anonymous }) => createGroupConversation(title, memberIds, anonymous),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: keys.conversations.list() });
     },

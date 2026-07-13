@@ -4,7 +4,7 @@
  */
 import { api } from '@/api/client';
 
-export type ReportTargetType = 'POST' | 'COMMENT' | 'USER' | 'SERIES' | 'EPISODE';
+export type ReportTargetType = 'POST' | 'COMMENT' | 'USER' | 'SERIES' | 'EPISODE' | 'MESSAGE';
 export type ReportReason = 'SPAM' | 'ABUSE' | 'SEXUAL' | 'COPYRIGHT' | 'ETC';
 
 export async function createReport(params: {

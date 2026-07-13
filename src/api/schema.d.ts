@@ -1511,7 +1511,7 @@ export interface components {
         };
         ReportCreateRequest: {
             /** @enum {string} */
-            targetType: "POST" | "COMMENT" | "USER" | "SERIES" | "EPISODE";
+            targetType: "POST" | "COMMENT" | "USER" | "SERIES" | "EPISODE" | "MESSAGE";
             /** Format: int64 */
             targetId: number;
             /** @enum {string} */
@@ -1542,6 +1542,7 @@ export interface components {
             targetUserId?: number;
             title?: string;
             memberIds?: number[];
+            anonymous?: boolean;
         };
         ConversationResponse: {
             /** Format: int64 */
@@ -1550,6 +1551,7 @@ export interface components {
             type?: "DIRECT" | "GROUP";
             /** @enum {string} */
             status?: "PENDING" | "ACCEPTED" | "DECLINED";
+            anonymous?: boolean;
         };
         MessageCreateRequest: {
             content?: string;
@@ -1712,7 +1714,7 @@ export interface components {
             id?: number;
             reporterNickname?: string;
             /** @enum {string} */
-            targetType?: "POST" | "COMMENT" | "USER" | "SERIES" | "EPISODE";
+            targetType?: "POST" | "COMMENT" | "USER" | "SERIES" | "EPISODE" | "MESSAGE";
             /** Format: int64 */
             targetId?: number;
             targetContent?: string;
@@ -2270,7 +2272,7 @@ export interface components {
             id?: number;
             reporterNickname?: string;
             /** @enum {string} */
-            targetType?: "POST" | "COMMENT" | "USER" | "SERIES" | "EPISODE";
+            targetType?: "POST" | "COMMENT" | "USER" | "SERIES" | "EPISODE" | "MESSAGE";
             /** Format: int64 */
             targetId?: number;
             /** @enum {string} */
@@ -4752,7 +4754,7 @@ export interface operations {
         parameters: {
             query: {
                 status?: "PENDING" | "RESOLVED" | "DISMISSED";
-                targetType?: "POST" | "COMMENT" | "USER" | "SERIES" | "EPISODE";
+                targetType?: "POST" | "COMMENT" | "USER" | "SERIES" | "EPISODE" | "MESSAGE";
                 reason?: "SPAM" | "ABUSE" | "SEXUAL" | "COPYRIGHT" | "ETC";
                 pageable: components["schemas"]["Pageable"];
             };
