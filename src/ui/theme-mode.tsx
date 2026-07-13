@@ -1,10 +1,15 @@
 /**
- * ThemeMode — persistent light/dark/system selection (Glass Stack).
+ * ThemeMode — persistent light/dark/system/recommended selection (Glass Stack).
  * ------------------------------------------------------------------
- * This provider owns the USER OVERRIDE for color scheme. Three modes:
- *   - 'system' : follow the OS appearance (default; live-follows changes)
- *   - 'light'  : force the light theme
- *   - 'dark'   : force the dark theme
+ * This provider owns the USER OVERRIDE for color scheme. Four modes:
+ *   - 'system'      : follow the OS appearance (default; live-follows changes)
+ *   - 'light'       : force the light theme
+ *   - 'dark'        : force the dark theme
+ *   - 'recommended' : context-adaptive — base dark (art-forward), reading
+ *     screens opt into light via `useReadingSurface()` while focused (see
+ *     below). This is the ONE surgical carve-out on top of the plain
+ *     mode->scheme mapping; every other surface keeps reading resolvedScheme
+ *     as before.
  *
  * The selected `mode` is persisted to AsyncStorage (only the mode — never
  * the resolved scheme, which is always derived from mode + OS so that a
@@ -35,6 +40,7 @@
  *     transparent under edge-to-edge).
  */
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as SystemUI from 'expo-system-ui';
 import React, {
@@ -51,12 +57,12 @@ import React, {
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { type ColorScheme, themes } from './theme';
 
-export type ThemeMode = 'system' | 'light' | 'dark';
+export type ThemeMode = 'system' | 'light' | 'dark' | 'recommended';
 
 /** AsyncStorage key for the persisted user override (mode only). */
 export const THEME_MODE_STORAGE_KEY = '@apptoon/theme-mode';
 
-const VALID_MODES: readonly ThemeMode[] = ['system', 'light', 'dark'];
+const VALID_MODES: readonly ThemeMode[] = ['system', 'light', 'dark', 'recommended'];
 
 function isThemeMode(value: unknown): value is ThemeMode {
   return typeof value === 'string' && (VALID_MODES as readonly string[]).includes(value);
@@ -71,6 +77,8 @@ type ThemeModeContextValue = {
   resolvedScheme: ColorScheme;
   /** False until the persisted mode has been read (used to gate first paint). */
   hasLoaded: boolean;
+  /** Internal — reading screens register interest via `useReadingSurface()`, not directly. */
+  setReadingSurfaceActive: (active: boolean) => void;
 };
 
 const ThemeModeContext = createContext<ThemeModeContextValue | null>(null);
@@ -131,9 +139,21 @@ export function ThemeModeProvider({ children }: { children: ReactNode }): React.
     });
   }, []);
 
+  // Counter (not a boolean) — more than one reading screen could theoretically
+  // be focus-registered across a transition, so a plain flip could clobber a
+  // sibling's registration. Only 'recommended' reads this; other modes ignore it.
+  const [readingSurfaceCount, setReadingSurfaceCount] = useState(0);
+  const setReadingSurfaceActive = useCallback((active: boolean) => {
+    setReadingSurfaceCount((c) => Math.max(0, c + (active ? 1 : -1)));
+  }, []);
+
   // Recompute every render so a 'system' user follows OS theme changes live.
   const resolvedScheme: ColorScheme =
-    mode === 'system' ? resolveOsScheme(osScheme) : mode;
+    mode === 'system'
+      ? resolveOsScheme(osScheme)
+      : mode === 'recommended'
+        ? (readingSurfaceCount > 0 ? 'light' : 'dark')
+        : mode;
 
   // Paint the native window background to match the active scheme. This
   // kills white-flash behind transparent surfaces / during rotation. It is
@@ -145,8 +165,8 @@ export function ThemeModeProvider({ children }: { children: ReactNode }): React.
   }, [resolvedScheme]);
 
   const value = useMemo<ThemeModeContextValue>(
-    () => ({ mode, setMode, resolvedScheme, hasLoaded }),
-    [mode, setMode, resolvedScheme, hasLoaded],
+    () => ({ mode, setMode, resolvedScheme, hasLoaded, setReadingSurfaceActive }),
+    [mode, setMode, resolvedScheme, hasLoaded, setReadingSurfaceActive],
   );
 
   // App-wide DEFAULT status-bar content color. Icons must contrast the
@@ -176,6 +196,24 @@ export function useThemeMode(): ThemeModeContextValue {
     );
   }
   return ctx;
+}
+
+/**
+ * Reading screens (novel viewer, post composer) call this to opt into the
+ * light reading surface while 'recommended' mode is active. Scoped to focus
+ * via `useFocusEffect` — pushing a screen on top (e.g. a comments sheet)
+ * blurs this screen, the counter drops, and the app falls back to dark until
+ * it regains focus. A no-op render-wise outside 'recommended' (the counter
+ * still moves, but only that mode's resolver reads it).
+ */
+export function useReadingSurface(): void {
+  const { setReadingSurfaceActive } = useThemeMode();
+  useFocusEffect(
+    useCallback(() => {
+      setReadingSurfaceActive(true);
+      return () => setReadingSurfaceActive(false);
+    }, [setReadingSurfaceActive]),
+  );
 }
 
 /**

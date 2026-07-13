@@ -15,10 +15,11 @@ import { usePost } from '@/features/community/hooks';
 import { ChipSelect, Field } from '@/features/studio/components';
 import { useGuardedNavigation } from '@/lib/navigation/useGuardedNavigation';
 import { keys } from '@/lib/query';
-import { Button, ErrorState, Screen, Skeleton, useTheme, useToast } from '@/ui';
+import { Button, ErrorState, Screen, Skeleton, useReadingSurface, useTheme, useToast } from '@/ui';
 
 export default function PostEditScreen() {
   const t = useTheme();
+  useReadingSurface(); // '추천' 모드에서는 글 수정도 라이트로 opt-in(M1, 글 작성과 동일 취급)
   const toast = useToast();
   const qc = useQueryClient();
   const nav = useGuardedNavigation();

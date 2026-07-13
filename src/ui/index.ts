@@ -96,6 +96,7 @@ export {
 export {
   ThemeModeProvider,
   useThemeMode,
+  useReadingSurface,
   type ThemeMode,
   THEME_MODE_STORAGE_KEY,
 } from './theme-mode';

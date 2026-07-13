@@ -41,6 +41,7 @@ import {
   Screen,
   Skeleton,
   Text,
+  useReadingSurface,
   useTheme,
   type HeaderConfig,
 } from '@/ui';
@@ -174,8 +175,15 @@ function ViewerContent({
   latest?: number;
 }) {
   const router = useRouter();
+  const t = useTheme();
   const kind = images[0].mediaKind;
   const isScrolling = kind !== 'AUDIO';
+  // transparent 헤더의 흰 글리프는 '아트 위에 뜬다'는 전제라 다크(트루블랙 viewerBg)에서는
+  // 항상 안전했지만, 소설 본문이 라이트/추천 읽기 모드로 전환되면(§12.5) viewerBg도 흰색이
+  // 돼 흰 글리프가 통째로 안 보인다. 그때만 solid로 바꿔 테마에 맞는 잉크를 쓴다 — 다크에서는
+  // 원래의 아트-포워드 트랜스페런트 헤더를 그대로 유지(solid 밴드가 트루블랙과 안 맞아 seam 생김).
+  const readerHeader: HeaderConfig =
+    kind === 'TEXT' && !t.isDark ? { ...header, variant: 'solid' } : header;
 
   // 리모컨 노출: 스크롤 리더(웹툰/소설)는 몰입을 위해 기본 숨김(탭/역스크롤로 노출),
   // 오디오는 스크롤이 없으므로 항상 노출한다.
@@ -232,7 +240,7 @@ function ViewerContent({
       <Screen
         surface="viewer"
         scroll
-        header={header}
+        header={readerHeader}
         scrollProps={{ onScroll, scrollEventThrottle: 16 }}
       >
         <Pressable onPress={() => setRemoteVisible((v) => !v)}>
@@ -277,6 +285,7 @@ function WebtoonReader({ images }: { images: EpisodeImage[] }) {
 
 function NovelReader({ url }: { url: string }) {
   const t = useTheme();
+  useReadingSurface(); // '추천' 모드에서는 소설 본문만 라이트로 opt-in(M1)
   const resolved = resolveImageUrl(url);
   const { data, isLoading, isError } = useQuery({
     queryKey: ['episode-text', url],
@@ -289,8 +298,14 @@ function NovelReader({ url }: { url: string }) {
     staleTime: Infinity,
   });
 
-  // 텍스트는 뷰어 거터(0)를 쓰지 않으므로 자체 읽기 여백 + 헤더 높이만큼 상단 확보.
-  const pad = { paddingHorizontal: t.space.lg, paddingTop: HEADER_BAND_HEIGHT } as const;
+  // 텍스트는 뷰어 거터(0)를 쓰지 않으므로 자체 읽기 여백이 필요. 다크에서는 여전히 원래의
+  // 플로팅 transparent 헤더라 본문이 그 아래로 직접 깔리므로 헤더 높이만큼 수동 오프셋(기존
+  // 동작 유지) — 라이트/추천 읽기에서는 헤더가 solid(flow)로 바뀌어(위 readerHeader) 상단
+  // 인셋을 헤더가 직접 소유하므로 수동 오프셋이 불필요.
+  const pad = {
+    paddingHorizontal: t.space.lg,
+    paddingTop: t.isDark ? HEADER_BAND_HEIGHT : 0,
+  } as const;
 
   if (isLoading) {
     return (
@@ -311,7 +326,7 @@ function NovelReader({ url }: { url: string }) {
 
   return (
     <View style={[pad, { paddingBottom: t.space.lg }]}>
-      <Text variant="body" style={{ lineHeight: 30, fontSize: 17, color: '#fff' }}>
+      <Text variant="body" style={{ lineHeight: 30, fontSize: 17, color: t.color.onSurface }}>
         {data.trim()}
       </Text>
     </View>

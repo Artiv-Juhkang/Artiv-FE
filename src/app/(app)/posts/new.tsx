@@ -17,12 +17,13 @@ import { ChipSelect, Field } from '@/features/studio/components';
 import { DropZone } from '@/features/studio/DropZone';
 import { useGuardedNavigation } from '@/lib/navigation/useGuardedNavigation';
 import { keys } from '@/lib/query';
-import { Button, Screen, Text, useTheme, useToast } from '@/ui';
+import { Button, Screen, Text, useReadingSurface, useTheme, useToast } from '@/ui';
 
 const MAX_IMAGES = 5; // 백엔드 PostService.MAX_IMAGES 미러(초과는 서버 400 — 클라 선차단)
 
 export default function PostNewScreen() {
   const t = useTheme();
+  useReadingSurface(); // '추천' 모드에서는 글 작성도 라이트로 opt-in(M1)
   const toast = useToast();
   const qc = useQueryClient();
   const nav = useGuardedNavigation();
