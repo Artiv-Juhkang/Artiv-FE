@@ -9,10 +9,9 @@ import { useLocalSearchParams } from 'expo-router';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { updatePost } from '@/api/endpoints/posts';
-import type { PostCategory } from '@/api/types';
-import { POST_CATEGORIES, POST_CATEGORY_LABEL } from '@/features/community/categories';
+import { CategoryPicker } from '@/features/community/CategoryPicker';
 import { usePost } from '@/features/community/hooks';
-import { ChipSelect, Field } from '@/features/studio/components';
+import { Field } from '@/features/studio/components';
 import { useGuardedNavigation } from '@/lib/navigation/useGuardedNavigation';
 import { keys } from '@/lib/query';
 import { Button, ErrorState, Screen, Skeleton, useReadingSurface, useTheme, useToast } from '@/ui';
@@ -28,7 +27,7 @@ export default function PostEditScreen() {
 
   const post = usePost(postId);
 
-  const [category, setCategory] = useState<PostCategory>('FREE');
+  const [category, setCategory] = useState('');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [seeded, setSeeded] = useState(false);
@@ -36,7 +35,7 @@ export default function PostEditScreen() {
   // 상세 데이터 도착 시 1회 프리필(이후 사용자의 입력을 덮지 않음).
   useEffect(() => {
     if (seeded || !post.data) return;
-    setCategory((post.data.category as PostCategory) ?? 'FREE');
+    setCategory(post.data.category ?? '');
     setTitle(post.data.title ?? '');
     setContent(post.data.content ?? '');
     setSeeded(true);
@@ -72,17 +71,13 @@ export default function PostEditScreen() {
     );
   }
 
-  const canSubmit = title.trim().length > 0 && content.trim().length > 0 && !saveMut.isPending;
+  const canSubmit =
+    category.length > 0 && title.trim().length > 0 && content.trim().length > 0 && !saveMut.isPending;
 
   return (
     <Screen scroll surface="ambient" header={{ variant: 'ambient', back: true, title: '글 수정' }}>
       <View style={{ gap: t.space.lg, paddingVertical: t.space.md }}>
-        <ChipSelect
-          label="카테고리"
-          options={POST_CATEGORIES.map((c) => ({ value: c, label: POST_CATEGORY_LABEL[c] }))}
-          value={category}
-          onChange={setCategory}
-        />
+        <CategoryPicker value={category} onChange={setCategory} />
         <Field label="제목" value={title} onChangeText={setTitle} placeholder="제목을 입력하세요" />
         <Field
           label="본문"

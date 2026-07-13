@@ -16,6 +16,7 @@ export type ApiErrorCode =
   | 'ENTITY_NOT_FOUND'
   | 'DUPLICATE_EMAIL'
   | 'DUPLICATE_NICKNAME'
+  | 'DUPLICATE_POST_CATEGORY'
   | 'INVALID_CREDENTIALS'
   | 'UNAUTHORIZED'
   | 'INVALID_TOKEN'
@@ -43,6 +44,7 @@ const DEFAULTS: Record<ApiErrorCode, { title: string; body: string; retryable: b
   INVALID_TOKEN: { title: '다시 로그인해 주세요', body: '로그인이 만료되었어요.', retryable: false },
   DUPLICATE_EMAIL: { title: '이미 가입된 이메일이에요', body: '다른 이메일을 사용해 주세요.', retryable: false },
   DUPLICATE_NICKNAME: { title: '이미 사용 중인 닉네임이에요', body: '다른 닉네임을 사용해 주세요.', retryable: false },
+  DUPLICATE_POST_CATEGORY: { title: '이미 있는 카테고리예요', body: '같은 이름의 카테고리가 이미 등록되어 있어요.', retryable: false },
   UNKNOWN: { title: '문제가 생겼어요', body: '잠시 후 다시 시도해 주세요.', retryable: true },
 };
 

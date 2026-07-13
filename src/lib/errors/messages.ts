@@ -29,6 +29,10 @@ export const ERROR_COPY: Record<AppErrorCode, { title: string; message: string }
     title: '이미 사용 중인 닉네임이에요',
     message: '다른 닉네임을 입력해 주세요. 한글·영문·숫자·밑줄(_)만 사용할 수 있어요.',
   },
+  DUPLICATE_POST_CATEGORY: {
+    title: '이미 있는 카테고리예요',
+    message: '같은 이름의 카테고리가 이미 등록되어 있어요.',
+  },
   INVALID_CREDENTIALS: {
     title: '로그인할 수 없어요',
     message: '이메일 또는 비밀번호가 올바르지 않아요. 다시 확인해 주세요.',

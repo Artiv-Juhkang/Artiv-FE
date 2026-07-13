@@ -1,13 +1,12 @@
 /**
  * 서재 '커뮤니티' 그룹의 행들 (L2) — 내 글 / 내 댓글 / 추천한 글.
- * 카테고리 라벨은 커뮤니티 공유 상수(POST_CATEGORY_LABEL)를 임포트(중복 정의 금지 — §5).
+ * 카테고리는 등록제(C7)라 이름 자체가 표시 라벨 — 별도 매핑 없이 그대로 렌더.
  * 행 탭 → 게시글 상세(/posts/[id]). 블라인드·삭제 원글은 상세가 404 ErrorState로 안착.
  */
 import { Pressable, View } from 'react-native';
 
 import type { MyCommentResponse, MyPostResponse, PostCategory, PostResponse } from '@/api/types';
 import { relativeTime } from '@/features/comments';
-import { POST_CATEGORY_LABEL } from '@/features/community/categories';
 import { Text, useTheme } from '@/ui';
 
 function CategoryPill({ category }: { category?: PostCategory }) {
@@ -23,7 +22,7 @@ function CategoryPill({ category }: { category?: PostCategory }) {
       }}
     >
       <Text variant="micro" weight="semibold" style={{ color: t.color.accent }}>
-        {POST_CATEGORY_LABEL[category]}
+        {category}
       </Text>
     </View>
   );

@@ -26,7 +26,6 @@ import {
   relativeTime,
   type ReplyTarget,
 } from '@/features/comments';
-import { POST_CATEGORY_LABEL } from '@/features/community/categories';
 import { ReportSheet } from '@/features/report/ReportSheet';
 import {
   usePost,
@@ -176,7 +175,7 @@ export default function PostDetailScreen() {
   }
 
   const p = post.data;
-  const label = p.category ? POST_CATEGORY_LABEL[p.category] : '';
+  const label = p.category ?? '';
   const liked = p.liked === true;
   const disliked = p.disliked === true;
   const blockedIds = new Set(blocks.data?.map((b) => b.userId));

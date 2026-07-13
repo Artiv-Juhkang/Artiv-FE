@@ -61,6 +61,10 @@ export const keys = {
     detail: (id: number) => ['posts', 'detail', id] as const,
     comments: (id: number) => ['posts', 'comments', id] as const,
   },
+  postCategories: {
+    all: ['postCategories'] as const,
+    list: () => ['postCategories', 'list'] as const,
+  },
   notifications: {
     all: ['notifications'] as const,
     list: () => ['notifications', 'list'] as const,

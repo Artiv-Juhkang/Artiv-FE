@@ -6,8 +6,9 @@
  *  - usePostComments:  댓글 전체 목록(List — 백엔드 미페이징이라 일반 쿼리).
  *  - usePostLikeToggle: 멱등 무바디 토글 → PostDetail.liked/likeCount 낙관 patch.
  */
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
+import { createPostCategory, listPostCategories } from '@/api/endpoints/postCategories';
 import {
   getPost,
   listPostComments,
@@ -15,7 +16,7 @@ import {
   setPostDislike,
   setPostLike,
 } from '@/api/endpoints/posts';
-import type { PostCategory, PostComment, PostDetail, PostSort } from '@/api/types';
+import type { PostCategory, PostCategoryResponse, PostComment, PostDetail, PostSort } from '@/api/types';
 import { createPageInfiniteQuery, keys, useToggleMutation } from '@/lib/query';
 
 export interface PostsListParams {
@@ -29,6 +30,23 @@ export function usePostsInfinite(params: PostsListParams = {}) {
   return createPageInfiniteQuery({
     queryKey: keys.posts.list({ category, sort }),
     fetchPage: (page, signal) => listPosts({ page, category, sort }, signal),
+  });
+}
+
+/** 카테고리 목록(C7, 등록제) — 시드 4종 + 사용자 등록분. 이름 자체가 표시 라벨. */
+export function usePostCategories() {
+  return useQuery<PostCategoryResponse[]>({
+    queryKey: keys.postCategories.list(),
+    queryFn: ({ signal }) => listPostCategories(signal),
+  });
+}
+
+/** 새 카테고리 등록 — 성공 시 목록 재동기(방금 등록한 것을 바로 선택할 수 있게). */
+export function useCreatePostCategory() {
+  const qc = useQueryClient();
+  return useMutation<PostCategoryResponse, Error, string>({
+    mutationFn: (name) => createPostCategory(name),
+    onSuccess: () => qc.invalidateQueries({ queryKey: keys.postCategories.list() }),
   });
 }
 

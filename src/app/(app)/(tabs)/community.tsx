@@ -9,9 +9,8 @@ import { useState } from 'react';
 import { FlatList, Pressable, ScrollView, View } from 'react-native';
 
 import type { PostCategory, PostSort } from '@/api/types';
-import { POST_CATEGORIES, POST_CATEGORY_LABEL } from '@/features/community/categories';
 import { PostCard } from '@/features/community/components/PostCard';
-import { usePostsInfinite } from '@/features/community/hooks';
+import { usePostCategories, usePostsInfinite } from '@/features/community/hooks';
 import { useMyBlocks } from '@/features/users/hooks';
 import { useGuardedNavigation } from '@/lib/navigation/useGuardedNavigation';
 import { flattenInfinite, useInfiniteQuery } from '@/lib/query';
@@ -62,9 +61,10 @@ function CategoryChips({
   onChange: (v: CategoryFilter) => void;
 }) {
   const t = useTheme();
+  const categories = usePostCategories();
   const chips: { key: CategoryFilter; label: string }[] = [
     { key: 'ALL', label: '전체' },
-    ...POST_CATEGORIES.map((c) => ({ key: c as CategoryFilter, label: POST_CATEGORY_LABEL[c] })),
+    ...(categories.data ?? []).map((c) => ({ key: c.name as CategoryFilter, label: c.name! })),
   ];
   return (
     <ScrollView

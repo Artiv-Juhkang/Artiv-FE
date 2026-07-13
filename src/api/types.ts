@@ -50,7 +50,8 @@ export type Genre =
 
 export type SeriesSort = 'LATEST' | 'UPDATED' | 'ADULT_FIRST';
 
-export type PostCategory = 'RECOMMEND' | 'FREE' | 'FANART' | 'QUESTION';
+/** 등록제(C7) — 이름 자체가 표시 라벨(별도 매핑 없음). 시드 4종 + 사용자 등록. */
+export type PostCategory = string;
 
 export type PostSort = 'LATEST' | 'BEST';
 
@@ -128,6 +129,7 @@ export type PostImage = Schemas['PostImageResponse'];
 export type PostComment = Schemas['PostCommentResponse'];
 export type MyPostResponse = Schemas['MyPostResponse'];
 export type MyCommentResponse = Schemas['MyCommentResponse'];
+export type PostCategoryResponse = Schemas['PostCategoryResponse'];
 
 // 개인화 / 서재
 export type SubscriptionResponse = Schemas['SubscriptionResponse'];

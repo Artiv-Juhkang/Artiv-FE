@@ -54,6 +54,13 @@ export const errorCatalog: Record<AppErrorCode, ErrorPresentation> = {
     title: ERROR_COPY.DUPLICATE_NICKNAME.title,
     message: ERROR_COPY.DUPLICATE_NICKNAME.message,
   },
+  DUPLICATE_POST_CATEGORY: {
+    kind: 'fieldErrors',
+    recoverable: true,
+    retryable: false,
+    title: ERROR_COPY.DUPLICATE_POST_CATEGORY.title,
+    message: ERROR_COPY.DUPLICATE_POST_CATEGORY.message,
+  },
   INVALID_CREDENTIALS: {
     kind: 'fieldErrors',
     recoverable: true,

@@ -11,9 +11,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { createPost } from '@/api/endpoints/posts';
 import type { RNFilePart } from '@/api/multipart';
-import type { PostCategory } from '@/api/types';
-import { POST_CATEGORIES, POST_CATEGORY_LABEL } from '@/features/community/categories';
-import { ChipSelect, Field } from '@/features/studio/components';
+import { CategoryPicker } from '@/features/community/CategoryPicker';
+import { Field } from '@/features/studio/components';
 import { DropZone } from '@/features/studio/DropZone';
 import { useGuardedNavigation } from '@/lib/navigation/useGuardedNavigation';
 import { keys } from '@/lib/query';
@@ -28,7 +27,7 @@ export default function PostNewScreen() {
   const qc = useQueryClient();
   const nav = useGuardedNavigation();
 
-  const [category, setCategory] = useState<PostCategory>('FREE');
+  const [category, setCategory] = useState('');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [images, setImages] = useState<RNFilePart[]>([]);
@@ -54,7 +53,8 @@ export default function PostNewScreen() {
     });
   };
 
-  const canSubmit = title.trim().length > 0 && content.trim().length > 0 && !createMut.isPending;
+  const canSubmit =
+    category.length > 0 && title.trim().length > 0 && content.trim().length > 0 && !createMut.isPending;
 
   return (
     <Screen
@@ -63,12 +63,7 @@ export default function PostNewScreen() {
       header={{ variant: 'ambient', back: true, title: '글쓰기' }}
     >
       <View style={{ gap: t.space.lg, paddingVertical: t.space.md }}>
-        <ChipSelect
-          label="카테고리"
-          options={POST_CATEGORIES.map((c) => ({ value: c, label: POST_CATEGORY_LABEL[c] }))}
-          value={category}
-          onChange={setCategory}
-        />
+        <CategoryPicker value={category} onChange={setCategory} />
         <Field label="제목" value={title} onChangeText={setTitle} placeholder="제목을 입력하세요" />
         <Field
           label="본문"

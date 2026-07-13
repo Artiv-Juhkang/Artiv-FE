@@ -324,6 +324,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/post-categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["list_5"];
+        put?: never;
+        post: operations["create_2"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/me/inquiries": {
         parameters: {
             query?: never;
@@ -333,7 +349,7 @@ export interface paths {
         };
         get: operations["mine_1"];
         put?: never;
-        post: operations["create_2"];
+        post: operations["create_3"];
         delete?: never;
         options?: never;
         head?: never;
@@ -349,7 +365,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["create_3"];
+        post: operations["create_4"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1307,7 +1323,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["list_5"];
+        get: operations["list_6"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1339,7 +1355,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["list_6"];
+        get: operations["list_7"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1371,7 +1387,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["list_7"];
+        get: operations["list_8"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1403,7 +1419,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["list_8"];
+        get: operations["list_9"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1535,6 +1551,14 @@ export interface components {
             createdAt?: string;
             replies?: components["schemas"]["PostCommentResponse"][];
         };
+        PostCategoryCreateRequest: {
+            name: string;
+        };
+        PostCategoryResponse: {
+            /** Format: int64 */
+            id?: number;
+            name?: string;
+        };
         ConversationCreateRequest: {
             /** @enum {string} */
             type?: "DIRECT" | "GROUP";
@@ -1639,8 +1663,7 @@ export interface components {
             tags?: string[];
         };
         PostUpdateRequest: {
-            /** @enum {string} */
-            category?: "RECOMMEND" | "FREE" | "FANART" | "QUESTION";
+            category?: string;
             title?: string;
             content?: string;
         };
@@ -1989,8 +2012,7 @@ export interface components {
             id?: number;
             /** Format: int64 */
             authorId?: number;
-            /** @enum {string} */
-            category?: "RECOMMEND" | "FREE" | "FANART" | "QUESTION";
+            category?: string;
             title?: string;
             authorNickname?: string;
             /** Format: int32 */
@@ -2005,8 +2027,7 @@ export interface components {
             id?: number;
             /** Format: int64 */
             authorId?: number;
-            /** @enum {string} */
-            category?: "RECOMMEND" | "FREE" | "FANART" | "QUESTION";
+            category?: string;
             title?: string;
             content?: string;
             authorNickname?: string;
@@ -2075,8 +2096,7 @@ export interface components {
         MyPostResponse: {
             /** Format: int64 */
             id?: number;
-            /** @enum {string} */
-            category?: "RECOMMEND" | "FREE" | "FANART" | "QUESTION";
+            category?: string;
             title?: string;
             /** Format: int32 */
             likeCount?: number;
@@ -2298,8 +2318,7 @@ export interface components {
         PostAdminResponse: {
             /** Format: int64 */
             id?: number;
-            /** @enum {string} */
-            category?: "RECOMMEND" | "FREE" | "FANART" | "QUESTION";
+            category?: string;
             title?: string;
             authorNickname?: string;
             /** Format: int32 */
@@ -2311,8 +2330,7 @@ export interface components {
         PostAdminDetailResponse: {
             /** Format: int64 */
             id?: number;
-            /** @enum {string} */
-            category?: "RECOMMEND" | "FREE" | "FANART" | "QUESTION";
+            category?: string;
             title?: string;
             content?: string;
             authorNickname?: string;
@@ -2944,7 +2962,7 @@ export interface operations {
     list_3: {
         parameters: {
             query: {
-                category?: "RECOMMEND" | "FREE" | "FANART" | "QUESTION";
+                category?: string;
                 sort?: "LATEST" | "BEST";
                 pageable: components["schemas"]["Pageable"];
             };
@@ -2968,7 +2986,7 @@ export interface operations {
     create_1: {
         parameters: {
             query: {
-                category: "RECOMMEND" | "FREE" | "FANART" | "QUESTION";
+                category: string;
                 title: string;
                 content: string;
             };
@@ -3207,6 +3225,50 @@ export interface operations {
             };
         };
     };
+    list_5: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PostCategoryResponse"][];
+                };
+            };
+        };
+    };
+    create_2: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostCategoryCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PostCategoryResponse"];
+                };
+            };
+        };
+    };
     mine_1: {
         parameters: {
             query: {
@@ -3229,7 +3291,7 @@ export interface operations {
             };
         };
     };
-    create_2: {
+    create_3: {
         parameters: {
             query: {
                 type: "ACCOUNT" | "PAYMENT" | "CONTENT" | "CREATOR" | "BUG" | "ETC";
@@ -3259,7 +3321,7 @@ export interface operations {
             };
         };
     };
-    create_3: {
+    create_4: {
         parameters: {
             query?: never;
             header?: never;
@@ -4750,7 +4812,7 @@ export interface operations {
             };
         };
     };
-    list_5: {
+    list_6: {
         parameters: {
             query: {
                 status?: "PENDING" | "RESOLVED" | "DISMISSED";
@@ -4797,10 +4859,10 @@ export interface operations {
             };
         };
     };
-    list_6: {
+    list_7: {
         parameters: {
             query: {
-                category?: "RECOMMEND" | "FREE" | "FANART" | "QUESTION";
+                category?: string;
                 keyword?: string;
                 blinded?: boolean;
                 pageable: components["schemas"]["Pageable"];
@@ -4844,7 +4906,7 @@ export interface operations {
             };
         };
     };
-    list_7: {
+    list_8: {
         parameters: {
             query: {
                 type?: "ACCOUNT" | "PAYMENT" | "CONTENT" | "CREATOR" | "BUG" | "ETC";
@@ -4910,7 +4972,7 @@ export interface operations {
             };
         };
     };
-    list_8: {
+    list_9: {
         parameters: {
             query: {
                 status?: "PENDING" | "APPROVED" | "REJECTED";
