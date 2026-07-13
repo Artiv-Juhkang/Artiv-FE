@@ -78,6 +78,7 @@ export const keys = {
     profile: () => ['me', 'profile'] as const,
     subscriptions: () => ['me', 'subscriptions'] as const,
     following: () => ['me', 'following'] as const,
+    friends: () => ['me', 'friends'] as const,
     posts: () => ['me', 'posts'] as const,
     postComments: () => ['me', 'postComments'] as const,
     likedPosts: () => ['me', 'likedPosts'] as const,

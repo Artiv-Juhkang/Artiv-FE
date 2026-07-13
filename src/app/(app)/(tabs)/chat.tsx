@@ -20,12 +20,23 @@ import {
   useRespondToRequest,
 } from '@/features/chat/hooks';
 import { useGuardedNavigation } from '@/lib/navigation/useGuardedNavigation';
-import { Avatar, Button, EmptyState, ErrorState, Screen, Skeleton, Text, useTheme } from '@/ui';
+import {
+  Avatar,
+  Button,
+  EmptyState,
+  ErrorState,
+  HeaderIconButton,
+  Screen,
+  Skeleton,
+  Text,
+  useTheme,
+} from '@/ui';
 
 type ChatTab = 'inbox' | 'requests';
 
 export default function ChatScreen() {
   const t = useTheme();
+  const nav = useGuardedNavigation();
   const isFocused = useIsFocused();
   const { tab: initialTab } = useLocalSearchParams<{ tab?: string }>();
   const [tab, setTab] = useState<ChatTab>(initialTab === 'requests' ? 'requests' : 'inbox');
@@ -33,7 +44,22 @@ export default function ChatScreen() {
   const requestCount = requests.data?.length ?? 0;
 
   return (
-    <Screen surface="ambient" header={{ variant: 'ambient', back: false, title: '채팅' }}>
+    <Screen
+      surface="ambient"
+      header={{
+        variant: 'ambient',
+        back: false,
+        title: '채팅',
+        right: (
+          <HeaderIconButton
+            name="person.2.badge.plus"
+            fallback="＋"
+            accessibilityLabel="단체방 만들기"
+            onPress={() => nav.push({ pathname: '/chat/new' })}
+          />
+        ),
+      }}
+    >
       <View style={{ flex: 1 }}>
         {/* 세그 — 요청함에 대기 건수가 있으면 라벨에 조용히 표기. */}
         <View style={{ flexDirection: 'row', gap: t.space.sm, paddingVertical: t.space.sm }}>
@@ -102,7 +128,7 @@ function InboxList({ isFocused }: { isFocused: boolean }) {
           onPress={() =>
             nav.push({
               pathname: '/chat/[id]',
-              params: { id: item.id!, name: item.displayName ?? '' },
+              params: { id: item.id!, name: item.displayName ?? '', type: item.type ?? 'DIRECT' },
             })
           }
         />
@@ -221,7 +247,7 @@ function RequestList({ requests }: { requests: ReturnType<typeof useConversation
                         onSuccess: () =>
                           nav.push({
                             pathname: '/chat/[id]',
-                            params: { id: item.id!, name },
+                            params: { id: item.id!, name, type: 'DIRECT' }, // 요청함은 항상 DIRECT(GROUP은 요청 없이 즉시 ACCEPTED)
                           }),
                       },
                     )

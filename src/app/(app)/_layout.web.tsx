@@ -30,6 +30,7 @@ export default function AppGroupLayoutWeb() {
           <Stack.Screen name="authors/[id]" options={{ headerShown: false }} />
           <Stack.Screen name="users/[id]" options={{ headerShown: false }} />
           <Stack.Screen name="chat/[id]" options={{ headerShown: false }} />
+          <Stack.Screen name="chat/new" options={{ headerShown: false }} />
           <Stack.Screen name="posts/[id]" options={{ headerShown: false }} />
           <Stack.Screen name="posts/new" options={{ headerShown: false }} />
           <Stack.Screen name="posts/[id]/edit" options={{ headerShown: false }} />

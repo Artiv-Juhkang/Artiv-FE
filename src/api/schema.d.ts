@@ -852,6 +852,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/users/me/friends": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["friends"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/users/me/following": {
         parameters: {
             query?: never;
@@ -1492,6 +1508,8 @@ export interface components {
             type?: "DIRECT" | "GROUP";
             /** Format: int64 */
             targetUserId?: number;
+            title?: string;
+            memberIds?: number[];
         };
         ConversationResponse: {
             /** Format: int64 */
@@ -4024,6 +4042,26 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["MyProfileResponse"];
+                };
+            };
+        };
+    };
+    friends: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["FollowUserResponse"][];
                 };
             };
         };

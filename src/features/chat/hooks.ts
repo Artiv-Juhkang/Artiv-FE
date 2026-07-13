@@ -9,6 +9,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   acceptConversation,
   createDirectConversation,
+  createGroupConversation,
   declineConversation,
   getChatUnreadCount,
   listConversationRequests,
@@ -16,7 +17,13 @@ import {
   listMessages,
   sendMessage,
 } from '@/api/endpoints/chat';
-import type { ChatMessage, ConversationResponse, ConversationSummary } from '@/api/types';
+import { getMyFriends } from '@/api/endpoints/users';
+import type {
+  ChatMessage,
+  ConversationResponse,
+  ConversationSummary,
+  FollowUserResponse,
+} from '@/api/types';
 import { createPageInfiniteQuery, keys } from '@/lib/query';
 
 export const INBOX_POLL_MS = 30_000;
@@ -92,6 +99,25 @@ export function useStartDirectChat() {
   const qc = useQueryClient();
   return useMutation<ConversationResponse, Error, number>({
     mutationFn: (targetUserId) => createDirectConversation(targetUserId),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: keys.conversations.list() });
+    },
+  });
+}
+
+/** 친구(상호 팔로우) 목록 — 단체방 피커의 초대 후보(CH4). */
+export function useFriends() {
+  return useQuery<FollowUserResponse[]>({
+    queryKey: keys.me.friends(),
+    queryFn: ({ signal }) => getMyFriends(signal),
+  });
+}
+
+/** 단체방 생성 — 성공 시 대화방으로 이동은 호출부가 담당. */
+export function useCreateGroup() {
+  const qc = useQueryClient();
+  return useMutation<ConversationResponse, Error, { title: string; memberIds: number[] }>({
+    mutationFn: ({ title, memberIds }) => createGroupConversation(title, memberIds),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: keys.conversations.list() });
     },

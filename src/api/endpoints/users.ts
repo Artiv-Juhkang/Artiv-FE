@@ -41,6 +41,12 @@ export async function getMyFollowing(signal?: AbortSignal): Promise<FollowUserRe
   return data;
 }
 
+/** 친구(상호 팔로우) 목록 — 단체방 초대 후보(CH4). */
+export async function getMyFriends(signal?: AbortSignal): Promise<FollowUserResponse[]> {
+  const { data } = await api.get<FollowUserResponse[]>('/api/users/me/friends', { signal });
+  return data;
+}
+
 /** 팔로우 토글(멱등). on=true POST / false DELETE. 무바디. */
 export async function setFollow(userId: number, on: boolean): Promise<void> {
   const path = `/api/users/${userId}/follow`;

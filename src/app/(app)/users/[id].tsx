@@ -171,7 +171,7 @@ export default function UserProfileScreen() {
                           onSuccess: (conv) =>
                             nav.push({
                               pathname: '/chat/[id]',
-                              params: { id: conv.id!, name: nickname },
+                              params: { id: conv.id!, name: nickname, type: 'DIRECT' },
                             }),
                         })
                       }

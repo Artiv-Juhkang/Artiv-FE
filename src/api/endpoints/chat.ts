@@ -21,6 +21,19 @@ export async function createDirectConversation(targetUserId: number): Promise<Co
   return data;
 }
 
+/** 단체방 생성 — 멤버 전원이 친구(상호 팔로우)여야 하며 요청 없이 즉시 열린다. */
+export async function createGroupConversation(
+  title: string,
+  memberIds: number[],
+): Promise<ConversationResponse> {
+  const { data } = await api.post<ConversationResponse>('/api/conversations', {
+    type: 'GROUP',
+    title,
+    memberIds,
+  });
+  return data;
+}
+
 /** 인박스 — ACCEPTED + 내가 보낸 PENDING(응답 대기). 서버가 표시명·미리보기·미읽음 파생. */
 export async function listConversations(signal?: AbortSignal): Promise<ConversationSummary[]> {
   const { data } = await api.get<ConversationSummary[]>('/api/me/conversations', { signal });

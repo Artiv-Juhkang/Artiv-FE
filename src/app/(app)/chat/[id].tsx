@@ -25,8 +25,9 @@ export default function ChatRoomScreen() {
   const toast = useToast();
   const qc = useQueryClient();
   const { user: me } = useAuth();
-  const { id, name } = useLocalSearchParams<{ id: string; name?: string }>();
+  const { id, name, type } = useLocalSearchParams<{ id: string; name?: string; type?: string }>();
   const conversationId = Number(id);
+  const isGroup = type === 'GROUP'; // 단체방(CH4)은 발신자가 여럿이라 말풍선에 이름을 붙인다.
 
   const q = useInfiniteQuery({
     ...useMessagesInfinite(conversationId),
@@ -103,7 +104,9 @@ export default function ChatRoomScreen() {
             keyExtractor={(m) => String(m.id)}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingVertical: t.space.md, gap: t.space.xs }}
-            renderItem={({ item }) => <Bubble message={item} mine={item.senderId === me?.id} />}
+            renderItem={({ item }) => (
+              <Bubble message={item} mine={item.senderId === me?.id} showSender={isGroup} />
+            )}
             onEndReachedThreshold={0.4}
             onEndReached={() => {
               if (q.hasNextPage && !q.isFetchingNextPage) void q.fetchNextPage();
@@ -138,34 +141,53 @@ export default function ChatRoomScreen() {
 
 /* -------------------------------------------------------------------------- */
 
-/** 말풍선 — 방향은 모서리 하나로 신호(내 말: 우하단 각짐 / 상대: 좌하단 각짐). */
-function Bubble({ message, mine }: { message: ChatMessage; mine: boolean }) {
+/**
+ * 말풍선 — 방향은 모서리 하나로 신호(내 말: 우하단 각짐 / 상대: 좌하단 각짐).
+ * showSender(단체방)면 상대 말풍선 위에 발신자 닉네임을 붙인다 — DIRECT는 헤더 제목이
+ * 이미 상대를 나타내므로 반복하지 않는다.
+ */
+function Bubble({
+  message,
+  mine,
+  showSender,
+}: {
+  message: ChatMessage;
+  mine: boolean;
+  showSender: boolean;
+}) {
   const t = useTheme();
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-        justifyContent: mine ? 'flex-end' : 'flex-start',
-        alignItems: 'flex-end',
-        gap: t.space.xs,
-      }}
-    >
-      {mine ? <Time at={message.createdAt} /> : null}
+    <View style={{ alignItems: mine ? 'flex-end' : 'flex-start', gap: 2 }}>
+      {!mine && showSender ? (
+        <Text variant="micro" color="onSurfaceMuted" style={{ marginLeft: t.space.sm }}>
+          {message.senderNickname ?? '(탈퇴)'}
+        </Text>
+      ) : null}
       <View
         style={{
-          maxWidth: '76%',
-          paddingHorizontal: t.space.md,
-          paddingVertical: t.space.sm,
-          backgroundColor: mine ? t.color.accentSubtle : t.color.surfaceSunken,
-          borderRadius: t.radius.lg,
-          borderBottomRightRadius: mine ? 4 : t.radius.lg,
-          borderBottomLeftRadius: mine ? t.radius.lg : 4,
-          borderCurve: 'continuous',
+          flexDirection: 'row',
+          justifyContent: mine ? 'flex-end' : 'flex-start',
+          alignItems: 'flex-end',
+          gap: t.space.xs,
         }}
       >
-        <Text variant="body" color="onSurface">
-          {message.content ?? ''}
-        </Text>
+        {mine ? <Time at={message.createdAt} /> : null}
+        <View
+          style={{
+            maxWidth: '76%',
+            paddingHorizontal: t.space.md,
+            paddingVertical: t.space.sm,
+            backgroundColor: mine ? t.color.accentSubtle : t.color.surfaceSunken,
+            borderRadius: t.radius.lg,
+            borderBottomRightRadius: mine ? 4 : t.radius.lg,
+            borderBottomLeftRadius: mine ? t.radius.lg : 4,
+            borderCurve: 'continuous',
+          }}
+        >
+          <Text variant="body" color="onSurface">
+            {message.content ?? ''}
+          </Text>
+        </View>
       </View>
       {mine ? null : <Time at={message.createdAt} />}
     </View>
