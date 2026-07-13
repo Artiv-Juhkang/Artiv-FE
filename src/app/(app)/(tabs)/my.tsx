@@ -204,6 +204,12 @@ export default function MyPageScreen() {
             />
           </View>
           <Button label="로그아웃" variant="secondary" fullWidth onPress={confirmLogout} />
+          <Button
+            label="회원 탈퇴"
+            variant="ghost"
+            fullWidth
+            onPress={() => router.push('/withdraw' as Href)}
+          />
         </View>
       </View>
     </Screen>

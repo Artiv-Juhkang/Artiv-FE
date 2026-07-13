@@ -56,3 +56,8 @@ export async function setFollow(userId: number, on: boolean): Promise<void> {
     await api.delete(path);
   }
 }
+
+/** 회원 탈퇴(M5) — 비번 확인 204. 실패(400=비번 불일치)면 세션 그대로 유지. */
+export async function withdrawAccount(password: string): Promise<void> {
+  await api.delete('/api/users/me', { data: { password } });
+}

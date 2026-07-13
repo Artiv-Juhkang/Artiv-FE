@@ -15,6 +15,7 @@ export function Field({
   placeholder,
   multiline,
   keyboardType,
+  secureTextEntry,
 }: {
   label: string;
   value: string;
@@ -22,6 +23,7 @@ export function Field({
   placeholder?: string;
   multiline?: boolean;
   keyboardType?: 'default' | 'numeric';
+  secureTextEntry?: boolean;
 }) {
   const t = useTheme();
   return (
@@ -36,6 +38,7 @@ export function Field({
         placeholderTextColor={t.color.onSurfaceMuted}
         multiline={multiline}
         keyboardType={keyboardType}
+        secureTextEntry={secureTextEntry}
         style={{
           minHeight: multiline ? 96 : t.layout.minHitTarget,
           textAlignVertical: multiline ? 'top' : 'center',
