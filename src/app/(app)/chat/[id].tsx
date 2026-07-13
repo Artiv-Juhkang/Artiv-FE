@@ -30,7 +30,10 @@ export default function ChatRoomScreen() {
 
   const q = useInfiniteQuery({
     ...useMessagesInfinite(conversationId),
-    refetchInterval: ROOM_POLL_MS, // 활성 대화만 5s — 언마운트·백그라운드에서 정지
+    // 활성 대화만 5s — 언마운트 시 정지. 에러가 지속되는 동안(예: FORBIDDEN인 대화,
+    // 오프라인)에는 5s마다 실패를 반복하지 않도록 끈다 — 사용자가 화면을 벗어나거나
+    // 재진입해야 재시도(react-query 기본 재시도 정책이 그 사이를 담당).
+    refetchInterval: (query) => (query.state.error ? false : ROOM_POLL_MS),
   });
   // 최신순(id desc) 페이지를 그대로 inverted 리스트에 — 화면상 최신이 바닥에 앉는다.
   const messages = useMemo(() => flattenInfinite(q.data, (m) => m.id ?? -1), [q.data]);
