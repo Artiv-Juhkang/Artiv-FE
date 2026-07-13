@@ -43,6 +43,7 @@ export default function AppGroupLayoutWeb() {
           <Stack.Screen name="inquiries/index" options={{ headerShown: false }} />
           <Stack.Screen name="inquiries/new" options={{ headerShown: false }} />
           <Stack.Screen name="inquiries/[id]" options={{ headerShown: false }} />
+          <Stack.Screen name="faq" options={{ headerShown: false }} />
         </Stack>
       </WebShell>
     </AmbientProvider>

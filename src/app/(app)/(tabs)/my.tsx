@@ -166,6 +166,12 @@ export default function MyPageScreen() {
             fullWidth
             onPress={() => router.push('/inquiries' as Href)}
           />
+          <Button
+            label="자주 묻는 질문"
+            variant="secondary"
+            fullWidth
+            onPress={() => router.push('/faq' as Href)}
+          />
         </View>
 
         <Divider />
