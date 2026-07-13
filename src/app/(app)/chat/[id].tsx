@@ -59,10 +59,12 @@ export default function ChatRoomScreen() {
       onSuccess: () => setText(''),
       onError: (e) => {
         const blocked = isAppError(e) && e.code === 'FORBIDDEN';
+        // 이 방이 왜 막혔는지(수락 대기중 vs 영구 거절) 서버가 구분해 주지 않는다 — 거절은
+        // 조용히 처리되는 게 설계 의도(D-확4)라 "수락하면 보낼 수 있다"처럼 단정하지 않는다.
         toast.show({
           tone: 'danger',
           message: blocked
-            ? '요청을 수락하면 답장할 수 있어요.'
+            ? '지금은 메시지를 보낼 수 없어요.'
             : '전송에 실패했어요. 잠시 후 다시 시도해 주세요.',
         });
       },
@@ -124,6 +126,7 @@ export default function ChatRoomScreen() {
           onCancelReply={() => {}}
           placeholder="메시지를 입력하세요"
           sendLabel="보내기"
+          maxLength={2000}
         />
       </KeyboardAvoidingView>
     </Screen>

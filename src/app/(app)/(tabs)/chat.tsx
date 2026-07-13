@@ -3,10 +3,13 @@
  *
  * 대화: ACCEPTED + 내가 보낸 대기 중 요청. 행 = 아바타·상대 이름·마지막 말 한 줄·시각·미읽음 pill.
  * 요청: 받은 PENDING — 수락하면 대화로, 거절은 조용히 사라진다(상대에게 알리지 않음).
- * 폴링 30s(화면에 있을 때만). 프레임은 R0 ambient 유지.
+ * 폴링 30s — useIsFocused()로 이 탭이 실제로 보일 때만(다른 탭으로 이동하면 정지, 리뷰로
+ * 발견된 갭 수정: expo-router 탭은 blur돼도 언마운트하지 않는다).
+ * `?tab=requests`로 진입하면 요청함이 기본 세그(DM_REQUEST 알림 탭 시 사용).
  */
 import { useState } from 'react';
 import { FlatList, Pressable, View } from 'react-native';
+import { useIsFocused, useLocalSearchParams } from 'expo-router';
 
 import { resolveImageUrl } from '@/api/image';
 import type { ConversationSummary } from '@/api/types';
@@ -23,8 +26,10 @@ type ChatTab = 'inbox' | 'requests';
 
 export default function ChatScreen() {
   const t = useTheme();
-  const [tab, setTab] = useState<ChatTab>('inbox');
-  const requests = useConversationRequests();
+  const isFocused = useIsFocused();
+  const { tab: initialTab } = useLocalSearchParams<{ tab?: string }>();
+  const [tab, setTab] = useState<ChatTab>(initialTab === 'requests' ? 'requests' : 'inbox');
+  const requests = useConversationRequests(isFocused);
   const requestCount = requests.data?.length ?? 0;
 
   return (
@@ -59,7 +64,7 @@ export default function ChatScreen() {
             );
           })}
         </View>
-        {tab === 'inbox' ? <InboxList /> : <RequestList requests={requests} />}
+        {tab === 'inbox' ? <InboxList isFocused={isFocused} /> : <RequestList requests={requests} />}
       </View>
     </Screen>
   );
@@ -67,10 +72,10 @@ export default function ChatScreen() {
 
 /* -------------------------------------------------------------------------- */
 
-function InboxList() {
+function InboxList({ isFocused }: { isFocused: boolean }) {
   const t = useTheme();
   const nav = useGuardedNavigation();
-  const q = useConversations();
+  const q = useConversations(isFocused);
 
   if (q.isLoading) return <ChatSkeleton />;
   if (q.isError) return <ErrorState code="UNKNOWN" onRetry={() => void q.refetch()} />;

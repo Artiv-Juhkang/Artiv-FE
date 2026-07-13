@@ -18,6 +18,7 @@ export function ComposeBar({
   onCancelReply,
   placeholder = '댓글을 입력하세요',
   sendLabel = '등록',
+  maxLength = 1000,
 }: {
   text: string;
   onChangeText: (v: string) => void;
@@ -28,6 +29,8 @@ export function ComposeBar({
   /** 도메인별 문구(댓글/메시지) — 기본은 댓글. */
   placeholder?: string;
   sendLabel?: string;
+  /** 서버 검증 길이와 맞춘다 — 댓글 1000자, 채팅 메시지는 2000자(호출부가 지정). */
+  maxLength?: number;
 }) {
   const t = useTheme();
   const insets = useSafeAreaInsets();
@@ -64,7 +67,7 @@ export function ComposeBar({
           placeholder={replyTo ? '답글을 입력하세요' : placeholder}
           placeholderTextColor={t.color.onSurfaceMuted}
           multiline
-          maxLength={1000}
+          maxLength={maxLength}
           style={{
             flex: 1,
             minHeight: 40,

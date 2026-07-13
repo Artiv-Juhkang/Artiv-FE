@@ -22,19 +22,27 @@ import { createPageInfiniteQuery, keys } from '@/lib/query';
 export const INBOX_POLL_MS = 30_000;
 export const ROOM_POLL_MS = 5_000;
 
-export function useConversations() {
+/**
+ * enabled 게이트가 없으면 채팅 탭을 한 번이라도 방문한 세션은 다른 탭으로 옮겨도
+ * 계속 폴링한다(expo-router 탭은 lazy는 초기 마운트만 지연할 뿐 blur 시 언마운트하지
+ * 않고, 이 프로젝트는 RN AppState↔react-query focusManager 연동도 없다 — 리뷰로 확인).
+ * 호출부(채팅 탭 화면)가 useIsFocused()를 전달해 포커스 아닐 때 폴링을 끈다.
+ */
+export function useConversations(enabled: boolean = true) {
   return useQuery<ConversationSummary[]>({
     queryKey: keys.conversations.list(),
     queryFn: ({ signal }) => listConversations(signal),
-    refetchInterval: INBOX_POLL_MS,
+    refetchInterval: enabled ? INBOX_POLL_MS : false,
+    enabled,
   });
 }
 
-export function useConversationRequests() {
+export function useConversationRequests(enabled: boolean = true) {
   return useQuery<ConversationSummary[]>({
     queryKey: keys.conversations.requests(),
     queryFn: ({ signal }) => listConversationRequests(signal),
-    refetchInterval: INBOX_POLL_MS,
+    refetchInterval: enabled ? INBOX_POLL_MS : false,
+    enabled,
   });
 }
 

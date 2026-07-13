@@ -75,7 +75,10 @@ export default function NotificationsScreen() {
       } else if (updated.targetType === 'USER') {
         nav.push({ pathname: '/users/[id]', params: { id: updated.targetId } });
       } else if (updated.targetType === 'CONVERSATION') {
-        nav.push({ pathname: '/chat/[id]', params: { id: updated.targetId } });
+        // DM_REQUEST는 항상 수신자에게만 발송되므로(ChatService.createDirectInternal),
+        // 이 알림을 탭한 사람은 늘 '받은 요청'의 당사자다 — 대화방(아직 수락 전이라 텅 빈
+        // 화면)이 아니라 수락/거절이 가능한 요청함으로 보낸다.
+        nav.push({ pathname: '/chat', params: { tab: 'requests' } });
       }
       // COMMENT는 원글 id를 모르므로 읽음 처리만(후속: targetId에 postId 동봉 검토). INQUIRY는 M2.
     },
