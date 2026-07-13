@@ -40,6 +40,9 @@ export default function AppGroupLayoutWeb() {
           <Stack.Screen name="studio/new" options={{ headerShown: false }} />
           <Stack.Screen name="studio/[id]/upload" options={{ headerShown: false }} />
           <Stack.Screen name="creator-request" options={{ headerShown: false }} />
+          <Stack.Screen name="inquiries/index" options={{ headerShown: false }} />
+          <Stack.Screen name="inquiries/new" options={{ headerShown: false }} />
+          <Stack.Screen name="inquiries/[id]" options={{ headerShown: false }} />
         </Stack>
       </WebShell>
     </AmbientProvider>

@@ -51,6 +51,10 @@ export default function AppGroupLayout() {
         <Stack.Screen name="studio/new" options={{ headerShown: false }} />
         <Stack.Screen name="studio/[id]/upload" options={{ headerShown: false }} />
         <Stack.Screen name="creator-request" options={{ headerShown: false }} />
+        {/* 고객센터 — 문의 목록·작성·상세 (M2). my 탭에서 진입. */}
+        <Stack.Screen name="inquiries/index" options={{ headerShown: false }} />
+        <Stack.Screen name="inquiries/new" options={{ headerShown: false }} />
+        <Stack.Screen name="inquiries/[id]" options={{ headerShown: false }} />
       </Stack>
     </AmbientProvider>
   );

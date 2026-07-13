@@ -155,6 +155,21 @@ export default function MyPageScreen() {
 
         <Divider />
 
+        {/* 고객센터 — 문의 목록/작성/상세 (M2). */}
+        <View style={{ gap: t.space.sm }}>
+          <Text variant="caption" weight="semibold" color="onSurfaceMuted" caps>
+            고객센터
+          </Text>
+          <Button
+            label="문의 내역"
+            variant="secondary"
+            fullWidth
+            onPress={() => router.push('/inquiries' as Href)}
+          />
+        </View>
+
+        <Divider />
+
         {/* Account */}
         <View style={{ gap: t.space.sm }}>
           <Text variant="caption" weight="semibold" color="onSurfaceMuted" caps>

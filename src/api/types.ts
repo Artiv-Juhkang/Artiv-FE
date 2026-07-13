@@ -82,6 +82,8 @@ export type InquiryType =
   | 'BUG'
   | 'ETC';
 
+export type InquiryStatus = 'PENDING' | 'ANSWERED' | 'CLOSED';
+
 export type DayOfWeek =
   | 'MONDAY'
   | 'TUESDAY'
@@ -150,6 +152,11 @@ export type ConversationResponse = Schemas['ConversationResponse'];
 export type ConversationSummary = Schemas['ConversationSummaryResponse'];
 export type ChatMessage = Schemas['MessageResponse'];
 export type ChatUnreadCountResponse = Schemas['ChatUnreadCountResponse'];
+
+// 문의 (M2)
+export type InquiryResponse = Schemas['InquiryResponse'];
+export type InquiryDetailResponse = Schemas['InquiryDetailResponse'];
+export type InquiryImageResponse = Schemas['InquiryImageResponse'];
 
 // 동의
 export type ConsentResponse = Schemas['ConsentResponse'];
