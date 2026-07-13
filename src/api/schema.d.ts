@@ -846,7 +846,7 @@ export interface paths {
         get: operations["me"];
         put?: never;
         post?: never;
-        delete?: never;
+        delete: operations["withdraw"];
         options?: never;
         head?: never;
         patch?: never;
@@ -2322,6 +2322,9 @@ export interface components {
             /** Format: int32 */
             totalPages?: number;
             last?: boolean;
+        };
+        WithdrawRequest: {
+            password: string;
         };
     };
     responses: never;
@@ -4043,6 +4046,28 @@ export interface operations {
                 content: {
                     "*/*": components["schemas"]["MyProfileResponse"];
                 };
+            };
+        };
+    };
+    withdraw: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WithdrawRequest"];
+            };
+        };
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
