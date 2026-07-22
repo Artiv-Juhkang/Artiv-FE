@@ -109,9 +109,15 @@ function InquiryRow({ inquiry, onPress }: { inquiry: InquiryResponse; onPress: (
           {relativeTime(inquiry.createdAt)}
         </Text>
       </View>
-      <Text variant="headline" weight="semibold" numberOfLines={1}>
-        {inquiry.title ?? ''}
-      </Text>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: t.space.xs }}>
+        {/* 답변 완료 문의는 제목 앞 강조 dot으로 목록에서 즉시 눈에 띄게(UX7). */}
+        {answered ? (
+          <View style={{ width: 7, height: 7, borderRadius: 4, backgroundColor: t.color.accent }} />
+        ) : null}
+        <Text variant="headline" weight="semibold" numberOfLines={1} style={{ flexShrink: 1 }}>
+          {inquiry.title ?? ''}
+        </Text>
+      </View>
     </Pressable>
   );
 }

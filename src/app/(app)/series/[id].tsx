@@ -284,8 +284,6 @@ function DetailContent({ seriesId }: { seriesId: number }) {
       <View style={{ gap: t.space.lg, paddingBottom: t.space.lg }}>
         <SeriesHero series={series} onAuthorPress={onAuthorPress} />
 
-        <SeriesActionBar seriesId={seriesId} />
-
         {serialized ? (
           <>
             <StatsRow episodeCount={episodeCount} latestEpisodeNo={latest} />
@@ -306,6 +304,10 @@ function DetailContent({ seriesId }: { seriesId: number }) {
           // 비연재 단일물 — 회차/정기후원 통계 대신 스와이프 이미지 갤러리.
           <SeriesGallery seriesId={seriesId} />
         )}
+
+        {/* 정기 후원은 감상 CTA·회차 목록 아래로 — 첫 방문자가 감상보다 결제를 먼저 만나는
+            퍼널 역전을 막는다. 읽기 → (스크롤) → 후원의 자연스러운 순서(UX3). */}
+        <SeriesActionBar seriesId={seriesId} />
       </View>
     </DetailShell>
   );
