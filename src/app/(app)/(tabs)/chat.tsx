@@ -137,34 +137,67 @@ function InboxList({ isFocused }: { isFocused: boolean }) {
   );
 }
 
+/** 인라인 방 타입/상태 마커 — 익명은 강조 pill(이 화면의 시그니처), 대기는 조용한 pill. */
+function RoomPill({ label, tone }: { label: string; tone: 'accent' | 'muted' }) {
+  const t = useTheme();
+  const accent = tone === 'accent';
+  return (
+    <View
+      style={{
+        paddingHorizontal: t.space.sm,
+        paddingVertical: 1,
+        borderRadius: t.radius.pill,
+        backgroundColor: accent ? t.color.accentSubtle : t.color.surfaceSunken,
+      }}
+    >
+      <Text variant="micro" weight="semibold" color={accent ? 'accent' : 'onSurfaceMuted'}>
+        {label}
+      </Text>
+    </View>
+  );
+}
+
 function ConversationRow({ conv, onPress }: { conv: ConversationSummary; onPress: () => void }) {
   const t = useTheme();
   const name = conv.displayName ?? '(탈퇴)';
   const waiting = conv.status === 'PENDING'; // 내가 보낸 요청 — 상대 응답 대기
   const unread = conv.unreadCount ?? 0;
+  const isGroup = conv.type === 'GROUP';
+  const isAnon = conv.anonymous === true;
+  // 그룹방은 아바타를 원형 이니셜 대신 겹친 사각 타일 느낌으로 — 1:1(사람)과 즉시 구분(UX2).
+  const typeA11y = isAnon ? '익명 단체방' : isGroup ? '단체방' : '대화';
   return (
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
-      accessibilityLabel={`${name}와의 대화`}
+      accessibilityLabel={`${name} ${typeA11y}${waiting ? ', 수락 대기 중' : ''}`}
       style={{
         flexDirection: 'row',
         alignItems: 'center',
         gap: t.space.md,
         paddingVertical: t.space.md,
+        opacity: waiting ? 0.66 : 1, // 대기 중 요청은 활성 대화보다 흐리게(UX5)
       }}
     >
-      <Avatar uri={resolveImageUrl(conv.partnerAvatarUrl)} nickname={name} size="md" />
+      <Avatar
+        uri={resolveImageUrl(conv.partnerAvatarUrl)}
+        nickname={name}
+        size="md"
+        shape={isGroup ? 'rounded' : 'circle'}
+      />
       <View style={{ flex: 1, gap: 2 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: t.space.sm }}>
           <Text variant="headline" weight="semibold" numberOfLines={1} style={{ flexShrink: 1 }}>
             {name}
           </Text>
-          <Text variant="micro" color="onSurfaceMuted">
+          {isAnon ? <RoomPill label="익명" tone="accent" /> : null}
+          {waiting ? <RoomPill label="대기" tone="muted" /> : null}
+          <Text variant="micro" color="onSurfaceMuted" style={{ marginLeft: 'auto' }}>
             {relativeTime(conv.lastMessageAt)}
           </Text>
         </View>
         <Text variant="caption" color={unread > 0 ? 'onSurface' : 'onSurfaceMuted'} numberOfLines={1}>
+          {isGroup && conv.memberCount ? `${conv.memberCount}명 · ` : ''}
           {waiting ? '수락을 기다리고 있어요' : (conv.lastMessage ?? '대화를 시작해 보세요')}
         </Text>
       </View>

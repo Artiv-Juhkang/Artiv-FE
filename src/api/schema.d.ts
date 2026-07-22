@@ -2209,6 +2209,9 @@ export interface components {
             type?: "DIRECT" | "GROUP";
             /** @enum {string} */
             status?: "PENDING" | "ACCEPTED" | "DECLINED";
+            anonymous?: boolean;
+            /** Format: int32 */
+            memberCount?: number;
             displayName?: string;
             /** Format: int64 */
             partnerId?: number;
