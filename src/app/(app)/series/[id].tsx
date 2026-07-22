@@ -326,7 +326,8 @@ function StatsRow({
   return (
     <View style={{ flexDirection: 'row', gap: t.space.xl }}>
       <Stat label="전체 회차" value={`${episodeCount}화`} />
-      {typeof latestEpisodeNo === 'number' ? (
+      {/* 연속 회차면 전체=최신이라 값이 같다 — 중복이면 최신 회차 Stat을 숨긴다(UX6). */}
+      {typeof latestEpisodeNo === 'number' && latestEpisodeNo !== episodeCount ? (
         <Stat label="최신 회차" value={`${latestEpisodeNo}화`} />
       ) : null}
     </View>

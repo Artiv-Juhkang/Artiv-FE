@@ -7,10 +7,12 @@ import { SymbolView } from 'expo-symbols';
 import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 
 import { FAQ_SECTIONS } from '@/features/settings/faq';
-import { Screen, Text, useTheme } from '@/ui';
+import { useGuardedNavigation } from '@/lib/navigation/useGuardedNavigation';
+import { Button, GlassCard, Screen, Text, useTheme } from '@/ui';
 
 export default function FaqScreen() {
   const t = useTheme();
+  const nav = useGuardedNavigation();
   return (
     <Screen scroll surface="ambient" header={{ variant: 'ambient', back: true, title: '자주 묻는 질문' }}>
       <View style={{ gap: t.space.xl, paddingVertical: t.space.md }}>
@@ -26,6 +28,19 @@ export default function FaqScreen() {
             </View>
           </View>
         ))}
+
+        {/* 여기서 답을 못 찾은 사용자를 문의 작성으로 연결(UX8 — FAQ↔문의 흐름 완결). */}
+        <GlassCard radius="lg">
+          <View style={{ padding: t.space.lg, gap: t.space.sm, alignItems: 'center' }}>
+            <Text variant="body" weight="semibold">
+              원하는 답을 못 찾으셨나요?
+            </Text>
+            <Text variant="caption" color="onSurfaceSecondary" style={{ textAlign: 'center' }}>
+              문의를 남겨주시면 확인 후 답변드릴게요.
+            </Text>
+            <Button label="문의하기" onPress={() => nav.push({ pathname: '/inquiries/new' })} />
+          </View>
+        </GlassCard>
       </View>
     </Screen>
   );

@@ -16,7 +16,6 @@ import { Pressable, View } from 'react-native';
 
 import { resolveImageUrl } from '@/api/image';
 import { useAuth, isCreator } from '@/features/auth';
-import { ThemeModeToggle } from '@/features/settings/ThemeModeToggle';
 import { Avatar, Text, useTheme } from '@/ui';
 
 export const RAIL_WIDTH = 240;
@@ -134,10 +133,8 @@ export function LeftRail() {
             backgroundColor: t.color.surfaceSunken,
           }}
         >
-          <Text variant="caption" weight="semibold" color="onSurfaceMuted" caps>
-            화면 테마
-          </Text>
-          <ThemeModeToggle />
+          {/* 화면 테마 토글은 '내 정보' 본문에만 둔다 — 여기(240px 레일)에선 4칩 라벨이 잘리고
+              본문과 중복이라 제거(UX1·UX11). 테마 변경은 바로 아래 '프로필 전체 보기'에서. */}
           <Link href={'/my' as Href} asChild>
             <Pressable style={{ cursor: 'pointer' } as object}>
               <Text variant="callout" style={{ color: t.color.accent }}>

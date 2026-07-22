@@ -85,7 +85,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'stretch',
     borderWidth: StyleSheet.hairlineWidth,
-    alignSelf: 'flex-start',
+    // 부모 폭을 채워 4칩(시스템·라이트·다크·추천)이 균등 분배되게 한다 — flex-start로 내용폭에
+    // 맞추면 칩이 라벨보다 좁아져 '시…'/'라…'로 잘렸다(UX1).
+    alignSelf: 'stretch',
   },
   segment: {
     flex: 1,

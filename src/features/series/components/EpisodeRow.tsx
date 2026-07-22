@@ -70,18 +70,20 @@ export function EpisodeRow({ episode, isRead, isContinue, remainingMs, onPress }
   );
 
   const noLabel = typeof episodeNo === 'number' ? `${episodeNo}화` : '';
+  // 제목이 회차번호 라벨과 같으면("7화" 회차의 제목도 "7화") 중복 노출을 피한다 — "7화 7화"가 아니라 "7화"(UX6).
+  const showTitle = title !== '' && title !== noLabel;
 
   // One screen-reader sentence describing the whole row state.
   const a11yLabel = useMemo(() => {
     const parts: string[] = [];
     if (noLabel) parts.push(noLabel);
-    if (title) parts.push(title);
+    if (showTitle) parts.push(title);
     if (isUp) parts.push('새 회차');
     if (locked) parts.push('잠긴 회차');
     if (isRead) parts.push('읽음');
     if (isContinue) parts.push('이어보기');
     return parts.join(', ');
-  }, [noLabel, title, isUp, locked, isRead, isContinue]);
+  }, [noLabel, title, showTitle, isUp, locked, isRead, isContinue]);
 
   return (
     <Card
@@ -140,10 +142,12 @@ export function EpisodeRow({ episode, isRead, isContinue, remainingMs, onPress }
         </View>
 
         <Text variant="headline" weight="semibold" numberOfLines={1}>
-          {noLabel ? `${noLabel}  ` : ''}
-          <Text variant="headline" weight="regular">
-            {title}
-          </Text>
+          {noLabel ? (showTitle ? `${noLabel}  ` : noLabel) : ''}
+          {showTitle ? (
+            <Text variant="headline" weight="regular">
+              {title}
+            </Text>
+          ) : null}
         </Text>
 
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: t.space.sm }}>
