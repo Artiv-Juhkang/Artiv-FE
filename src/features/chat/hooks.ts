@@ -71,11 +71,17 @@ export function useMessagesInfinite(conversationId: number) {
   });
 }
 
-/** 전송 — 성공 시 대화·인박스 재동기(낙관 삽입 대신 5s 폴링과 invalidate로 수렴: 단순성). */
+/**
+ * 전송 — 성공 시 대화·인박스 재동기(낙관 삽입 대신 5s 폴링과 invalidate로 수렴: 단순성).
+ * throwOnError: false — PENDING/DECLINED(수락 대기·거절)·차단 관계에서 서버가 403(kind='blocked',
+ * fatal)을 주는데, 이는 대화방 화면이 토스트로 인라인 처리하는 정상 흐름이지 ErrorBoundary로
+ * 보낼 화면 붕괴가 아니다(useStartDirectChat과 동일 계열 — F27).
+ */
 export function useSendMessage(conversationId: number) {
   const qc = useQueryClient();
   return useMutation<ChatMessage, Error, string>({
     mutationFn: (content) => sendMessage(conversationId, content),
+    throwOnError: false,
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: keys.conversations.messages(conversationId) });
       qc.invalidateQueries({ queryKey: keys.conversations.list() });
@@ -83,11 +89,16 @@ export function useSendMessage(conversationId: number) {
   });
 }
 
-/** 요청 수락/거절 — 요청함·인박스·뱃지 재동기. */
+/**
+ * 요청 수락/거절 — 요청함·인박스·뱃지 재동기.
+ * throwOnError: false — 이미 처리된 요청을 다시 눌러 403(fatal)이 와도 화면을 붕괴시키지 않고
+ * onSettled의 재동기로 목록이 정리되게 둔다(F27 계열).
+ */
 export function useRespondToRequest() {
   const qc = useQueryClient();
   return useMutation<ConversationResponse, Error, { id: number; accept: boolean }>({
     mutationFn: ({ id, accept }) => (accept ? acceptConversation(id) : declineConversation(id)),
+    throwOnError: false,
     onSettled: () => {
       qc.invalidateQueries({ queryKey: keys.conversations.all });
     },

@@ -2831,6 +2831,8 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
+                seriesId: number;
+                episodeNo: number;
                 commentId: number;
             };
             cookie?: never;
@@ -2851,6 +2853,8 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
+                seriesId: number;
+                episodeNo: number;
                 commentId: number;
             };
             cookie?: never;
@@ -5000,6 +5004,8 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
+                seriesId: number;
+                episodeNo: number;
                 commentId: number;
             };
             cookie?: never;

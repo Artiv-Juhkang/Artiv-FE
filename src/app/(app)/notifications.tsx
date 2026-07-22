@@ -82,7 +82,8 @@ export default function NotificationsScreen() {
       } else if (updated.targetType === 'INQUIRY') {
         nav.push({ pathname: '/inquiries/[id]', params: { id: updated.targetId } });
       }
-      // COMMENT는 원글 id를 모르므로 읽음 처리만(후속: targetId에 postId 동봉 검토).
+      // 답글 알림(COMMENT_REPLY)은 이제 원글(POST)로 라우팅된다(F7 — BE가 targetType=POST·postId로
+      // 발송). 구버전에서 발송된 targetType=COMMENT 알림만 원글 id를 몰라 읽음 처리로 끝난다.
     },
   });
 
