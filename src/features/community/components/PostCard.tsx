@@ -43,11 +43,10 @@ export function PostCard({ post, onPress }: { post: PostResponse; onPress: () =>
             <Text variant="caption" color="onSurfaceSecondary" numberOfLines={1} style={{ flexShrink: 1 }}>
               {post.authorNickname ?? '(탈퇴)'}
             </Text>
+            {/* 피드 카드에는 추천 수만 — 비추천(▽) 카운트는 상세에서만 노출해 작성 위축·오해를
+                줄인다(UX13). 목록에서 모든 글에 공개 비추천 수가 붙는 건 반응 모델을 오해시킨다. */}
             <Text variant="caption" color="onSurfaceMuted">
               ♥ {post.likeCount ?? 0}
-            </Text>
-            <Text variant="caption" color="onSurfaceMuted">
-              ▽ {post.dislikeCount ?? 0}
             </Text>
           </View>
         </View>

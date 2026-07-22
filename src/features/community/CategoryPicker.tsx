@@ -23,11 +23,13 @@ export function CategoryPicker({ value, onChange }: { value: string; onChange: (
   const [adding, setAdding] = useState(false);
   const [newName, setNewName] = useState('');
 
-  // 값이 비어 있으면(초기 진입) 목록 도착 즉시 첫 카테고리를 기본 선택 — 칩이 아무것도
-  // 안 골라진 채로 뜨는 걸 방지(서버 데이터라 컴파일 타임에 기본값을 알 수 없다).
+  // 값이 비어 있으면(초기 진입) 목록 도착 즉시 기본 카테고리 선택 — 칩이 아무것도 안 골라진 채로
+  // 뜨는 걸 방지. '자유'를 기본으로(없으면 첫 항목) — 첫 항목 '추천'을 기본으로 두면 무심코
+  // 등록 시 모든 글이 추천 카테고리로 쏠린다(UX12).
   useEffect(() => {
     if (!value && categories.data && categories.data.length > 0) {
-      onChange(categories.data[0].name!);
+      const preferred = categories.data.find((c) => c.name === '자유') ?? categories.data[0];
+      onChange(preferred.name!);
     }
   }, [value, categories.data, onChange]);
 
