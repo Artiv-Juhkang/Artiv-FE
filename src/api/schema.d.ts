@@ -2066,6 +2066,7 @@ export interface components {
             /** Format: int64 */
             seriesId?: number;
             title?: string;
+            coverUrl?: string;
             /** Format: int32 */
             latestEpisodeNo?: number;
             /** Format: int32 */
@@ -2088,6 +2089,7 @@ export interface components {
             /** Format: int64 */
             seriesId?: number;
             seriesTitle?: string;
+            coverUrl?: string;
             /** Format: int32 */
             lastReadEpisodeNo?: number;
             /** Format: date-time */

@@ -188,6 +188,7 @@ function InterestList() {
           <LibraryRow
             title={s.title ?? '제목 없음'}
             meta={meta}
+            coverUrl={s.coverUrl}
             up={s.up ?? false}
             onPress={() => nav.push({ pathname: '/series/[id]', params: { id: s.seriesId! } })}
           />
@@ -226,6 +227,7 @@ function HistoryList() {
         <LibraryRow
           title={h.seriesTitle ?? '제목 없음'}
           meta={typeof h.lastReadEpisodeNo === 'number' ? `마지막으로 본 ${h.lastReadEpisodeNo}화` : ''}
+          coverUrl={h.coverUrl}
           onPress={() => nav.push({ pathname: '/series/[id]', params: { id: h.seriesId! } })}
         />
       )}
