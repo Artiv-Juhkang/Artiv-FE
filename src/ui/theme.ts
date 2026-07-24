@@ -14,12 +14,13 @@
  *   - viewer surface: `viewerBg` (TRUE BLACK in dark, white in light).
  * Keeping `viewerBg` separate is what makes the frame vanish around art.
  *
- * Color intent (Glass Stack rules):
- *   - PRIMARY CTA  = high-contrast NEUTRAL (`primaryBg` / `onPrimary`):
- *     ink-on-light, white-on-dark. NOT accent-filled.
- *   - `accent`     = INDIGO, used ONLY for links, focus ring, active /
+ * Color intent (warm evolution):
+ *   - PRIMARY CTA  = PERSIMMON fill (`primaryBg` / `onPrimary`): a warm
+ *     rust fill + white text in light, a bright fill + dark ink in dark.
+ *     Colorful and inviting (was neutral ink). Contrast-verified ≥4.5:1.
+ *   - `accent`     = PERSIMMON, used for links, focus ring, active /
  *     selected state, and the kicker overline.
- *   - `unlockWarm` = the SOLE warm ember tone, reserved for the
+ *   - `unlockWarm` = the SOLE ember tone, reserved for the
  *     unlock/countdown anticipation moment.
  *
  * Back-compat: re-exports a `Colors` object whose keys are a SUPERSET
@@ -64,16 +65,17 @@ const lightColors = {
   onSurfaceSecondary: p.secondaryLight,
   onSurfaceMuted: p.kickerLight,
   kicker: p.kickerLight, // overline / eyebrow above headings
-  // PRIMARY CTA — high-contrast NEUTRAL (ink bg + white text), NOT accent
-  primaryBg: p.ctaInk,
-  primaryPressed: '#000000',
+  // PRIMARY CTA — PERSIMMON fill + white text (was neutral ink). Warm,
+  // inviting, AA-verified (≈4.8:1). Color now signals the primary action.
+  primaryBg: p.persimmonFillLight,
+  primaryPressed: p.persimmonPressedLight,
   onPrimary: p.ink0,
   onAccent: p.ink0, // legacy: text on a saturated fill (danger/badges)
-  // accent (INDIGO) — links, focus, active/selected, kicker tint
-  accent: p.indigo500,
-  accentPressed: p.indigo600,
-  accentSubtle: 'rgba(61,91,255,0.10)',
-  accentBorder: 'rgba(61,91,255,0.35)',
+  // accent (PERSIMMON) — links, focus, active/selected, kicker tint
+  accent: p.persimmonTextLight,
+  accentPressed: p.persimmonPressedLight,
+  accentSubtle: 'rgba(200,71,31,0.12)',
+  accentBorder: 'rgba(200,71,31,0.42)',
   // unlock/countdown WARM moment (the sole ember in the system)
   unlockWarm: p.ember700,
   unlockWarmSubtle: p.emberSubtleLight,
@@ -87,16 +89,16 @@ const lightColors = {
   success: p.success500,
   danger: p.danger500,
   warn: p.warn500,
-  // focus ring (a11y visible focus) — indigo accent
-  focusRing: p.indigo500,
+  // focus ring (a11y visible focus) — persimmon accent
+  focusRing: p.persimmonFillLight,
   // badges
   badge19: p.badge19,
   badgeUp: p.badgeUp,
   badgeBest: p.badgeBest,
   badgeLockBg: p.badgeLockBg,
   // scrim — darkens the cover-art wall so glass + text stay legible.
-  // Light scrim is a soft frost (pale), per the approved mockup.
-  scrim: 'rgba(245,246,250,0.55)',
+  // Light scrim is a soft WARM frost (pale), matching the warm neutral ground.
+  scrim: 'rgba(246,243,238,0.55)',
 } as const;
 
 const darkColors = {
@@ -117,16 +119,17 @@ const darkColors = {
   onSurfaceSecondary: p.secondaryDark,
   onSurfaceMuted: p.kickerDark,
   kicker: p.kickerDark, // overline / eyebrow above headings
-  // PRIMARY CTA — high-contrast NEUTRAL (white bg + ink text), NOT accent
-  primaryBg: p.ink0,
-  primaryPressed: '#E6E7EE',
-  onPrimary: p.ctaInkText,
+  // PRIMARY CTA — bright PERSIMMON fill + dark ink text (was neutral white).
+  // Bright-on-dark pops warmly; dark ink rides it at AA (≈6.3:1).
+  primaryBg: p.persimmonFillDark,
+  primaryPressed: p.persimmonPressedDark,
+  onPrimary: p.persimmonInkDark,
   onAccent: p.ink0, // legacy: text on a saturated fill (danger/badges)
-  // accent (INDIGO) — links, focus, active/selected, kicker tint
-  accent: p.indigo400,
-  accentPressed: p.indigo450,
-  accentSubtle: 'rgba(154,166,255,0.16)',
-  accentBorder: 'rgba(154,166,255,0.40)',
+  // accent (PERSIMMON) — links, focus, active/selected, kicker tint
+  accent: p.persimmonTextDark,
+  accentPressed: p.persimmonFillDark,
+  accentSubtle: 'rgba(255,145,102,0.18)',
+  accentBorder: 'rgba(255,145,102,0.42)',
   // unlock/countdown WARM moment (the sole ember in the system)
   unlockWarm: p.ember300,
   unlockWarmSubtle: p.emberSubtleDark,
@@ -140,13 +143,13 @@ const darkColors = {
   success: p.success500,
   danger: p.danger500,
   warn: p.warn500,
-  focusRing: p.indigo400,
+  focusRing: p.persimmonTextDark,
   badge19: p.badge19,
   badgeUp: p.badgeUp,
   badgeBest: p.badgeBest,
   badgeLockBg: p.badgeLockBg,
-  // scrim — darkens the cover-art wall so glass + text stay legible.
-  scrim: 'rgba(14,16,20,0.62)',
+  // scrim — darkens the cover-art wall so glass + text stay legible (warm).
+  scrim: 'rgba(20,18,16,0.62)',
 } as const;
 
 export type ColorRoleName = keyof typeof lightColors;

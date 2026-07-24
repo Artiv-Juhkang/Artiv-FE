@@ -14,23 +14,35 @@
  *      blurred cover art behind a darkening SCRIM;
  *   2. the VIEWER (immersive vertical scroll): a TRUE-BLACK / OLED
  *      surface so the frame disappears around the art.
- * The PRIMARY CTA is high-contrast NEUTRAL (white-on-dark / ink-on-light),
- * never accent-filled; the INDIGO accent is reserved for links, focus,
- * active/selected state, and the kicker overline. One warm "ember"
- * highlight survives for the single unlock/countdown anticipation moment.
+ * The PRIMARY CTA is a warm PERSIMMON fill (the "Artiv" = Art + Active
+ * accent) — colorful and inviting, not neutral ink. The same persimmon
+ * owns links, focus, and active/selected state. Neutrals are WARM (off-
+ * white / warm charcoal), not cool grey, so the frame reads friendly
+ * rather than clinical. One warm "ember" highlight survives for the single
+ * unlock/countdown anticipation moment.
  */
 
 // ── Color scales (raw) ────────────────────────────────────────────
 // The neutral ramp is cool-indigo-leaning so large fields read as cool
 // frosted glass, not warm paper.
 export const palette = {
-  // Signature accent — INDIGO. Owns links, focus ring, active/selected
-  // state, and the kicker overline. NOT the primary fill (that is the
-  // neutral high-contrast CTA below).
-  indigo400: '#9AA6FF', // dark-mode accent (links / focus / active / kicker)
-  indigo450: '#6C7CFF', // dark-mode accent pressed / active-strong
-  indigo500: '#3D5BFF', // light-mode accent (links / focus / active / kicker)
-  indigo600: '#2E45D6', // light-mode accent pressed
+  // Signature accent — PERSIMMON ("Artiv" = Art + Active). Warm, friendly,
+  // non-polarizing. Owns the PRIMARY CTA fill AND links/focus/active/kicker.
+  // Two tones per mode: a deeper FILL tone (carries white / dark ink at AA)
+  // and a TEXT tone (readable as a link on the neutral ground at AA). All
+  // pairs contrast-verified ≥4.5:1.
+  persimmonFillLight: '#C8471F', // light primary CTA fill (white text ≈4.8:1)
+  persimmonPressedLight: '#A83C18', // light CTA pressed
+  persimmonTextLight: '#BC4520', // light link/active text on warm ground (≈4.6:1)
+  persimmonFillDark: '#FF6E45', // dark primary CTA fill (dark-ink text ≈6.3:1)
+  persimmonInkDark: '#241610', // dark: ink text riding the bright fill
+  persimmonPressedDark: '#F0562F', // dark CTA pressed
+  persimmonTextDark: '#FF9166', // dark link/active text on charcoal (≈7.9:1)
+
+  // Legacy indigo — no longer the brand accent; kept only as the neutral
+  // fallback hue for mediaColor(unknown) so nothing references a missing key.
+  indigo400: '#9AA6FF',
+  indigo500: '#3D5BFF',
 
   // Warm "Ember" highlight — SURVIVES only for the unlock/countdown
   // anticipation moment ("지금 무료" pulse). Everywhere else is indigo or
@@ -45,31 +57,34 @@ export const palette = {
   ctaInk: '#16171D', // light-mode CTA bg (ink); white text on it
   ctaInkText: '#10121A', // dark-mode CTA text (on white bg)
 
-  // Ink / neutral ramp — text + opaque (non-glass) chrome surfaces.
-  ink0: '#FFFFFF', // pure white (light surfaces / dark CTA bg / dark text)
-  bgLight: '#EAEBF0', // light app background (cool neutral)
-  textLight: '#14151A', // light primary text
-  secondaryLight: '#3C3E48', // light secondary text
-  kickerLight: '#6A6E80', // light kicker / muted
-  ink800: '#22242C', // dark opaque chrome surface (behind glass / non-glass)
-  ink850: '#191B22', // dark chrome elevated
-  bgDark: '#0E1014', // dark app background
-  textDark: '#FFFFFF', // dark primary text
-  secondaryDark: '#C7CCDC', // dark secondary text
-  kickerDark: '#A7AEC6', // dark kicker / muted
+  // Ink / neutral ramp — WARM neutral (was cool indigo-grey). A slight warm
+  // bias reads as chosen, not clinical, and pairs with the persimmon accent.
+  ink0: '#FFFFFF', // pure white (light surfaces / cards)
+  bgLight: '#F4F2EE', // light app background (warm off-white)
+  textLight: '#211E1A', // light primary text (warm near-black)
+  secondaryLight: '#5A544B', // light secondary text (warm)
+  kickerLight: '#8B857A', // light kicker / muted (warm)
+  ink800: '#252320', // dark opaque chrome surface (warm charcoal)
+  ink850: '#1F1D1A', // dark chrome elevated (warm)
+  bgDark: '#1A1917', // dark app background (warm charcoal, not cold black)
+  textDark: '#F5F2EC', // dark primary text (warm white)
+  secondaryDark: '#C7C0B4', // dark secondary text (warm)
+  kickerDark: '#948D81', // dark kicker / muted (warm)
   trueBlack: '#000000', // VIEWER surface only — OLED, art disappears into it
 
   // Glass surface ROLES (translucent — sit over blurred cover art + scrim).
+  // Nudged MORE opaque than the original frost so controls/fields stay
+  // legible on a busy art wall (usability > pure translucency).
   // Dark
-  glassBgDark: 'rgba(255,255,255,0.10)',
-  glassBorderDark: 'rgba(255,255,255,0.26)',
-  glassFieldDark: 'rgba(255,255,255,0.13)',
-  glassFieldBorderDark: 'rgba(255,255,255,0.22)',
+  glassBgDark: 'rgba(38,35,31,0.55)', // warm charcoal frost (was cool white 0.10)
+  glassBorderDark: 'rgba(255,248,236,0.22)',
+  glassFieldDark: 'rgba(255,248,236,0.14)',
+  glassFieldBorderDark: 'rgba(255,248,236,0.26)',
   // Light
-  glassBgLight: 'rgba(255,255,255,0.55)',
-  glassBorderLight: 'rgba(255,255,255,0.9)',
-  glassFieldLight: 'rgba(255,255,255,0.78)',
-  glassFieldBorderLight: 'rgba(0,0,0,0.08)',
+  glassBgLight: 'rgba(255,255,255,0.72)', // more solid frost (was 0.55)
+  glassBorderLight: 'rgba(255,255,255,0.95)',
+  glassFieldLight: 'rgba(255,255,255,0.92)', // near-solid field for legibility
+  glassFieldBorderLight: 'rgba(40,28,12,0.14)',
 
   // Locked state — desaturated slate so a locked episode reads "waiting",
   // visually cooler/quieter than the warm ember of "free now".
