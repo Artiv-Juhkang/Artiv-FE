@@ -244,7 +244,7 @@ function ViewerContent({
     return (
       <View style={{ flex: 1 }}>
         <Screen surface="viewer" center header={readerHeader}>
-          <AudioReader url={images[0].url!} title={title} />
+          <AudioReader urls={images.map((im) => im.url!)} title={title} />
         </Screen>
         {remote}
       </View>
@@ -263,7 +263,7 @@ function ViewerContent({
       >
         <Pressable onPress={() => setRemoteVisible((v) => !v)}>
           {kind === 'TEXT' ? (
-            <NovelReader url={images[0].url!} />
+            <NovelReader urls={images.map((im) => im.url!)} />
           ) : (
             <WebtoonReader images={images} />
           )}
@@ -301,18 +301,25 @@ function WebtoonReader({ images }: { images: EpisodeImage[] }) {
 /*  NOVEL — url의 텍스트 파일을 받아 읽기 좋은 본문으로 렌더.                     */
 /* -------------------------------------------------------------------------- */
 
-function NovelReader({ url }: { url: string }) {
+function NovelReader({ urls }: { urls: string[] }) {
   const t = useTheme();
   useReadingSurface(); // '추천' 모드에서는 소설 본문만 라이트로 opt-in(M1)
-  const resolved = resolveImageUrl(url);
+  // 작가는 한 회차에 본문 파일을 여러 개 올릴 수 있다(업로드가 다중 허용) — 예전엔 첫 파일만
+  // 읽어 나머지 파트가 통째로 유실됐다. sortOrder 순서대로 전부 받아 이어 붙인다.
+  const resolvedUrls = urls.map((u) => resolveImageUrl(u)).filter((u): u is string => !!u);
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ['episode-text', url],
+    queryKey: ['episode-text', resolvedUrls],
     queryFn: async () => {
-      const res = await fetch(resolved!);
-      if (!res.ok) throw new Error('본문을 불러오지 못했어요.');
-      return res.text();
+      const parts = await Promise.all(
+        resolvedUrls.map(async (u) => {
+          const res = await fetch(u);
+          if (!res.ok) throw new Error('본문을 불러오지 못했어요.');
+          return res.text();
+        }),
+      );
+      return parts;
     },
-    enabled: !!resolved,
+    enabled: resolvedUrls.length > 0,
     staleTime: Infinity,
   });
 
@@ -345,10 +352,16 @@ function NovelReader({ url }: { url: string }) {
   }
 
   return (
-    <View style={[pad, { paddingBottom: t.space.lg }]}>
-      <Text variant="body" style={{ lineHeight: 30, fontSize: 17, color: t.color.onSurface }}>
-        {data.trim()}
-      </Text>
+    <View style={[pad, { paddingBottom: t.space.lg, gap: t.space.xl }]}>
+      {data.map((part, i) => (
+        <Text
+          key={i}
+          variant="body"
+          style={{ lineHeight: 30, fontSize: 17, color: t.color.onSurface }}
+        >
+          {part.trim()}
+        </Text>
+      ))}
     </View>
   );
 }
