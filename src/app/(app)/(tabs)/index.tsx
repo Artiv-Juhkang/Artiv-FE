@@ -161,9 +161,11 @@ function TypeGridView({ contentType }: { contentType: string }) {
 
   // 컬럼 정책: 2(phone) / 3(tablet+). cellWidth는 Screen gutter를 뺀 콘텐츠 폭에서 도출.
   const cols = r.select({ phone: 2, tablet: 3, large: 3 }) ?? 2;
-  // Screen 기본 padding='lg' → 좌우 gutter = t.space.lg. r.width는 측정된 윈도 폭.
+  // Screen 기본 padding='lg' → 좌우 gutter = t.space.lg. r.contentWidth는 웹 레일을 뺀
+  // 실제 콘텐츠 폭에 리딩 컬럼 캡까지 적용한 값이다 — 윈도 폭으로 계산하면 Screen이 캡을
+  // 씌운 뒤라 셀 합계가 컬럼을 넘어 잘린다(F4).
   const gutter = t.space.lg;
-  const contentWidth = r.width - gutter * 2;
+  const contentWidth = r.contentWidth - gutter * 2;
   const { cellWidth } = seriesGridLayout(contentWidth, cols);
 
   // useSeriesList는 무한쿼리 OPTIONS만 빌드(훅 자체 호출 X — react-compiler 안전);
@@ -327,7 +329,7 @@ function HomeGridBody({
 /* -------------------------------------------------------------------------- */
 
 function HomeGridSkeleton({
-  cols = 2,
+  cols,
   cellWidth,
 }: {
   cols?: number;
@@ -340,7 +342,7 @@ function HomeGridSkeleton({
   const resolvedCols = cols ?? (r.select({ phone: 2, tablet: 3, large: 3 }) ?? 2);
   const gutter = t.space.lg;
   const width =
-    cellWidth ?? seriesGridLayout(r.width - gutter * 2, resolvedCols).cellWidth;
+    cellWidth ?? seriesGridLayout(r.contentWidth - gutter * 2, resolvedCols).cellWidth;
 
   // 두 줄 분량의 포스터 플레이스홀더로 로드 시 reflow를 방지.
   const rows = 3;

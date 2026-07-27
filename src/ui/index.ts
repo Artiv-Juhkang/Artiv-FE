@@ -27,6 +27,7 @@ export {
   type ResponsiveValue,
   // `Breakpoint` is already surfaced by `export * from './tokens'` above
   // (its source of truth); re-exporting it here too is a duplicate-name error.
+  ContentWidthProvider,
 } from './responsive';
 
 // primitives

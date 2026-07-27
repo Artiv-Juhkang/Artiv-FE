@@ -45,9 +45,11 @@ export default function AuthorSeriesScreen() {
   const authorName = nickname || q.data?.[0]?.authorNickname || '작가';
   const series = q.data ?? [];
 
-  // 2열 그리드 셀 폭(Screen gutter 안쪽 콘텐츠 폭 기준).
+  // 그리드 셀 폭 — r.contentWidth는 웹 레일을 뺀 실제 콘텐츠 폭 + 리딩 컬럼 캡(F4).
+  // 열 수는 홈과 같은 정책으로 통일(좁으면 2열, 넓으면 3열).
   const gutter = t.space.lg;
-  const { cellWidth } = seriesGridLayout(r.width - gutter * 2, 2);
+  const cols = r.select({ phone: 2, tablet: 3, large: 3 }) ?? 2;
+  const { cellWidth } = seriesGridLayout(r.contentWidth - gutter * 2, cols);
 
   return (
     <Screen scroll header={{ back: true, title: `${authorName}님의 작품` }}>

@@ -27,13 +27,17 @@
  * dark never affects layout. Primitives may consume it (e.g. Text reads
  * `resolveFontScaleCap`); screens consume `useResponsive()`.
  *
- * No context/provider needed: window size is a device signal resolved
- * per-render (mirrors `useTheme()`’s stance on color scheme). React
- * Compiler + the internal `useMemo` keep this from causing re-render
- * storms: consumers only see a new value when `bp` (and the handful of
- * derived numbers) flips, NOT on every dp of a resize/rotation frame.
+ * WIDTH SIGNAL = 창이 아니라 콘텐츠가 실제로 쓰는 폭. 보통은 둘이 같아서 윈도 폭을 쓰지만,
+ * 웹 셸은 240px 레일이 폭을 먼저 떼어 간다 — 그때 윈도 폭으로 판정하면 800px 창이 'tablet'로
+ * 분류되면서 실제 콘텐츠 영역(560px)에는 phone 레이아웃이 맞는데도 tablet 컬럼·거터·캡이
+ * 적용돼 그리드가 넘치거나 잘린다. 그래서 폭을 훔치는 쪽(WebShell)이 남은 폭을
+ * ContentWidthProvider로 알려주고, 이 훅은 그 값을 우선한다.
+ *
+ * 컨테이너 측정(onLayout) 기반 브레이크포인트로 가지 않은 이유: 폭을 떼어 가는 크롬이
+ * 레일 하나뿐인데 모든 소비처를 측정 컨테이너 안에 넣는 건 과하고, 첫 프레임 폭 0으로 인한
+ * 깜빡임을 감수해야 한다. 알려진 인셋 하나는 명시적으로 빼는 편이 단순하고 정확하다.
  */
-import { useMemo } from 'react';
+import { createContext, useContext, useMemo, type ReactNode } from 'react';
 import { useWindowDimensions } from 'react-native';
 
 import {
@@ -165,6 +169,12 @@ export type Responsive = {
   coverColumnsFor: (availableWidth: number, gap?: number) => number;
   /** Horizontal gutter (Space token VALUE) appropriate for this bp. */
   gutter: number;
+  /**
+   * 실제로 콘텐츠가 그려지는 폭 — `width`에 리딩 컬럼 캡(contentMaxWidth)까지 적용한 값.
+   * 그리드가 셀 폭을 계산할 때 써야 하는 값이다. `width`만 보고 계산하면 Screen이 캡을
+   * 씌운 뒤라 합계가 컬럼을 넘어 잘린다.
+   */
+  contentWidth: number;
   /** Future two-pane (master/detail) eligibility — true only on `large`. */
   twoPane: boolean;
 };
@@ -174,7 +184,9 @@ export type Responsive = {
  * new object only when the bucket / derived numbers change.
  */
 export function useResponsive(): Responsive {
-  const { width, height } = useWindowDimensions();
+  const { width: windowWidth, height } = useWindowDimensions();
+  const provided = useContext(ContentWidthContext);
+  const width = provided ?? windowWidth;
   const bp = breakpointForWidth(width);
 
   return useMemo<Responsive>(() => {
@@ -199,6 +211,7 @@ export function useResponsive(): Responsive {
       coverColumnsFor: (availableWidth, gap) =>
         coverWallColumnsForWidth(bp, availableWidth, gap),
       gutter: isPhone ? space.lg : space['2xl'],
+      contentWidth: Math.min(width, isPhone ? Number.POSITIVE_INFINITY : layout.maxContentWidth),
       twoPane: isLarge,
     };
     // `bp` is derived from `width`; rotation flips width/height. Including
@@ -210,8 +223,26 @@ export function useResponsive(): Responsive {
 /** Lightweight variant when a caller only needs the bucket (no helpers).
  *  Re-renders only when the bucket flips. */
 export function useBreakpoint(): Breakpoint {
-  const { width } = useWindowDimensions();
-  return breakpointForWidth(width);
+  const { width: windowWidth } = useWindowDimensions();
+  const provided = useContext(ContentWidthContext);
+  return breakpointForWidth(provided ?? windowWidth);
+}
+
+/**
+ * 콘텐츠가 실제로 쓰는 폭. null이면 "창 전체"라는 뜻이다(네이티브·풀블리드 라우트).
+ * 웹 셸처럼 폭을 먼저 떼어 가는 쪽만 값을 넣는다.
+ */
+const ContentWidthContext = createContext<number | null>(null);
+
+/** 남은 폭을 하위 트리에 알린다 — 레일 등 고정 크롬을 뺀 값. */
+export function ContentWidthProvider({
+  width,
+  children,
+}: {
+  width: number;
+  children: ReactNode;
+}) {
+  return <ContentWidthContext.Provider value={width}>{children}</ContentWidthContext.Provider>;
 }
 
 export type { Breakpoint };

@@ -20,9 +20,10 @@ import { Avatar, Text, useTheme } from '@/ui';
 
 export const RAIL_WIDTH = 240;
 
-type Dest = { href: Href; label: string; match: (path: string) => boolean };
+export type Dest = { href: Href; label: string; match: (path: string) => boolean };
 
-const DESTINATIONS: Dest[] = [
+/** 셸의 목적지 정본 — 레일과 협폭 하단 내비가 같은 목록을 쓴다. */
+export const DESTINATIONS: Dest[] = [
   { href: '/' as Href, label: '창작물', match: (p) => p === '/' },
   { href: '/community' as Href, label: '커뮤니티', match: (p) => p.startsWith('/community') },
   { href: '/chat' as Href, label: '채팅', match: (p) => p.startsWith('/chat') },
