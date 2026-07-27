@@ -31,7 +31,7 @@ import { useEpisodeLikeToggle } from '@/features/series/episode-hooks';
 import { useSeriesDetail } from '@/features/series/hooks';
 import { isAppError } from '@/lib/errors';
 import { keys } from '@/lib/query';
-import { guardedBack } from '@/lib/navigation/useGuardedNavigation';
+import { guardedBackOr, guardedReplace } from '@/lib/navigation/useGuardedNavigation';
 import {
   Button,
   EmptyState,
@@ -60,12 +60,17 @@ export default function EpisodeViewerScreen() {
   const no = Number(episodeNo);
   const valid = Number.isFinite(seriesId) && seriesId > 0 && Number.isFinite(no) && no > 0;
 
-  const { data, isLoading, isError, error } = useQuery<EpisodeDetail>({
+  const { data, isLoading, isError, error, refetch } = useQuery<EpisodeDetail>({
     queryKey: keys.episodes.detail(seriesId, no),
     queryFn: () => getEpisode(seriesId, no),
     enabled: valid,
     retry: false,
   });
+
+  // 딥링크 콜드 스타트(알림·외부 링크로 뷰어가 첫 화면)에서는 되돌아갈 스택이 없다 —
+  // 그때의 탈출구는 이 회차가 속한 작품 상세다.
+  const backHref = { pathname: '/series/[id]', params: { id: seriesId } } as unknown as Href;
+  const leaveViewer = () => guardedBackOr(backHref);
 
   // 연재 경계(이전/다음)용 최신 회차 번호. 상세 화면 캐시를 재사용(비블로킹).
   const { data: series } = useSeriesDetail(seriesId);
@@ -82,13 +87,20 @@ export default function EpisodeViewerScreen() {
   }, [valid, data, locked, seriesId, no, qc]);
 
   const title = data?.title ?? (Number.isFinite(no) ? `${no}화` : '회차');
-  const header: HeaderConfig = { variant: 'transparent', back: true, title };
+  // onBack을 넘기지 않으면 헤더 ‹는 기본 guardedBack이라 스택이 빈 콜드 스타트에서 무반응이다
+  // (HeaderConfig.onBack 자체가 "deep-link first entry"용으로 설계돼 있는데 뷰어만 안 쓰고 있었다).
+  const header: HeaderConfig = { variant: 'transparent', back: true, title, onBack: leaveViewer };
 
   if (!valid) {
     return (
-      <Screen surface="viewer" center header={{ variant: 'transparent', back: true, title: '회차' }}>
+      <Screen
+        surface="viewer"
+        center
+        header={{ variant: 'transparent', back: true, title: '회차', onBack: () => guardedBackOr('/' as Href) }}
+      >
         <Padded>
-          <ErrorState code="ENTITY_NOT_FOUND" onRetry={() => guardedBack()} />
+          {/* 경로 자체가 잘못돼 작품 상세로도 갈 수 없다 — 홈으로 내보낸다. */}
+          <ErrorState code="ENTITY_NOT_FOUND" onRetry={() => guardedBackOr('/' as Href)} />
         </Padded>
       </Screen>
     );
@@ -110,10 +122,13 @@ export default function EpisodeViewerScreen() {
     return (
       <Screen surface="viewer" center header={header}>
         <Padded>
+          {/* '다시 시도'는 실제로 다시 불러와야 한다 — 예전엔 뒤로가기라 라벨이 거짓말이었고,
+              retry:false라 일시적 네트워크 오류에서 빠져나올 방법이 아예 없었다. 연령·부재처럼
+              다시 시도해도 결과가 같은 코드만 화면을 떠나는 동작을 유지한다. */}
           <ErrorState
             code={code === 'ADULT_ONLY' ? 'ADULT_ONLY' : code === 'ENTITY_NOT_FOUND' ? 'ENTITY_NOT_FOUND' : 'UNKNOWN'}
             message={isAppError(error) ? error.message : undefined}
-            onRetry={() => guardedBack()}
+            onRetry={code === 'ADULT_ONLY' || code === 'ENTITY_NOT_FOUND' ? leaveViewer : () => void refetch()}
           />
         </Padded>
       </Screen>
@@ -124,7 +139,7 @@ export default function EpisodeViewerScreen() {
     return (
       <Screen surface="viewer" center header={header}>
         <Padded>
-          <LockedView freeAt={data.freeAt} />
+          <LockedView freeAt={data.freeAt} onLeave={leaveViewer} />
         </Padded>
       </Screen>
     );
@@ -290,7 +305,7 @@ function NovelReader({ url }: { url: string }) {
   const t = useTheme();
   useReadingSurface(); // '추천' 모드에서는 소설 본문만 라이트로 opt-in(M1)
   const resolved = resolveImageUrl(url);
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['episode-text', url],
     queryFn: async () => {
       const res = await fetch(resolved!);
@@ -322,7 +337,9 @@ function NovelReader({ url }: { url: string }) {
   if (isError || !data) {
     return (
       <View style={pad}>
-        <ErrorState code="UNKNOWN" message="본문을 불러오지 못했어요." />
+        {/* 본문 fetch는 뷰어 쿼리와 별개라 여기에도 재시도가 있어야 한다(없으면 회차를
+            떠났다 돌아오는 것 말고는 방법이 없었다). */}
+        <ErrorState code="UNKNOWN" message="본문을 불러오지 못했어요." onRetry={() => void refetch()} />
       </View>
     );
   }
@@ -361,7 +378,7 @@ function viewerInkMuted(t: Theme): string {
 /*  잠긴 회차 — freeAt 안내(목록의 토스트와 별개 화면 상태).                      */
 /* -------------------------------------------------------------------------- */
 
-function LockedView({ freeAt }: { freeAt?: string | null }) {
+function LockedView({ freeAt, onLeave }: { freeAt?: string | null; onLeave: () => void }) {
   const t = useTheme();
   const when = freeAt ? new Date(freeAt) : null;
   const label =
@@ -379,7 +396,7 @@ function LockedView({ freeAt }: { freeAt?: string | null }) {
         {label}
       </Text>
       <View style={{ marginTop: t.space.sm }}>
-        <Button label="목록으로 돌아가기" variant="secondary" onPress={() => guardedBack()} />
+        <Button label="목록으로 돌아가기" variant="secondary" onPress={onLeave} />
       </View>
     </View>
   );
@@ -411,12 +428,12 @@ function ViewerRemote({
 }) {
   const t = useTheme();
   const insets = useSafeAreaInsets();
-  const router = useRouter();
   const hasPrev = no > 1;
   const hasNext = typeof latest === 'number' ? no < latest : false;
 
+  // 앱 전역 컨벤션대로 가드를 통과시킨다 — raw replace는 더블탭 시 회차를 건너뛸 창을 남긴다.
   const go = (target: number) => {
-    router.replace({
+    guardedReplace({
       pathname: '/series/[id]/[episodeNo]',
       params: { id: seriesId, episodeNo: target },
     } as unknown as Href);

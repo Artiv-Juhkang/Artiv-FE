@@ -51,6 +51,7 @@ export interface GuardedNavigation {
   replace: (href: Href, options?: NavigationOptions) => void;
   dismissTo: (href: Href, options?: NavigationOptions) => void;
   back: () => void;
+  backOr: (href: Href, options?: NavigationOptions) => void;
 }
 
 /** Shared leading-edge throttle window across ALL guarded navigations. */
@@ -95,6 +96,20 @@ export function guardedBack(): void {
   if (router.canGoBack()) router.back();
 }
 
+/**
+ * Go back — or, when there is nothing to go back TO, replace with `href`.
+ *
+ * `guardedBack()` is a no-op on an empty stack, which is exactly what happens on
+ * a deep-link COLD START (알림·외부 링크로 뷰어가 첫 화면이 되는 경우): 뒤로가기와
+ * '목록으로' 같은 탈출구가 전부 먹통이 되어 사용자가 그 화면에 갇힌다. 폴백은 push가
+ * 아니라 replace다 — 되돌아갈 곳이 없어서 부른 것이므로 유령 엔트리를 남기지 않는다.
+ */
+export function guardedBackOr(href: Href, options?: NavigationOptions): void {
+  if (!takeNavSlot()) return;
+  if (router.canGoBack()) router.back();
+  else router.replace(href, options);
+}
+
 /** Dismiss down to `href`, dropped if another guarded nav fired <500ms ago. */
 export function guardedDismissTo(
   href: Href,
@@ -118,6 +133,7 @@ export function useGuardedNavigation(): GuardedNavigation {
       replace: guardedReplace,
       dismissTo: guardedDismissTo,
       back: guardedBack,
+      backOr: guardedBackOr,
     }),
     [],
   );
