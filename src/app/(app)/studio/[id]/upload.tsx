@@ -27,6 +27,7 @@ import { Field } from '@/features/studio/components';
 import { keys } from '@/lib/query';
 import {
   Button,
+  ErrorState,
   ProgressBar,
   Screen,
   Skeleton,
@@ -52,7 +53,7 @@ export default function EpisodeUploadScreen() {
   const { show } = useToast();
 
   const { data: series, isLoading: seriesLoading } = useSeriesDetail(seriesId);
-  const { data: types } = useContentTypes();
+  const { data: types, isLoading: typesLoading, isError: typesError, refetch: refetchTypes } = useContentTypes();
 
   const [title, setTitle] = useState('');
   const [files, setFiles] = useState<RNFilePart[]>([]);
@@ -110,7 +111,7 @@ export default function EpisodeUploadScreen() {
     });
   }, []);
 
-  if (loading) {
+  if (loading || typesLoading) {
     return (
       <Screen header={{ variant: 'solid', back: true, title: '회차 올리기' }}>
         <View />
@@ -119,8 +120,25 @@ export default function EpisodeUploadScreen() {
   }
   if (!allowed) return <Redirect href={'/creator-request' as Href} />;
 
-  const assetKind: AssetKind =
-    (types?.find((c) => c.key === series?.contentType)?.assetKinds?.[0] as AssetKind) ?? 'IMAGE';
+  // 이 작품이 어떤 자산을 받는지(assetKind)는 타입 레지스트리에서 온다. 예전엔 레지스트리를
+  // 못 받았을 때 조용히 IMAGE로 떨어졌는데, 그러면 소설·오디오 작가에게 이미지 드롭존과
+  // JPG/PNG 검증이 붙어 회차를 아예 올릴 수 없었다. 모르는 상태에서 찍지 않고 다시 시도를 준다.
+  const resolvedKind = types?.find((c) => c.key === series?.contentType)?.assetKinds?.[0] as
+    | AssetKind
+    | undefined;
+  if (typesError || !resolvedKind) {
+    return (
+      <Screen header={{ variant: 'solid', back: true, title: '회차 올리기' }}>
+        <ErrorState
+          code="UNKNOWN"
+          message="올릴 수 있는 파일 형식을 불러오지 못했어요."
+          onRetry={() => void refetchTypes()}
+        />
+      </Screen>
+    );
+  }
+
+  const assetKind: AssetKind = resolvedKind;
   const noun = NOUN[assetKind];
   const isImage = assetKind === 'IMAGE';
 
