@@ -50,3 +50,7 @@ example
 
 # local Claude assets/config
 /.claude
+
+# Playwright e2e 산출물
+/test-results/
+/playwright-report/
