@@ -1,5 +1,6 @@
 /**
- * NetworkProvider — the app's SINGLE source of online/offline truth.
+ * NetworkProvider — the app's SINGLE bridge from platform state into React
+ * Query, and the SINGLE source of online/offline truth for the UI.
  *
  * Responsibilities:
  *   1. Subscribe to @react-native-community/netinfo exactly ONCE (one
@@ -9,6 +10,14 @@
  *      wire onlineManager — this provider owns it).
  *   3. Expose the same state to the UI via useNetworkStatus() so the
  *      OfflineBanner can render without its own NetInfo subscription.
+ *   4. Bridge RN AppState into React Query's focusManager (native only) so
+ *      "focus" means the app is in the FOREGROUND. Without this, React Query
+ *      never sees a blur on native: refetchIntervalInBackground=false has
+ *      nothing to act on and every polling query (chat badge, notifications)
+ *      keeps firing while the app is backgrounded — battery drain — and
+ *      refetchOnWindowFocus never fires on resume, so the first screen after
+ *      returning shows stale data. Web already has real window focus events,
+ *      so React Query's own DOM listener handles it there.
  *
  * "Online" = connected AND internet is reachable. NetInfo reports
  * isInternetReachable as boolean | null (null = still probing); we only
@@ -19,7 +28,7 @@
  * installOnlineManager helper) — this is the only one.
  */
 import NetInfo, { type NetInfoState } from '@react-native-community/netinfo';
-import { onlineManager } from '@tanstack/react-query';
+import { focusManager, onlineManager } from '@tanstack/react-query';
 import {
   createContext,
   useContext,
@@ -27,6 +36,7 @@ import {
   useMemo,
   useState,
 } from 'react';
+import { AppState, type AppStateStatus, Platform } from 'react-native';
 
 type NetworkStatus = {
   /** connected && internet reachable (reachable null treated as online). */
@@ -72,6 +82,16 @@ export function NetworkProvider({ children }: { children: React.ReactNode }) {
       mounted = false;
       unsubscribe();
     };
+  }, []);
+
+  // AppState → focusManager (native only; web has real window focus events).
+  useEffect(() => {
+    if (Platform.OS === 'web') return;
+    const handleAppState = (state: AppStateStatus) => {
+      focusManager.setFocused(state === 'active');
+    };
+    const subscription = AppState.addEventListener('change', handleAppState);
+    return () => subscription.remove();
   }, []);
 
   const value = useMemo<NetworkStatus>(

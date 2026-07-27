@@ -1715,6 +1715,10 @@ export interface components {
             ageRating?: "ALL" | "AGE_12" | "AGE_15" | "AGE_19";
             /** @enum {string} */
             status?: "ONGOING" | "COMPLETED" | "HIATUS";
+            /** @enum {string} */
+            contentType?: "WEBTOON" | "ILLUSTRATION" | "DESIGN" | "PHOTO" | "DRAWING" | "NOVEL" | "AUDIO";
+            /** @enum {string} */
+            genre?: "ROMANCE" | "FANTASY" | "ACTION" | "DRAMA" | "DAILY" | "COMEDY" | "THRILLER" | "SPORTS" | "HORROR" | "ETC";
             publishDays?: ("MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY" | "SUNDAY")[];
             visible?: boolean;
             adultOnly?: boolean;
