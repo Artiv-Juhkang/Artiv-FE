@@ -29,6 +29,13 @@ import { resolveImageUrl } from '@/api/image';
 import { AudioReader } from '@/features/series/components/AudioReader';
 import { useEpisodeLikeToggle } from '@/features/series/episode-hooks';
 import { useSeriesDetail } from '@/features/series/hooks';
+import {
+  READER_FONT_SIZES,
+  lineHeightFor,
+  readingWidthFor,
+  useReaderFontSize,
+  type ReaderFontSize,
+} from '@/features/series/reading-settings';
 import { isAppError } from '@/lib/errors';
 import { keys } from '@/lib/query';
 import { guardedBackOr, guardedReplace } from '@/lib/navigation/useGuardedNavigation';
@@ -207,6 +214,9 @@ function ViewerContent({
   // 오디오는 스크롤이 없으므로 항상 노출한다.
   const [remoteVisible, setRemoteVisible] = useState(!isScrolling);
   const lastY = useRef(0);
+  // 읽기 설정은 소설에서만 의미가 있다(이미지·오디오엔 본문 활자가 없다).
+  const { fontSize, setFontSize } = useReaderFontSize();
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   // 역스크롤(위로 되짚음) → 노출, 아래로 읽는 중 → 숨김. 작은 데드존(6px)으로 미세 흔들림 무시.
   const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -236,6 +246,7 @@ function ViewerContent({
       commentCount={episode.commentCount ?? 0}
       onLike={onLike}
       onComments={onComments}
+      onReadingSettings={kind === 'TEXT' ? () => setSettingsOpen((v) => !v) : undefined}
     />
   ) : null;
 
@@ -263,14 +274,86 @@ function ViewerContent({
       >
         <Pressable onPress={() => setRemoteVisible((v) => !v)}>
           {kind === 'TEXT' ? (
-            <NovelReader urls={images.map((im) => im.url!)} />
+            <NovelReader urls={images.map((im) => im.url!)} fontSize={fontSize} />
           ) : (
             <WebtoonReader images={images} />
           )}
           <View style={{ height: REMOTE_CLEARANCE }} />
         </Pressable>
       </Screen>
+      {settingsOpen ? (
+        <ReadingSettings value={fontSize} onChange={setFontSize} onClose={() => setSettingsOpen(false)} />
+      ) : null}
       {remote}
+    </View>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  읽기 설정 — 글자 크기. 리모컨 바로 위에 뜨는 얕은 시트.                        */
+/* -------------------------------------------------------------------------- */
+
+function ReadingSettings({
+  value,
+  onChange,
+  onClose,
+}: {
+  value: ReaderFontSize;
+  onChange: (next: ReaderFontSize) => void;
+  onClose: () => void;
+}) {
+  const t = useTheme();
+  const insets = useSafeAreaInsets();
+  return (
+    <View
+      pointerEvents="box-none"
+      style={{
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        bottom: Math.max(insets.bottom, t.space.md) + REMOTE_CLEARANCE,
+        paddingHorizontal: t.space.lg,
+        alignItems: 'center',
+      }}
+    >
+      <GlassCard radius="lg" intensity="clear" style={{ padding: t.space.md, gap: t.space.sm }}>
+        <Text variant="caption" style={{ color: viewerInkMuted(t), textAlign: 'center' }}>
+          글자 크기
+        </Text>
+        <View style={{ flexDirection: 'row', gap: t.space.xs }}>
+          {READER_FONT_SIZES.map((size) => {
+            const selected = size === value;
+            return (
+              <Pressable
+                key={size}
+                onPress={() => {
+                  onChange(size);
+                  onClose();
+                }}
+                accessibilityRole="button"
+                accessibilityState={{ selected }}
+                accessibilityLabel={`글자 크기 ${size}`}
+                style={{
+                  minWidth: t.layout.minHitTarget,
+                  minHeight: t.layout.minHitTarget,
+                  paddingHorizontal: t.space.md,
+                  borderRadius: t.radius.md,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: selected ? t.color.accentSubtle : 'transparent',
+                }}
+              >
+                <Text
+                  weight={selected ? 'semibold' : 'regular'}
+                  style={{ fontSize: size, color: selected ? t.color.accent : viewerInk(t) }}
+                >
+                  가
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
+      </GlassCard>
     </View>
   );
 }
@@ -301,7 +384,7 @@ function WebtoonReader({ images }: { images: EpisodeImage[] }) {
 /*  NOVEL — url의 텍스트 파일을 받아 읽기 좋은 본문으로 렌더.                     */
 /* -------------------------------------------------------------------------- */
 
-function NovelReader({ urls }: { urls: string[] }) {
+function NovelReader({ urls, fontSize }: { urls: string[]; fontSize: number }) {
   const t = useTheme();
   useReadingSurface(); // '추천' 모드에서는 소설 본문만 라이트로 opt-in(M1)
   // 작가는 한 회차에 본문 파일을 여러 개 올릴 수 있다(업로드가 다중 허용) — 예전엔 첫 파일만
@@ -327,14 +410,22 @@ function NovelReader({ urls }: { urls: string[] }) {
   // 플로팅 transparent 헤더라 본문이 그 아래로 직접 깔리므로 헤더 높이만큼 수동 오프셋(기존
   // 동작 유지) — 라이트/추천 읽기에서는 헤더가 solid(flow)로 바뀌어(위 readerHeader) 상단
   // 인셋을 헤더가 직접 소유하므로 수동 오프셋이 불필요.
+  //
+  // 넓은 화면(웹·태블릿)에서 본문이 화면 끝까지 늘어나면 줄 끝에서 다음 줄을 찾기 어렵다 —
+  // 읽기 폭을 글자 크기에서 끌어내 가운데로 모은다.
   const pad = {
     paddingHorizontal: t.space.lg,
     paddingTop: t.isDark ? HEADER_BAND_HEIGHT : 0,
   } as const;
+  const column = {
+    width: '100%',
+    maxWidth: readingWidthFor(fontSize),
+    alignSelf: 'center',
+  } as const;
 
   if (isLoading) {
     return (
-      <View style={[pad, { gap: t.space.md }]}>
+      <View style={[pad, { gap: t.space.md }, column]}>
         {Array.from({ length: 8 }).map((_, i) => (
           <Skeleton key={i} width={i % 3 === 2 ? '70%' : '100%'} height={16} />
         ))}
@@ -343,7 +434,7 @@ function NovelReader({ urls }: { urls: string[] }) {
   }
   if (isError || !data) {
     return (
-      <View style={pad}>
+      <View style={[pad, column]}>
         {/* 본문 fetch는 뷰어 쿼리와 별개라 여기에도 재시도가 있어야 한다(없으면 회차를
             떠났다 돌아오는 것 말고는 방법이 없었다). */}
         <ErrorState code="UNKNOWN" message="본문을 불러오지 못했어요." onRetry={() => void refetch()} />
@@ -352,12 +443,12 @@ function NovelReader({ urls }: { urls: string[] }) {
   }
 
   return (
-    <View style={[pad, { paddingBottom: t.space.lg, gap: t.space.xl }]}>
+    <View style={[pad, { paddingBottom: t.space.lg, gap: t.space.xl }, column]}>
       {data.map((part, i) => (
         <Text
           key={i}
           variant="body"
-          style={{ lineHeight: 30, fontSize: 17, color: t.color.onSurface }}
+          style={{ lineHeight: lineHeightFor(fontSize), fontSize, color: t.color.onSurface }}
         >
           {part.trim()}
         </Text>
@@ -429,6 +520,7 @@ function ViewerRemote({
   commentCount,
   onLike,
   onComments,
+  onReadingSettings,
 }: {
   seriesId: number;
   no: number;
@@ -438,6 +530,8 @@ function ViewerRemote({
   commentCount: number;
   onLike: () => void;
   onComments: () => void;
+  /** 소설에서만 전달 — 없으면 'Aa' 컨트롤을 렌더하지 않는다. */
+  onReadingSettings?: () => void;
 }) {
   const t = useTheme();
   const insets = useSafeAreaInsets();
@@ -498,6 +592,9 @@ function ViewerRemote({
           label="댓글 보기"
           onPress={onComments}
         />
+        {onReadingSettings ? (
+          <RemoteAction symbol="textformat.size" glyph="Aa" label="글자 크기" onPress={onReadingSettings} />
+        ) : null}
         <RemoteAction
           symbol="chevron.right"
           glyph="›"
