@@ -44,6 +44,7 @@ import {
   useReadingSurface,
   useTheme,
   type HeaderConfig,
+  type Theme,
 } from '@/ui';
 import { AppImage } from '@/ui/AppImage';
 
@@ -178,12 +179,14 @@ function ViewerContent({
   const t = useTheme();
   const kind = images[0].mediaKind;
   const isScrolling = kind !== 'AUDIO';
-  // transparent 헤더의 흰 글리프는 '아트 위에 뜬다'는 전제라 다크(트루블랙 viewerBg)에서는
-  // 항상 안전했지만, 소설 본문이 라이트/추천 읽기 모드로 전환되면(§12.5) viewerBg도 흰색이
-  // 돼 흰 글리프가 통째로 안 보인다. 그때만 solid로 바꿔 테마에 맞는 잉크를 쓴다 — 다크에서는
-  // 원래의 아트-포워드 트랜스페런트 헤더를 그대로 유지(solid 밴드가 트루블랙과 안 맞아 seam 생김).
+  // transparent 헤더의 흰 글리프는 '헤더 뒤에 아트가 있다'는 전제인데, 그 전제가 성립하는 건
+  // 전폭 이미지를 깔아주는 웹툰 리더뿐이다. 소설·오디오는 헤더 뒤가 그냥 viewerBg이고 라이트
+  // 테마의 viewerBg는 흰색이라 흰 글리프가 통째로 사라진다 — 그래서 라이트에서는 solid로 바꿔
+  // 테마 잉크를 쓴다. 다크에서는 원래의 아트-포워드 transparent 유지(solid 밴드가 트루블랙과
+  // 안 맞아 seam이 생긴다).
+  const artBehindHeader = kind === 'IMAGE';
   const readerHeader: HeaderConfig =
-    kind === 'TEXT' && !t.isDark ? { ...header, variant: 'solid' } : header;
+    !artBehindHeader && !t.isDark ? { ...header, variant: 'solid' } : header;
 
   // 리모컨 노출: 스크롤 리더(웹툰/소설)는 몰입을 위해 기본 숨김(탭/역스크롤로 노출),
   // 오디오는 스크롤이 없으므로 항상 노출한다.
@@ -225,7 +228,7 @@ function ViewerContent({
   if (!isScrolling) {
     return (
       <View style={{ flex: 1 }}>
-        <Screen surface="viewer" center header={header}>
+        <Screen surface="viewer" center header={readerHeader}>
           <AudioReader url={images[0].url!} title={title} />
         </Screen>
         {remote}
@@ -334,6 +337,27 @@ function NovelReader({ url }: { url: string }) {
 }
 
 /* -------------------------------------------------------------------------- */
+/*  뷰어 크롬 잉크 — 표면을 따라간다.                                             */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * 뷰어 크롬(리모컨·잠금 안내·오디오 플레이어)의 잉크.
+ *
+ * 원래 규칙은 "뷰어는 트루블랙이니 크롬은 흰색 고정"이었는데, viewerBg는 라이트 테마에서
+ * 흰색이라(theme.ts) 그 전제가 통째로 깨진다 — 잠금 안내·오디오 플레이어·리모컨 글리프가
+ * 흰 배경에 흰색으로 렌더돼 아예 보이지 않았다. 소설 라이트 읽기(§12.5)는 살릴 가치가 있는
+ * 기능이라 뷰어를 다크 고정으로 되돌리는 대신, 잉크가 표면을 따라가게 한다(매체별 분기 없음).
+ */
+function viewerInk(t: Theme): string {
+  return t.isDark ? '#FFFFFF' : t.color.onSurface;
+}
+
+/** 보조 잉크(시간 표시·부연 문구). */
+function viewerInkMuted(t: Theme): string {
+  return t.isDark ? 'rgba(255,255,255,0.7)' : t.color.onSurfaceSecondary;
+}
+
+/* -------------------------------------------------------------------------- */
 /*  잠긴 회차 — freeAt 안내(목록의 토스트와 별개 화면 상태).                      */
 /* -------------------------------------------------------------------------- */
 
@@ -346,10 +370,12 @@ function LockedView({ freeAt }: { freeAt?: string | null }) {
       : '아직 잠긴 회차예요.';
   return (
     <View style={{ gap: t.space.md, alignItems: 'center' }}>
-      <Text variant="display" weight="bold" style={{ textAlign: 'center', color: '#fff' }}>
+      {/* 잠금 화면엔 아트가 없어 배경이 곧 viewerBg다 — 라이트에서 흰 잉크를 쓰면 흰 배경에
+          흰 글자가 된다. 잉크는 뷰어 표면을 따라간다(viewerInk 규칙). */}
+      <Text variant="display" weight="bold" style={{ textAlign: 'center', color: viewerInk(t) }}>
         아직 잠긴 회차예요
       </Text>
-      <Text variant="body" style={{ textAlign: 'center', color: 'rgba(255,255,255,0.7)' }}>
+      <Text variant="body" style={{ textAlign: 'center', color: viewerInkMuted(t) }}>
         {label}
       </Text>
       <View style={{ marginTop: t.space.sm }}>
@@ -456,7 +482,7 @@ function ViewerRemote({
 
 /**
  * 리모컨 개별 컨트롤 — SF Symbol(+텍스트 폴백) 아이콘, 선택적 개수, 활성(accent)·비활성 잉크.
- * 아트 위에 뜨므로 기본 잉크는 흰색(header-actions의 INK_ON_ART와 동일 컨벤션).
+ * 잉크는 뷰어 표면을 따른다(viewerInk) — 다크에서는 기존과 같은 흰색, 라이트에서는 본문 잉크.
  */
 function RemoteAction({
   symbol,
@@ -477,10 +503,10 @@ function RemoteAction({
 }) {
   const t = useTheme();
   const ink = disabled
-    ? 'rgba(255,255,255,0.3)'
+    ? (t.isDark ? 'rgba(255,255,255,0.3)' : t.color.onSurfaceMuted)
     : active
       ? t.color.accent
-      : '#FFFFFF';
+      : viewerInk(t);
   return (
     <Pressable
       onPress={onPress}
