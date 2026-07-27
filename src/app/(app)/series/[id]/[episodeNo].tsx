@@ -218,13 +218,20 @@ function ViewerContent({
   const { fontSize, setFontSize } = useReaderFontSize();
   const [settingsOpen, setSettingsOpen] = useState(false);
 
+  // 얼마나 읽었는지(0~1). 소설은 끝이 안 보이는 스크롤이라 남은 양을 알 수 있어야 한다.
+  const [progress, setProgress] = useState(0);
+
   // 역스크롤(위로 되짚음) → 노출, 아래로 읽는 중 → 숨김. 작은 데드존(6px)으로 미세 흔들림 무시.
   const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const y = e.nativeEvent.contentOffset.y;
+    const { contentOffset, contentSize, layoutMeasurement } = e.nativeEvent;
+    const y = contentOffset.y;
     const dy = y - lastY.current;
     if (dy > 6) setRemoteVisible(false);
     else if (dy < -6) setRemoteVisible(true);
     lastY.current = y;
+
+    const scrollable = contentSize.height - layoutMeasurement.height;
+    setProgress(scrollable > 0 ? Math.min(1, Math.max(0, y / scrollable)) : 1);
   };
 
   const like = useEpisodeLikeToggle(seriesId, no);
@@ -278,13 +285,57 @@ function ViewerContent({
           ) : (
             <WebtoonReader images={images} />
           )}
+          {/* 다 읽고 나면 다음 화로 가는 게 자연스러운 다음 행동이다 — 숨어 있는 리모컨을
+              찾아 꺼내지 않아도 되게 본문 끝에 둔다. 최신 회차에서는 갈 곳이 없어 숨긴다. */}
+          {typeof latest === 'number' && no < latest ? (
+            <View style={{ paddingHorizontal: t.space.lg, paddingTop: t.space.xl }}>
+              <Button
+                label={`다음 화 보기 (${no + 1}화)`}
+                fullWidth
+                onPress={() =>
+                  guardedReplace({
+                    pathname: '/series/[id]/[episodeNo]',
+                    params: { id: seriesId, episodeNo: no + 1 },
+                  } as unknown as Href)
+                }
+              />
+            </View>
+          ) : null}
           <View style={{ height: REMOTE_CLEARANCE }} />
         </Pressable>
       </Screen>
       {settingsOpen ? (
         <ReadingSettings value={fontSize} onChange={setFontSize} onClose={() => setSettingsOpen(false)} />
       ) : null}
+      {remoteVisible && !settingsOpen ? <ReadingProgress ratio={progress} /> : null}
       {remote}
+    </View>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  진행률 — 리모컨과 같은 노출 상태로만 뜬다(크롬을 새로 늘리지 않는다).           */
+/* -------------------------------------------------------------------------- */
+
+function ReadingProgress({ ratio }: { ratio: number }) {
+  const t = useTheme();
+  const insets = useSafeAreaInsets();
+  return (
+    <View
+      pointerEvents="none"
+      style={{
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        bottom: Math.max(insets.bottom, t.space.md) + REMOTE_CLEARANCE - t.space.sm,
+        alignItems: 'center',
+      }}
+    >
+      <GlassCard radius="pill" intensity="clear" style={{ paddingHorizontal: t.space.md, paddingVertical: 2 }}>
+        <Text variant="micro" style={{ color: viewerInkMuted(t) }}>
+          {Math.round(ratio * 100)}%
+        </Text>
+      </GlassCard>
     </View>
   );
 }
