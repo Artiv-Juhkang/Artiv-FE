@@ -21,6 +21,7 @@
  */
 import { useCallback, useState } from 'react';
 import { TextInput, View } from 'react-native';
+import { useRouter, type Href } from 'expo-router';
 
 import { SocialButtonRow } from '@/features/auth/SocialButtonRow';
 import { useAuth } from '@/features/auth';
@@ -29,6 +30,7 @@ import { applyAppErrorToForm } from '@/lib/forms/fieldErrors';
 import { Button, CoverWall, GlassCard, Screen, Text, useTheme, useToast } from '@/ui';
 
 export default function SignInScreen() {
+  const router = useRouter();
   const t = useTheme();
   const { login } = useAuth();
   const { show } = useToast();
@@ -97,8 +99,8 @@ export default function SignInScreen() {
     fontSize: t.typography.fontSize.body,
   } as const;
 
-  // 회원가입 / 비밀번호 찾기 screens aren't built yet — surface a calm placeholder
-  // rather than a dead tap or a typed-route to a nonexistent screen.
+  // 비밀번호 찾기는 메일 발송 인프라가 아직 없어 화면만 먼저 만들 수 없다 — 조용한 안내로
+  // 둔다(회원가입은 이제 실제 화면이 있다).
   const notReady = (label: string) =>
     show({ message: `${label}는 곧 제공될 예정이에요.`, tone: 'neutral' });
 
@@ -193,35 +195,24 @@ export default function SignInScreen() {
           <SocialButtonRow />
 
           {/* Secondary links. */}
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-              gap: t.space.sm,
-            }}
+          {/* 처음 온 사람에게 가장 중요한 다음 행동이라 캡션 링크가 아니라 버튼으로 둔다.
+              주요 CTA(로그인)와 경쟁하지 않도록 ghost로 격을 낮춘다(UX17). */}
+          <Button
+            label="처음이라면 회원가입"
+            variant="ghost"
+            fullWidth
+            onPress={() => router.push('/sign-up' as Href)}
+          />
+
+          <Text
+            variant="caption"
+            color="onSurfaceSecondary"
+            onPress={() => notReady('비밀번호 찾기')}
+            accessibilityRole="link"
+            style={{ textAlign: 'center' }}
           >
-            <Text
-              variant="caption"
-              weight="semibold"
-              style={{ color: t.color.accent }}
-              onPress={() => notReady('회원가입')}
-              accessibilityRole="link"
-            >
-              처음이라면 회원가입
-            </Text>
-            <Text variant="caption" color="onSurfaceMuted">
-              ·
-            </Text>
-            <Text
-              variant="caption"
-              color="onSurfaceSecondary"
-              onPress={() => notReady('비밀번호 찾기')}
-              accessibilityRole="link"
-            >
-              비밀번호 찾기
-            </Text>
-          </View>
+            비밀번호 찾기
+          </Text>
         </GlassCard>
       </View>
     </Screen>
