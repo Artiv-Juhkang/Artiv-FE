@@ -7,7 +7,7 @@
  * title + a single meta line, with an optional UP badge for a new episode on a
  * 관심 work. Tapping opens the series detail (parent injects).
  */
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 import { AppImage } from '@/ui/AppImage';
 import { Badge, Card, Text, useTheme } from '@/ui';
@@ -18,14 +18,22 @@ export type LibraryRowProps = {
   meta: string;
   /** Cover art url (app-root-relative or absolute); absent ⇒ tinted box only. */
   coverUrl?: string | null;
+  /**
+   * 행에서 바로 감상으로 들어가는 보조 액션(이어보기). 없으면 렌더하지 않는다 —
+   * 아직 한 화도 안 봤거나 이어볼 곳을 알 수 없는 행은 작품 상세로 가는 게 맞다.
+   */
+  action?: { label: string; onPress: () => void };
   /** Show the UP badge (a 관심 work has a new episode since last read). */
   up?: boolean;
   onPress: () => void;
 };
 
-export function LibraryRow({ title, meta, coverUrl, up = false, onPress }: LibraryRowProps) {
+export function LibraryRow({ title, meta, coverUrl, action, up = false, onPress }: LibraryRowProps) {
   const t = useTheme();
-  return (
+  // 이어보기 CTA는 Card(누를 수 있는 행) '안'이 아니라 '옆'에 둔다 — 눌리는 요소를 겹쳐
+  // 놓으면 웹에서 button 안에 button이 들어가는 잘못된 마크업이 되고, 어디를 눌러야 어디로
+  // 가는지도 흐려진다. 행 = 작품 상세, 오른쪽 CTA = 감상으로 명확히 가른다.
+  const row = (
     <Card
       onPress={onPress}
       padding="md"
@@ -66,5 +74,28 @@ export function LibraryRow({ title, meta, coverUrl, up = false, onPress }: Libra
         ) : null}
       </View>
     </Card>
+  );
+
+  if (!action) return row;
+
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      <View style={{ flex: 1, minWidth: 0 }}>{row}</View>
+      <Pressable
+        onPress={action.onPress}
+        accessibilityRole="button"
+        accessibilityLabel={`${title} ${action.label}`}
+        hitSlop={8}
+        style={{
+          minHeight: t.layout.minHitTarget,
+          justifyContent: 'center',
+          paddingHorizontal: t.space.md,
+        }}
+      >
+        <Text variant="caption" weight="semibold" color="accent">
+          {action.label}
+        </Text>
+      </Pressable>
+    </View>
   );
 }

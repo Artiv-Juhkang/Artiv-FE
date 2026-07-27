@@ -184,12 +184,27 @@ function InterestList() {
               : typeof latest === 'number'
                 ? `${latest}화`
                 : '';
+        // 이어볼 곳이 있을 때만 보조 CTA를 단다 — 최신화까지 다 봤으면 '이어보기'가 거짓말이다.
+        const nextNo =
+          typeof latest === 'number' && (last ?? 0) < latest ? (last ?? 0) + 1 : null;
         return (
           <LibraryRow
             title={s.title ?? '제목 없음'}
             meta={meta}
             coverUrl={s.coverUrl}
             up={s.up ?? false}
+            action={
+              nextNo
+                ? {
+                    label: `이어보기 ${nextNo}화`,
+                    onPress: () =>
+                      nav.push({
+                        pathname: '/series/[id]/[episodeNo]',
+                        params: { id: s.seriesId!, episodeNo: nextNo },
+                      }),
+                  }
+                : undefined
+            }
             onPress={() => nav.push({ pathname: '/series/[id]', params: { id: s.seriesId! } })}
           />
         );
@@ -228,6 +243,20 @@ function HistoryList() {
           title={h.seriesTitle ?? '제목 없음'}
           meta={typeof h.lastReadEpisodeNo === 'number' ? `마지막으로 본 ${h.lastReadEpisodeNo}화` : ''}
           coverUrl={h.coverUrl}
+          action={
+            // 열람 이력에는 최신 회차 번호가 없어 '다음 화'가 존재하는지 알 수 없다 —
+            // 마지막으로 보던 회차로 되돌려 보내는 쪽이 항상 유효한 착지점이다.
+            typeof h.lastReadEpisodeNo === 'number'
+              ? {
+                  label: `이어보기 ${h.lastReadEpisodeNo}화`,
+                  onPress: () =>
+                    nav.push({
+                      pathname: '/series/[id]/[episodeNo]',
+                      params: { id: h.seriesId!, episodeNo: h.lastReadEpisodeNo! },
+                    }),
+                }
+              : undefined
+          }
           onPress={() => nav.push({ pathname: '/series/[id]', params: { id: h.seriesId! } })}
         />
       )}
