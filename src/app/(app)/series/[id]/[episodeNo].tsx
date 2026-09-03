@@ -28,6 +28,7 @@ import type { EpisodeDetail, EpisodeImage } from '@/api/types';
 import { resolveImageUrl } from '@/api/image';
 import { AudioReader } from '@/features/series/components/AudioReader';
 import { useEpisodeLikeToggle } from '@/features/series/episode-hooks';
+import { useReadingTracker } from '@/features/series/use-reading-tracker';
 import { useSeriesDetail } from '@/features/series/hooks';
 import {
   READER_FONT_SIZES,
@@ -221,6 +222,9 @@ function ViewerContent({
   // 얼마나 읽었는지(0~1). 소설은 끝이 안 보이는 스크롤이라 남은 양을 알 수 있어야 한다.
   const [progress, setProgress] = useState(0);
 
+  // 열람 계측(창작자 온톨로지). 화면을 떠날 때 1회만 전송된다 — 여기서는 진도만 흘려보낸다.
+  const { reportProgress } = useReadingTracker({ seriesId, episodeNo: no });
+
   // 역스크롤(위로 되짚음) → 노출, 아래로 읽는 중 → 숨김. 작은 데드존(6px)으로 미세 흔들림 무시.
   const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     const { contentOffset, contentSize, layoutMeasurement } = e.nativeEvent;
@@ -231,7 +235,9 @@ function ViewerContent({
     lastY.current = y;
 
     const scrollable = contentSize.height - layoutMeasurement.height;
-    setProgress(scrollable > 0 ? Math.min(1, Math.max(0, y / scrollable)) : 1);
+    const ratio = scrollable > 0 ? Math.min(1, Math.max(0, y / scrollable)) : 1;
+    setProgress(ratio);
+    reportProgress(ratio * 100);
   };
 
   const like = useEpisodeLikeToggle(seriesId, no);
