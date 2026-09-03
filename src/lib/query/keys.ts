@@ -95,6 +95,12 @@ export const keys = {
     readHistory: () => ['me', 'readHistory'] as const,
     blocks: () => ['me', 'blocks'] as const,
   },
+  ontology: {
+    all: ['ontology'] as const,
+    schema: () => ['ontology', 'schema'] as const,
+    insights: (seriesId: number) => ['ontology', 'insights', seriesId] as const,
+    sharedAudience: (seriesId: number) => ['ontology', 'sharedAudience', seriesId] as const,
+  },
   users: {
     all: ['users'] as const,
     profile: (id: number) => ['users', 'profile', id] as const,

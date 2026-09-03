@@ -62,7 +62,8 @@ export type NotificationType =
   | 'COMMENT_REPLY'
   | 'FOLLOWED'
   | 'POST_MENTIONED'
-  | 'DM_REQUEST';
+  | 'DM_REQUEST'
+  | 'NUDGE';
 
 export type NotificationTargetType =
   | 'SERIES'

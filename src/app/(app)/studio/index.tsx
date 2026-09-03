@@ -117,6 +117,17 @@ function StudioList() {
                     <Button label="커버 변경" variant="secondary" fullWidth onPress={() => void onCover(s.id!)} />
                   </View>
                 </View>
+                <Button
+                  label="작품 진단"
+                  variant="ghost"
+                  fullWidth
+                  onPress={() =>
+                    router.push({
+                      pathname: '/studio/[id]/insights',
+                      params: { id: s.id! },
+                    } as unknown as Href)
+                  }
+                />
               </View>
             </Card>
           ))

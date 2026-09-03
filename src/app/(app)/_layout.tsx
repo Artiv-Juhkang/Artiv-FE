@@ -30,6 +30,7 @@ export default function AppGroupLayout() {
         }}
       >
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="studio/[id]/insights" options={{ headerShown: false }} />
         <Stack.Screen name="series/[id]" options={{ headerShown: false }} />
         <Stack.Screen name="series/[id]/[episodeNo]" options={{ headerShown: false }} />
         <Stack.Screen name="series/[id]/[episodeNo]/comments" options={{ headerShown: false }} />
