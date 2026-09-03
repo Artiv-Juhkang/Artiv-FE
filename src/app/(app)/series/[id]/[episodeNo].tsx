@@ -224,6 +224,7 @@ function ViewerContent({
 
   // 열람 계측(창작자 온톨로지). 화면을 떠날 때 1회만 전송된다 — 여기서는 진도만 흘려보낸다.
   const { reportProgress } = useReadingTracker({ seriesId, episodeNo: no });
+  const viewportHeight = useRef(0);
 
   // 역스크롤(위로 되짚음) → 노출, 아래로 읽는 중 → 숨김. 작은 데드존(6px)으로 미세 흔들림 무시.
   const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -268,7 +269,7 @@ function ViewerContent({
     return (
       <View style={{ flex: 1 }}>
         <Screen surface="viewer" center header={readerHeader}>
-          <AudioReader urls={images.map((im) => im.url!)} title={title} />
+          <AudioReader urls={images.map((im) => im.url!)} title={title} onProgress={reportProgress} />
         </Screen>
         {remote}
       </View>
@@ -283,7 +284,18 @@ function ViewerContent({
         surface="viewer"
         scroll
         header={readerHeader}
-        scrollProps={{ onScroll, scrollEventThrottle: 16 }}
+        scrollProps={{
+          onScroll,
+          scrollEventThrottle: 16,
+          onLayout: (e) => {
+            viewportHeight.current = e.nativeEvent.layout.height;
+          },
+          // 콘텐츠가 뷰포트보다 짧으면 스크롤 이벤트가 한 번도 발생하지 않아 진도가 0에 머문다
+          // (onScroll 안의 scrollable<=0 폴백은 onScroll이 불려야 실행된다).
+          onContentSizeChange: (_w: number, h: number) => {
+            if (viewportHeight.current > 0 && h <= viewportHeight.current) reportProgress(100);
+          },
+        }}
       >
         <Pressable onPress={() => setRemoteVisible((v) => !v)}>
           {kind === 'TEXT' ? (

@@ -56,7 +56,16 @@ export function useReadingTracker(params: {
 
   useEffect(() => {
     const sub = AppState.addEventListener('change', (s) => {
-      if (s === 'background' || s === 'inactive') flush();
+      // 'inactive'는 iOS에서 알림 배너·제어센터 같은 일시적 상태에도 뜬다. 그때 flush하면
+      // 읽기 시작 직후 0%로 기록되고, sent 래치 때문에 이후 실제 열람이 통째로 유실된다.
+      // 'background'만 실제 이탈로 본다.
+      if (s === 'background') {
+        flush();
+        // 재무장 — 복귀해서 계속 읽으면 그건 새 열람 세션이다(재열람을 세는 것이 설계 의도).
+        sent.current = false;
+        sessionId.current = newSessionId();
+        startedAt.current = Date.now();
+      }
     });
     return () => {
       sub.remove();

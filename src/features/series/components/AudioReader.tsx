@@ -25,7 +25,16 @@ function fmt(seconds: number): string {
   return `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, '0')}`;
 }
 
-export function AudioReader({ urls, title }: { urls: string[]; title: string }) {
+export function AudioReader({
+  urls,
+  title,
+  onProgress,
+}: {
+  urls: string[];
+  title: string;
+  /** 재생 진도(0~100)를 상위로 흘린다 — 열람 계측용. 없으면 아무 일도 하지 않는다. */
+  onProgress?: (pct: number) => void;
+}) {
   const t = useTheme();
   // 한 회차에 트랙을 여러 개 올릴 수 있다(업로드가 다중 허용) — 예전엔 첫 트랙만 재생하고
   // 나머지는 존재조차 알 수 없었다. 현재 트랙을 상태로 두고 끝나면 다음 트랙으로 넘어간다.
@@ -40,6 +49,12 @@ export function AudioReader({ urls, title }: { urls: string[]; title: string }) 
   const current = status?.currentTime ?? 0;
   const playing = status?.playing ?? false;
   const ratio = duration > 0 ? Math.min(1, current / duration) : 0;
+
+  // 오디오는 스크롤이 없어 뷰어의 onScroll 경로를 타지 못한다. 배선이 없으면 완청한 회차도
+  // progress 0·미완독으로 기록돼 완독률이 매체 전체에서 0%가 된다(2026-09-03 리뷰).
+  useEffect(() => {
+    if (duration > 0) onProgress?.(ratio * 100);
+  }, [ratio, duration, onProgress]);
   const multi = tracks.length > 1;
   const hasNext = index < tracks.length - 1;
 
