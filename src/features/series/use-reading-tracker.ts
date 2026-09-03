@@ -29,8 +29,10 @@ export function useReadingTracker(params: {
 }) {
   const { seriesId, episodeNo, entryPoint = 'DIRECT' } = params;
 
-  const sessionId = useRef(newSessionId());
-  const startedAt = useRef(Date.now());
+  // 렌더 중에 초기화하지 않는다 — Date.now()·난수는 비순수 함수라 리렌더마다 다른 값을 만들고
+  // react-hooks/purity 규칙을 어긴다. 마운트 이펙트에서 한 번만 채운다(아래).
+  const sessionId = useRef('');
+  const startedAt = useRef(0);
   const progress = useRef(0);
   const sent = useRef(false);
 
@@ -55,6 +57,9 @@ export function useReadingTracker(params: {
   }, [seriesId, episodeNo, entryPoint]);
 
   useEffect(() => {
+    sessionId.current = newSessionId();
+    startedAt.current = Date.now();
+
     const sub = AppState.addEventListener('change', (s) => {
       // 'inactive'는 iOS에서 알림 배너·제어센터 같은 일시적 상태에도 뜬다. 그때 flush하면
       // 읽기 시작 직후 0%로 기록되고, sent 래치 때문에 이후 실제 열람이 통째로 유실된다.
