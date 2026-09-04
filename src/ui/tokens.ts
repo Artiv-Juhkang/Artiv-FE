@@ -14,8 +14,8 @@
  *      blurred cover art behind a darkening SCRIM;
  *   2. the VIEWER (immersive vertical scroll): a TRUE-BLACK / OLED
  *      surface so the frame disappears around the art.
- * The PRIMARY CTA is a warm PERSIMMON fill (the "Artiv" = Art + Active
- * accent) — colorful and inviting, not neutral ink. The same persimmon
+ * The PRIMARY CTA is an ORCHID fill (the "Artiv" = Art + Active
+ * accent) — colorful and inviting, not neutral ink. The same orchid
  * owns links, focus, and active/selected state. Neutrals are WARM (off-
  * white / warm charcoal), not cool grey, so the frame reads friendly
  * rather than clinical. One warm "ember" highlight survives for the single
@@ -26,18 +26,27 @@
 // The neutral ramp is cool-indigo-leaning so large fields read as cool
 // frosted glass, not warm paper.
 export const palette = {
-  // Signature accent — PERSIMMON ("Artiv" = Art + Active). Warm, friendly,
-  // non-polarizing. Owns the PRIMARY CTA fill AND links/focus/active/kicker.
+  // Signature accent — ORCHID ("Artiv" = Art + Active). A cool magenta-violet
+  // riding a warm neutral ground: the temperature contrast is what makes it
+  // read as accent rather than as another surface tint.
+  //
   // Two tones per mode: a deeper FILL tone (carries white / dark ink at AA)
-  // and a TEXT tone (readable as a link on the neutral ground at AA). All
-  // pairs contrast-verified ≥4.5:1.
-  persimmonFillLight: '#C8471F', // light primary CTA fill (white text ≈4.8:1)
-  persimmonPressedLight: '#A83C18', // light CTA pressed
-  persimmonTextLight: '#BC4520', // light link/active text on warm ground (≈4.6:1)
-  persimmonFillDark: '#FF6E45', // dark primary CTA fill (dark-ink text ≈6.3:1)
-  persimmonInkDark: '#241610', // dark: ink text riding the bright fill
-  persimmonPressedDark: '#F0562F', // dark CTA pressed
-  persimmonTextDark: '#FF9166', // dark link/active text on charcoal (≈7.9:1)
+  // and a TEXT tone (readable as a link on the neutral ground at AA).
+  // Measured 2026-09-05, all ≥ 4.5:1.
+  //
+  // Why not the warm persimmon it replaced (#C8471F / #FF6E45): that hue sat
+  // 3° from `unlockWarm` — the tone this system reserves as its SOLE ember,
+  // for the unlock/countdown moment — and 0° from the DESIGN media color.
+  // An accent that appears everywhere cannot share a hue with a signal
+  // reserved for one moment; the signal stops signalling. Orchid sits 84–93°
+  // from the ember and 35–39° from its nearest media color (NOVEL violet).
+  orchidFillLight: '#9A3BB5', // light primary CTA fill (white text 5.73:1)
+  orchidPressedLight: '#7F2F98', // light CTA pressed
+  orchidTextLight: '#8E3AA6', // light link/active text on warm ground (5.68:1)
+  orchidFillDark: '#C97BE8', // dark primary CTA fill (dark-ink text 6.45:1)
+  orchidInkDark: '#241016', // dark: ink text riding the bright fill
+  orchidPressedDark: '#B968D6', // dark CTA pressed
+  orchidTextDark: '#D49BEC', // dark link/active text on charcoal (8.39:1)
 
   // Legacy indigo — no longer the brand accent; kept only as the neutral
   // fallback hue for mediaColor(unknown) so nothing references a missing key.
@@ -58,7 +67,7 @@ export const palette = {
   ctaInkText: '#10121A', // dark-mode CTA text (on white bg)
 
   // Ink / neutral ramp — WARM neutral (was cool indigo-grey). A slight warm
-  // bias reads as chosen, not clinical, and pairs with the persimmon accent.
+  // bias reads as chosen, not clinical, and sets off the cool orchid accent.
   ink0: '#FFFFFF', // pure white (light surfaces / cards)
   bgLight: '#F4F2EE', // light app background (warm off-white)
   textLight: '#211E1A', // light primary text (warm near-black)

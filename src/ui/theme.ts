@@ -14,14 +14,18 @@
  *   - viewer surface: `viewerBg` (TRUE BLACK in dark, white in light).
  * Keeping `viewerBg` separate is what makes the frame vanish around art.
  *
- * Color intent (warm evolution):
- *   - PRIMARY CTA  = PERSIMMON fill (`primaryBg` / `onPrimary`): a warm
- *     rust fill + white text in light, a bright fill + dark ink in dark.
+ * Color intent (warm ground, cool accent):
+ *   - NEUTRALS     = warm (off-white `bgLight`, warm near-black text, warm
+ *     charcoal chrome). The ground is what carries the warmth.
+ *   - PRIMARY CTA  = ORCHID fill (`primaryBg` / `onPrimary`): a deep fill +
+ *     white text in light, a bright fill + dark ink in dark.
  *     Colorful and inviting (was neutral ink). Contrast-verified ≥4.5:1.
- *   - `accent`     = PERSIMMON, used for links, focus ring, active /
- *     selected state, and the kicker overline.
+ *   - `accent`     = ORCHID, used for links, focus ring, active /
+ *     selected state, and the kicker overline. Cool on a warm ground —
+ *     that temperature gap is what makes it read as accent.
  *   - `unlockWarm` = the SOLE ember tone, reserved for the
- *     unlock/countdown anticipation moment.
+ *     unlock/countdown anticipation moment. **Nothing else may be warm-red**;
+ *     an accent sharing this hue would kill the signal (see tokens.ts).
  *
  * Back-compat: re-exports a `Colors` object whose keys are a SUPERSET
  * of the legacy src/constants/theme.ts (text/background/backgroundElement
@@ -65,17 +69,17 @@ const lightColors = {
   onSurfaceSecondary: p.secondaryLight,
   onSurfaceMuted: p.kickerLight,
   kicker: p.kickerLight, // overline / eyebrow above headings
-  // PRIMARY CTA — PERSIMMON fill + white text (was neutral ink). Warm,
+  // PRIMARY CTA — ORCHID fill + white text (was neutral ink). Cool accent
   // inviting, AA-verified (≈4.8:1). Color now signals the primary action.
-  primaryBg: p.persimmonFillLight,
-  primaryPressed: p.persimmonPressedLight,
+  primaryBg: p.orchidFillLight,
+  primaryPressed: p.orchidPressedLight,
   onPrimary: p.ink0,
   onAccent: p.ink0, // legacy: text on a saturated fill (danger/badges)
-  // accent (PERSIMMON) — links, focus, active/selected, kicker tint
-  accent: p.persimmonTextLight,
-  accentPressed: p.persimmonPressedLight,
-  accentSubtle: 'rgba(200,71,31,0.12)',
-  accentBorder: 'rgba(200,71,31,0.42)',
+  // accent (ORCHID) — links, focus, active/selected, kicker tint
+  accent: p.orchidTextLight,
+  accentPressed: p.orchidPressedLight,
+  accentSubtle: 'rgba(154,59,181,0.12)',
+  accentBorder: 'rgba(154,59,181,0.42)',
   // unlock/countdown WARM moment (the sole ember in the system)
   unlockWarm: p.ember700,
   unlockWarmSubtle: p.emberSubtleLight,
@@ -89,8 +93,8 @@ const lightColors = {
   success: p.success500,
   danger: p.danger500,
   warn: p.warn500,
-  // focus ring (a11y visible focus) — persimmon accent
-  focusRing: p.persimmonFillLight,
+  // focus ring (a11y visible focus) — orchid accent
+  focusRing: p.orchidFillLight,
   // badges
   badge19: p.badge19,
   badgeUp: p.badgeUp,
@@ -119,17 +123,17 @@ const darkColors = {
   onSurfaceSecondary: p.secondaryDark,
   onSurfaceMuted: p.kickerDark,
   kicker: p.kickerDark, // overline / eyebrow above headings
-  // PRIMARY CTA — bright PERSIMMON fill + dark ink text (was neutral white).
+  // PRIMARY CTA — bright ORCHID fill + dark ink text (was neutral white).
   // Bright-on-dark pops warmly; dark ink rides it at AA (≈6.3:1).
-  primaryBg: p.persimmonFillDark,
-  primaryPressed: p.persimmonPressedDark,
-  onPrimary: p.persimmonInkDark,
+  primaryBg: p.orchidFillDark,
+  primaryPressed: p.orchidPressedDark,
+  onPrimary: p.orchidInkDark,
   onAccent: p.ink0, // legacy: text on a saturated fill (danger/badges)
-  // accent (PERSIMMON) — links, focus, active/selected, kicker tint
-  accent: p.persimmonTextDark,
-  accentPressed: p.persimmonFillDark,
-  accentSubtle: 'rgba(255,145,102,0.18)',
-  accentBorder: 'rgba(255,145,102,0.42)',
+  // accent (ORCHID) — links, focus, active/selected, kicker tint
+  accent: p.orchidTextDark,
+  accentPressed: p.orchidFillDark,
+  accentSubtle: 'rgba(212,155,236,0.18)',
+  accentBorder: 'rgba(212,155,236,0.42)',
   // unlock/countdown WARM moment (the sole ember in the system)
   unlockWarm: p.ember300,
   unlockWarmSubtle: p.emberSubtleDark,
@@ -143,7 +147,7 @@ const darkColors = {
   success: p.success500,
   danger: p.danger500,
   warn: p.warn500,
-  focusRing: p.persimmonTextDark,
+  focusRing: p.orchidTextDark,
   badge19: p.badge19,
   badgeUp: p.badgeUp,
   badgeBest: p.badgeBest,
