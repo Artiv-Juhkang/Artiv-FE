@@ -13,6 +13,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getAuthorSeries } from '@/api/endpoints/series';
 import { keys } from '@/lib/query';
 import { useGuardedNavigation } from '@/lib/navigation/useGuardedNavigation';
+import { markSeriesEntry } from '@/features/series/entry-point';
 import {
   isRecentlyUpdated,
   SERIES_GRID,
@@ -79,7 +80,10 @@ export default function AuthorSeriesScreen() {
                 width={cellWidth}
                 coverUrl={s.coverUrl}
                 isUp={isRecentlyUpdated(s.lastPublishedAt)}
-                onPress={() => nav.push({ pathname: '/series/[id]', params: { id: String(s.id) } })}
+                onPress={() => {
+                  markSeriesEntry(s.id!, 'AUTHOR');
+                  nav.push({ pathname: '/series/[id]', params: { id: String(s.id) } });
+                }}
               />
             ))}
           </View>

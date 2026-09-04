@@ -22,6 +22,7 @@ import {
 import { mediaColor } from '@/ui/tokens';
 
 import { useDiscoverRails, type DiscoverRail } from './hooks';
+import { markSeriesEntry } from '@/features/series/entry-point';
 
 /** 레일 포스터 카드 폭(phone). ~2.5장이 비쳐 스크롤을 유도. */
 const RAIL_CARD_WIDTH = 132;
@@ -117,7 +118,10 @@ function RailSection({
             width={RAIL_CARD_WIDTH}
             coverUrl={item.coverUrl}
             isUp={isRecentlyUpdated(item.lastPublishedAt)}
-            onPress={() => nav.push({ pathname: '/series/[id]', params: { id: item.id! } })}
+            onPress={() => {
+              markSeriesEntry(item.id!, 'DISCOVER');
+              nav.push({ pathname: '/series/[id]', params: { id: item.id! } });
+            }}
           />
         )}
       />

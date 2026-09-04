@@ -26,6 +26,7 @@ import type { NotificationResponse, NotificationType } from '@/api/types';
 import { keys } from '@/lib/query';
 import { useGuardedNavigation } from '@/lib/navigation/useGuardedNavigation';
 import { EmptyState, ErrorState, Screen, Text, useTheme } from '@/ui';
+import { markSeriesEntry } from '@/features/series/entry-point';
 
 /* -------------------------------------------------------------------------- */
 /*  그룹 정의 — 데이터가 실제로 도는 종류만(채팅·매체서브칩 제외).                  */
@@ -69,6 +70,7 @@ export default function NotificationsScreen() {
       refreshAll();
       if (!updated.targetId) return;
       if (updated.targetType === 'SERIES') {
+        markSeriesEntry(Number(updated.targetId), 'NOTIFICATION');
         nav.push({ pathname: '/series/[id]', params: { id: updated.targetId } });
       } else if (updated.targetType === 'POST') {
         nav.push({ pathname: '/posts/[id]', params: { id: updated.targetId } });

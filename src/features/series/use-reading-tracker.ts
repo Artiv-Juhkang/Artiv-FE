@@ -9,6 +9,8 @@ import { AppState } from 'react-native';
 
 import { sendReadingEvent, type EntryPoint } from '@/api/endpoints/reading-events';
 
+import { entryPointFor } from './entry-point';
+
 /** 완독 판정 기준(%). 백엔드 집계와 같은 값. */
 const COMPLETED_AT = 95;
 
@@ -25,9 +27,11 @@ function newSessionId(): string {
 export function useReadingTracker(params: {
   seriesId: number;
   episodeNo: number;
+  /** 생략하면 작품 진입 시 기록된 경로를 쓴다(entry-point.ts). */
   entryPoint?: EntryPoint;
 }) {
-  const { seriesId, episodeNo, entryPoint = 'DIRECT' } = params;
+  const { seriesId, episodeNo } = params;
+  const entryPoint = params.entryPoint ?? entryPointFor(seriesId);
 
   // 렌더 중에 초기화하지 않는다 — Date.now()·난수는 비순수 함수라 리렌더마다 다른 값을 만들고
   // react-hooks/purity 규칙을 어긴다. 마운트 이펙트에서 한 번만 채운다(아래).

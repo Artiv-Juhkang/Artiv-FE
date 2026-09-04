@@ -223,8 +223,20 @@ function ViewerContent({
   const [progress, setProgress] = useState(0);
 
   // 열람 계측(창작자 온톨로지). 화면을 떠날 때 1회만 전송된다 — 여기서는 진도만 흘려보낸다.
+  // entryPoint는 넘기지 않는다 — 작품 진입 시 기록된 값을 트래커가 읽는다(entry-point.ts).
   const { reportProgress } = useReadingTracker({ seriesId, episodeNo: no });
+  // 뷰포트/콘텐츠 높이는 어느 쪽이 먼저 올지 보장이 없다(웹에서는 onContentSizeChange가
+  // onLayout보다 먼저 오는 경우가 있고, 이미지 로드 후 콘텐츠 높이가 또 바뀐다).
+  // 그래서 두 값을 모두 들고 있다가 **들어올 때마다** 판정한다 — 한쪽만 보고 판정하면
+  // 짧은 회차의 진도가 영원히 0에 머문다.
   const viewportHeight = useRef(0);
+  const contentHeight = useRef(0);
+  const settleShortContent = () => {
+    if (viewportHeight.current > 0 && contentHeight.current > 0
+        && contentHeight.current <= viewportHeight.current) {
+      reportProgress(100);
+    }
+  };
 
   // 역스크롤(위로 되짚음) → 노출, 아래로 읽는 중 → 숨김. 작은 데드존(6px)으로 미세 흔들림 무시.
   const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -289,11 +301,13 @@ function ViewerContent({
           scrollEventThrottle: 16,
           onLayout: (e) => {
             viewportHeight.current = e.nativeEvent.layout.height;
+            settleShortContent();
           },
           // 콘텐츠가 뷰포트보다 짧으면 스크롤 이벤트가 한 번도 발생하지 않아 진도가 0에 머문다
           // (onScroll 안의 scrollable<=0 폴백은 onScroll이 불려야 실행된다).
           onContentSizeChange: (_w: number, h: number) => {
-            if (viewportHeight.current > 0 && h <= viewportHeight.current) reportProgress(100);
+            contentHeight.current = h;
+            settleShortContent();
           },
         }}
       >

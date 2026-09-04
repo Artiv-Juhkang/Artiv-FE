@@ -58,6 +58,7 @@ import {
   useTheme,
 } from '@/ui';
 import { mediaColor } from '@/ui/tokens';
+import { markSeriesEntry } from '@/features/series/entry-point';
 
 export default function SeriesHomeScreen() {
   const router = useRouter();
@@ -205,7 +206,10 @@ function TypeGridView({ contentType }: { contentType: string }) {
         isUp={isRecentlyUpdated(item.lastPublishedAt)}
         onPress={() =>
           // 셀은 자체 push 안 함 — 네비게이션은 부모가 주입(typedRoutes 객체 형태 필수).
-          nav.push({ pathname: '/series/[id]', params: { id: item.id! } })
+          {
+            markSeriesEntry(item.id!, 'DISCOVER');
+            nav.push({ pathname: '/series/[id]', params: { id: item.id! } });
+          }
         }
       />
     ),

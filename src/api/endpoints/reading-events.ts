@@ -12,6 +12,7 @@ export type EntryPoint =
   | 'NOTIFICATION'
   | 'SUBSCRIPTION'
   | 'AUTHOR'
+  | 'LIBRARY'
   | 'DIRECT';
 
 export interface ReadingEventInput {

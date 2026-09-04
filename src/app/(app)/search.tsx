@@ -44,6 +44,7 @@ import {
   useTheme,
 } from '@/ui';
 import { mediaColor } from '@/ui/tokens';
+import { markSeriesEntry } from '@/features/series/entry-point';
 
 const RECENTS_KEY = 'artiv.search.recents';
 const RECENTS_MAX = 8;
@@ -484,7 +485,10 @@ function Results({
                 width={cellWidth}
                 coverUrl={s.coverUrl}
                 isUp={isRecentlyUpdated(s.lastPublishedAt)}
-                onPress={() => nav.push({ pathname: '/series/[id]', params: { id: s.id! } })}
+                onPress={() => {
+                  markSeriesEntry(s.id!, 'SEARCH');
+                  nav.push({ pathname: '/series/[id]', params: { id: s.id! } });
+                }}
               />
             ))}
           </View>

@@ -34,6 +34,7 @@ import { isAppError } from '@/lib/errors';
 import { useGuardedNavigation } from '@/lib/navigation/useGuardedNavigation';
 import { flattenInfinite, useInfiniteQuery } from '@/lib/query';
 import { EmptyState, ErrorState, Screen, Skeleton, Text, useTheme } from '@/ui';
+import { markSeriesEntry } from '@/features/series/entry-point';
 
 type LibraryGroup = 'creation' | 'community';
 type CreationTab = 'interest' | 'history' | 'follow';
@@ -197,15 +198,20 @@ function InterestList() {
               nextNo
                 ? {
                     label: `이어보기 ${nextNo}화`,
-                    onPress: () =>
+                    onPress: () => {
+                      markSeriesEntry(s.seriesId!, 'SUBSCRIPTION');
                       nav.push({
                         pathname: '/series/[id]/[episodeNo]',
                         params: { id: s.seriesId!, episodeNo: nextNo },
-                      }),
+                      });
+                    },
                   }
                 : undefined
             }
-            onPress={() => nav.push({ pathname: '/series/[id]', params: { id: s.seriesId! } })}
+            onPress={() => {
+              markSeriesEntry(s.seriesId!, 'SUBSCRIPTION');
+              nav.push({ pathname: '/series/[id]', params: { id: s.seriesId! } });
+            }}
           />
         );
       }}
@@ -249,15 +255,20 @@ function HistoryList() {
             typeof h.lastReadEpisodeNo === 'number'
               ? {
                   label: `이어보기 ${h.lastReadEpisodeNo}화`,
-                  onPress: () =>
+                  onPress: () => {
+                    markSeriesEntry(h.seriesId!, 'LIBRARY');
                     nav.push({
                       pathname: '/series/[id]/[episodeNo]',
                       params: { id: h.seriesId!, episodeNo: h.lastReadEpisodeNo! },
-                    }),
+                    });
+                  },
                 }
               : undefined
           }
-          onPress={() => nav.push({ pathname: '/series/[id]', params: { id: h.seriesId! } })}
+          onPress={() => {
+            markSeriesEntry(h.seriesId!, 'LIBRARY');
+            nav.push({ pathname: '/series/[id]', params: { id: h.seriesId! } });
+          }}
         />
       )}
     />
