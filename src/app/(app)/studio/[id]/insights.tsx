@@ -203,8 +203,8 @@ function InsightsBody({ seriesId }: { seriesId: number }) {
             </View>
           )}
           <Text variant="caption" color="onSurfaceMuted" style={{ marginTop: t.space.sm }}>
-            지금 앱에서 수집되는 유입 경로는 전부 &apos;직접 진입&apos;이에요 — 이 분포는 시연용 합성
-            데이터에서만 의미가 있어요.
+            독자가 이 작품에 어떻게 도달했는지예요. 회차가 아니라 작품에 들어온 시점에
+            기록하므로, 한 번 들어와서 읽은 회차들은 같은 경로로 묶여요.
           </Text>
         </Card>
 
