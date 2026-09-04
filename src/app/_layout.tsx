@@ -55,7 +55,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { OfflineBanner } from '@/components/feedback';
 import { AuthProvider, useAuth } from '@/features/auth';
 import { chromeStackScreenOptions } from '@/lib/navigation/transitions';
-import { QueryProvider } from '@/lib/query';
+import { QueryProvider, QueryErrorToastBridge } from '@/lib/query';
 import { GlobalErrorBoundary } from '@/providers/GlobalErrorBoundary';
 import { NetworkProvider } from '@/providers/NetworkProvider';
 import { Button, Text, ThemeModeProvider, ToastProvider, useTheme, useThemeMode } from '@/ui';
@@ -123,6 +123,8 @@ export default function RootLayout() {
           <NetworkProvider>
             <QueryProvider>
               <ToastProvider>
+                {/* 전역 쿼리 에러 → 토스트. ToastProvider 안쪽이어야 useToast가 산다. */}
+                <QueryErrorToastBridge />
                 <AuthProvider>
                   {/* ThemeModeProvider sits UNDER AuthProvider and ABOVE the
                       Gate: it owns the persisted light/dark/system override and

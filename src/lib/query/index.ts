@@ -9,3 +9,4 @@ export * from './infinite';
 export * from './mutations';
 export { queryClient, shouldRetry, DEFAULT_STALE_TIME, setQueryErrorNotifier } from './queryClient';
 export { QueryProvider } from './QueryProvider';
+export { QueryErrorToastBridge } from './QueryErrorToastBridge';

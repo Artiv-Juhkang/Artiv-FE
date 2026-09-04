@@ -64,11 +64,15 @@ export function setQueryErrorNotifier(fn: QueryErrorNotifier | null): void {
  * - silent(401/INVALID_TOKEN): 인증 레이어 소유 → 무처리.
  * - blocked/notFound/fieldErrors/upload: 화면 인라인에서 처리 → 전역 무처리.
  * - generic(network/timeout/UNKNOWN): 토스트.
+ *
+ * `handledInline`이면 토스트를 띄우지 않는다 — 호출부가 이미 자기 문구로 처리했다는 뜻이라
+ * 여기서 또 띄우면 같은 실패에 토스트가 두 개 뜬다.
  */
-function routeGlobalError(error: unknown): void {
+function routeGlobalError(error: unknown, handledInline: boolean): void {
   const e = normalizeError(error);
   const { kind } = resolveError(e);
   if (kind !== 'generic') return; // silent/blocked/notFound/fieldErrors/upload는 인라인 처리
+  if (handledInline) return;
   if (errorNotifier) {
     errorNotifier(e);
   } else if (__DEV__) {
@@ -90,10 +94,18 @@ function throwOnError(error: unknown): boolean {
 
 export const queryClient = new QueryClient({
   queryCache: new QueryCache({
-    onError: routeGlobalError,
+    // 쿼리 실패는 토스트로 띄우지 않는다. 화면이 이미 isError → ErrorState로 인라인
+    // 표출하고, 치명적인 것은 throwOnError가 ErrorBoundary로 보낸다. 여기서 토스트를
+    // 더하면 같은 실패가 두 번 보이고, 백그라운드 refetch가 깜빡일 때마다 스팸이 된다.
+    // dev 가시성만 유지한다(errorNotifier가 등록돼 있어도 handledInline=true라 조용하다).
+    onError: (error) => routeGlobalError(error, true),
   }),
   mutationCache: new MutationCache({
-    onError: routeGlobalError,
+    // 뮤테이션은 사용자가 버튼을 눌러 시작한 동작이라 침묵이 최악이다 —
+    // "눌렀는데 아무 일도 안 일어남". 자기 onError를 가진 뮤테이션은 이미 자기 문구로
+    // 처리하므로 건너뛰고, 잊고 안 단 곳만 이 안전망이 잡는다.
+    onError: (error, _variables, _onMutateResult, mutation) =>
+      routeGlobalError(error, typeof mutation.options.onError === 'function'),
   }),
   defaultOptions: {
     queries: {

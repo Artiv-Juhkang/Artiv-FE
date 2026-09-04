@@ -17,9 +17,7 @@ import {
   type SharedAudience,
   type WorkInsights,
 } from '@/api/endpoints/ontology';
-import { isAppError } from '@/lib/errors';
 import { keys } from '@/lib/query';
-import { useToast } from '@/ui';
 
 export function useWorkInsights(seriesId: number) {
   return useQuery<WorkInsights>({
@@ -52,32 +50,21 @@ export function useOntologySchema() {
 /**
  * 이탈 독자 알림.
  *
- * 실패를 **인라인 토스트로 직접 처리한다**(withdraw.tsx:23과 같은 관례).
+ * 실패 문구는 **전역 경로가 띄운다**(QueryErrorToastBridge → routeGlobalError).
+ * 자기 onError를 두면 전역이 handledInline으로 판단해 건너뛰므로 여기서 또 띄우면
+ * 이중이 아니라 '전역이 죽어 있는지'를 가려버린다 — 실제로 2026-09-05까지
+ * setQueryErrorNotifier 호출부가 0개여서 이 화면의 409·403이 조용히 사라졌고,
+ * 그때 넣었던 인라인 토스트가 그 사실을 덮고 있었다.
  *
- * 설계 초안은 "전역 MutationCache.onError → routeGlobalError가 이미 띄운다"고 봤는데,
- * 실측해보니 틀렸다 — routeGlobalError가 호출하는 errorNotifier가 앱 어디에서도 등록되지
- * 않아(queryClient.ts:55~59, 호출부 0개) 항상 __DEV__ console.warn으로 빠진다. 그 결과
- * 409 스로틀·403 k미달에서 사용자가 **아무 피드백도 받지 못했다.**
- *
- * 전역 등록을 고치는 편이 근본적이지만 그건 앱 전체의 에러 표출 동작을 바꾸는 변경이라
- * 이 작업 범위 밖이다(CLAUDE.md §3). 여기서는 이 화면만 책임진다.
- *
- * 서버 메시지를 그대로 쓴다 — "이번 주에는 이미 보냈어요"처럼 사유가 구체적이고,
- * normalizeError가 이미 안전한 서버 문구만 통과시킨다(pickMessage).
+ * 서버 메시지("이번 주에는 이미 보냈어요…")는 normalizeError의 pickMessage가
+ * 이미 안전하게 통과시킨다.
  */
 export function useNudgeLapsedAudience(seriesId: number) {
   const qc = useQueryClient();
-  const { show } = useToast();
   return useMutation<void, Error, void>({
     mutationFn: () => nudgeLapsedAudience(seriesId),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: keys.ontology.insights(seriesId) });
-    },
-    onError: (e) => {
-      show({
-        tone: 'danger',
-        message: isAppError(e) ? e.message : '알림을 보내지 못했어요. 잠시 후 다시 시도해 주세요.',
-      });
     },
   });
 }
