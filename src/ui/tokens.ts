@@ -72,7 +72,10 @@ export const palette = {
   bgLight: '#F4F2EE', // light app background (warm off-white)
   textLight: '#211E1A', // light primary text (warm near-black)
   secondaryLight: '#5A544B', // light secondary text (warm)
-  kickerLight: '#8B857A', // light kicker / muted (warm)
+  // 2026-09-05: #8B857A → #706B62. 이전 값은 bg 대비 3.28:1로 AA 미달이었다
+  // (인디고 시절 #6A6E80는 4.25:1이었는데 웜 피벗이 밝히면서 내려갔다).
+  // 색상은 유지하고 명도만 낮춘 최소 변경 — bg 4.73:1 / 카드 5.29:1.
+  kickerLight: '#706B62', // light kicker / muted (warm)
   ink800: '#252320', // dark opaque chrome surface (warm charcoal)
   ink850: '#1F1D1A', // dark chrome elevated (warm)
   bgDark: '#1A1917', // dark app background (warm charcoal, not cold black)
