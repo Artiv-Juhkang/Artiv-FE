@@ -213,6 +213,9 @@ function Gate() {
         <Stack.Protected guard={status === 'unauthenticated'}>
           <Stack.Screen name="(auth)" />
         </Stack.Protected>
+        {/* 약관·처리방침은 두 그룹 밖에 둔다 — 가입 화면(미인증)과 내 정보(인증)
+            양쪽에서 열려야 하는데 (app)/(auth)는 각각 Protected로 막혀 있다. */}
+        <Stack.Screen name="legal/[doc]" />
         <Stack.Screen name="+not-found" />
       </Stack>
       <OfflineBanner />

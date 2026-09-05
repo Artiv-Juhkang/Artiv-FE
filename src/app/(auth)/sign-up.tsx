@@ -24,13 +24,13 @@ import { Button, CoverWall, GlassCard, Screen, Text, useTheme, useToast } from '
 
 /** 가입 시 반드시 받아야 하는 동의(백엔드 ConsentType과 1:1). */
 const REQUIRED_CONSENTS = [
-  { key: 'TERMS_OF_SERVICE', label: '이용약관에 동의합니다' },
-  { key: 'PRIVACY_POLICY', label: '개인정보 처리방침에 동의합니다' },
+  { key: 'TERMS_OF_SERVICE', label: '이용약관에 동의합니다', doc: 'terms' },
+  { key: 'PRIVACY_POLICY', label: '개인정보 처리방침에 동의합니다', doc: 'privacy' },
 ] as const;
 
 /** 선택 동의 — 안 해도 가입된다. */
 const OPTIONAL_CONSENTS = [
-  { key: 'MARKETING_EMAIL', label: '새 소식·추천 작품 메일 받기 (선택)' },
+  { key: 'MARKETING_EMAIL', label: '새 소식·추천 작품 메일 받기 (선택)', doc: null },
 ] as const;
 
 const MIN_AGE = 14;
@@ -248,8 +248,10 @@ export default function SignUpScreen() {
           {[...REQUIRED_CONSENTS, ...OPTIONAL_CONSENTS].map((c) => {
             const on = Boolean(agreed[c.key]);
             return (
+              // 행 전체가 체크박스라 문서 '보기'는 형제로 분리한다 — 중첩하면 웹에서
+              // <button> 안 <button>이 되고(P3-6에서 겪은 것과 같은 위반) 어디를 눌렀는지도 모호해진다.
+              <View key={c.key} style={{ flexDirection: 'row', alignItems: 'center', gap: t.space.sm }}>
               <Pressable
-                key={c.key}
                 onPress={() => toggle(c.key)}
                 accessibilityRole="checkbox"
                 accessibilityState={{ checked: on }}
@@ -284,6 +286,20 @@ export default function SignUpScreen() {
                   {c.label}
                 </Text>
               </Pressable>
+                {c.doc ? (
+                  <Pressable
+                    onPress={() => router.push({ pathname: '/legal/[doc]', params: { doc: c.doc } })}
+                    accessibilityRole="link"
+                    accessibilityLabel={`${c.label} 전문 보기`}
+                    hitSlop={8}
+                    style={{ minHeight: t.layout.minHitTarget, justifyContent: 'center' }}
+                  >
+                    <Text variant="caption" weight="semibold" style={{ color: t.color.accent }}>
+                      보기
+                    </Text>
+                  </Pressable>
+                ) : null}
+              </View>
             );
           })}
         </View>

@@ -172,6 +172,18 @@ export default function MyPageScreen() {
             fullWidth
             onPress={() => router.push('/faq' as Href)}
           />
+          <Button
+            label="이용약관"
+            variant="secondary"
+            fullWidth
+            onPress={() => router.push({ pathname: '/legal/[doc]', params: { doc: 'terms' } })}
+          />
+          <Button
+            label="개인정보 처리방침"
+            variant="secondary"
+            fullWidth
+            onPress={() => router.push({ pathname: '/legal/[doc]', params: { doc: 'privacy' } })}
+          />
         </View>
 
         <Divider />
